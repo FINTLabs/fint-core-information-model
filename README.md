@@ -2,16 +2,15 @@
 
 ## Description
 
-Tool for generating language-specific FINT model libraries from the EA
-information model. Two-stage pipeline:
+Tool for producing `metamodel.json` — a canonical, language-neutral
+snapshot of the FINT information model — from the EA XMI export:
 
 ```
-EA XMI ─► metamodel.json ─► Java / C# / (future) Go / ...
+EA XMI ─► metamodel.json
 ```
 
-`metamodel.json` is a canonical, language-neutral snapshot of the FINT
-domain model. Language emitters consume only the JSON, so new target
-languages can be added without touching the XMI parser.
+`metamodel.json` is the source of truth for language emitters, so new
+target languages can be added without touching the XMI parser.
 
 ## Usage
 
@@ -25,29 +24,11 @@ Pulls the EA XMI from GitHub (`fint-informasjonsmodell`), parses it, and
 writes a canonical JSON document with components, types, attributes,
 relations, and inheritance.
 
-### Generate language sources
-
-`generate` reads `metamodel.json` only — no XMI access:
-
-```bash
-fint-model generate -l ALL --resource --from-json metamodel.json
-```
-
-Output for `v4.0.20` is byte-identical to the pinned fixture in
-`testdata/golden/v4.0.20/`. To regenerate from XMI in a single
-invocation, chain the two stages:
-
-```bash
-fint-model -t v4.0.20 metamodel -o metamodel.json && \
-  fint-model generate --from-json metamodel.json -l ALL --resource
-```
-
 ### CLI
 
 ```
 COMMANDS:
    metamodel     produce canonical metamodel.json from EA XMI
-   generate      emit JAVA/CS sources from metamodel.json
    listTags      list FINT model release tags
    listBranches  list FINT model branches
    help, h       show command help
@@ -58,16 +39,10 @@ GLOBAL OPTIONS (used by metamodel / list*):
    --filename value       XMI filename           (default "FINT-informasjonsmodell.xml", $MODEL_FILENAME)
    --tag, -t value        model release/tag      (default "latest")
    --force, -f            re-download XMI even if cached
-
-GENERATE FLAGS:
-   --lang, -l VALUE       JAVA | CS | ALL (default JAVA)
-   --resource, -r         also emit Resource / Resources classes
-   --from-json PATH       metamodel.json to read (required)
 ```
 
 The downloaded XMI is cached in `$HOME/.fint-model/.cache`. Subsequent
-`metamodel` runs reuse the cache unless `--force` is set. `generate`
-itself never touches the XMI — it only consumes the JSON.
+`metamodel` runs reuse the cache unless `--force` is set.
 
 ## `metamodel.json` shape
 
@@ -105,14 +80,6 @@ itself never touches the XMI — it only consumes the JSON.
               },
               "deprecated": false,
               "inherited": false,
-              "from": "utdanning-vurdering:Elevvurdering" },
-            { "name": "vitnemalsmerknad",
-              "target": "utdanning-kodeverk:Vitnemalsmerknad",
-              "multiplicity": "0..*",
-              "multiplicityKind": "NONE_TO_MANY",
-              "bidirectional": null,
-              "deprecated": false,
-              "inherited": false,
               "from": "utdanning-vurdering:Elevvurdering" }
           ]
         }
@@ -125,10 +92,8 @@ itself never touches the XMI — it only consumes the JSON.
 Conventions:
 
 - **Components** are URL-style lowercase names (`utdanning-vurdering`,
-  `felles-kodeverk-iso`). Consumers derive language-specific forms by
-  splitting on `-`: Java package is `no.novari.fint.model.<segments>`
-  joined with `.`; C# namespace is `FINT.Model.<TitleCased>` joined
-  with `.`.
+  `felles-kodeverk-iso`). Consumers derive language-specific package
+  forms by splitting on `-`.
 - **Cross-references** between types use `"component:Name"` strings.
   Primitives stay bare and lowercase: `string`, `boolean`, `date`,
   `datetime`, `int`, `long`, `float`, `double`. The closed primitive set
@@ -147,9 +112,7 @@ Conventions:
     the type itself), so consumers can grep "who declares X" without
     special-casing.
   Pre-flattening means consumers don't re-implement the parent walk.
-  Filter `inherited: false` to recover own-only when needed (e.g. when
-  emitting Java with `super.X()` calls so the child class doesn't
-  redeclare inherited fields).
+  Filter `inherited: false` to recover own-only when needed.
 - **`multiplicity` is shipped both ways.** `multiplicity` is the
   source-of-truth UML string (`"1"`, `"0..1"`, `"0..*"`, `"1..*"`)
   and diff-friendly. `multiplicityKind` is the derived enum-friendly
@@ -161,10 +124,7 @@ Conventions:
   side is structurally fine.
 - **No `identifiable` flag** — derive it from `idFields`: a type is
   identifiable iff `idFields != null && idFields.length > 0`. Same
-  info, expressed once. Other parent-chain-walks
-  (`extendsIdentifiable`, `extendsResource`, `extendsRelations`) are
-  also not in the JSON: a consumer that needs them does a one-hop
-  `parent` lookup.
+  info, expressed once.
 - **`path`** (REST URL fragment) is populated only for `hovedklasse`
   types — derived as `<component-with-slashes>/<lowercase-typename>`,
   e.g. `utdanning/vurdering/elevvurdering`. `null` for everything else
@@ -229,18 +189,8 @@ go build -a
 - **`dateTime` vs `date`**: EA uses both forms inconsistently for
   semantically distinct concepts (date-only vs timestamp). Both
   canonicalise to lowercase primitives in `metamodel.json` (`date`
-  stays `date`, `dateTime` becomes `datetime`). The existing Java and
-  C# emitters collapse both to `java.util.Date` / `DateTime`. Future
-  emitters can distinguish — e.g. Go could use `civil.Date` for `date`
-  and `time.Time` for `datetime`.
-- **`validFilt` template helper**: decides whether to stamp `@Valid` on
-  a Java field. Looks up the attribute type in `JAVA_TYPE_MAP` (lowercase
-  keys); if found, it's a primitive and gets no `@Valid`. The lookup is
-  case-insensitive (matches `GetJavaType`). An earlier version did a
-  case-sensitive lookup, which accidentally stamped `@Valid` on `Date`
-  fields whose EA type was `dateTime` (camelCase) — a runtime no-op
-  (`@Valid` cascades into nested constraints, of which `java.util.Date`
-  has none) but visually inconsistent.
+  stays `date`, `dateTime` becomes `datetime`). Emitters decide the
+  target-language mapping.
 
 ## Author
 

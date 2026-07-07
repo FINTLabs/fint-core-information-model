@@ -31,21 +31,21 @@ func TestFindClass_PrefersPackageQualifiedAndDisambiguatesCollisions(t *testing.
 }
 
 func TestFindImport_PrefersPackageQualifiedWhenAvailable(t *testing.T) {
-	imports := map[string]types.Import{
-		"no.fint.skole.Klasse": {Java: "no.fint.skole.Klasse", CSharp: "Fint.Skole"},
-		"no.fint.noark.Klasse": {Java: "no.fint.noark.Klasse", CSharp: "Fint.Noark"},
+	imports := map[string]string{
+		"no.fint.skole.Klasse": "no.fint.skole.Klasse",
+		"no.fint.noark.Klasse": "no.fint.noark.Klasse",
 	}
 	importNameMap := buildImportNameMap(imports)
 
-	if got, found := findImport("Klasse", "no.fint.noark", imports, importNameMap); !found || got.Java != "no.fint.noark.Klasse" {
+	if got, found := findImport("Klasse", "no.fint.noark", imports, importNameMap); !found || got != "no.fint.noark.Klasse" {
 		t.Fatalf("expected qualified import lookup to find noark Klasse")
 	}
 }
 
 func TestGetImports_IncludesSubpackageImportAndExcludesSelfImport(t *testing.T) {
-	imports := map[string]types.Import{}
-	imports["no.fint.arkiv.noark.Registrering"] = types.Import{Java: "no.fint.arkiv.noark.Registrering"}
-	imports["no.fint.arkiv.noark.kodeverk.Klasse"] = types.Import{Java: "no.fint.arkiv.noark.kodeverk.Klasse"}
+	imports := map[string]string{}
+	imports["no.fint.arkiv.noark.Registrering"] = "no.fint.arkiv.noark.Registrering"
+	imports["no.fint.arkiv.noark.kodeverk.Klasse"] = "no.fint.arkiv.noark.kodeverk.Klasse"
 	importNameMap := buildImportNameMap(imports)
 
 	c := &types.Class{

@@ -17,7 +17,7 @@ func CmdMetamodel(c *cli.Context) error {
 	force := c.GlobalBool("force")
 	output := c.String("output")
 
-	classes, _, _, _ := parser.GetClasses(owner, repo, tag, filename, force)
+	classes := parser.GetClasses(owner, repo, tag, filename, force)
 
 	doc := Build(classes, tag, "")
 

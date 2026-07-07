@@ -6,5 +6,4 @@ type Attribute struct {
 	List       bool
 	Optional   bool
 	Deprecated bool
-	Writable   bool
 }

@@ -10,10 +10,10 @@
 //
 // Design notes:
 //
-//   - Each Type lists only its own attributes and relations; inherited members
-//     are reachable via Parent. Flattening would duplicate base-class fields
-//     across every subclass and turn a single base-class edit into a noisy
-//     N-way diff in CI.
+//   - Each Type's Attributes and Relations are pre-flattened: they contain the
+//     type's own entries plus everything inherited from the parent chain, in
+//     own-first order. Inherited entries carry Inherited=true, and From names
+//     the declaring type, so consumers can recover own-only by filtering.
 //
 //   - Relation.Bidirectional is a nullable struct rather than a flat
 //     bidirectional bool plus nullable isSource/inverseName, so invalid combos

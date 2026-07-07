@@ -13,7 +13,7 @@ func main() {
 	app.Version = Version
 	app.Author = "FINTLabs"
 	app.Email = ""
-	app.Usage = "Generates Java and C# models from EA XMI export. " +
+	app.Usage = "Produces a canonical metamodel.json from the FINT EA XMI export. " +
 		"This utility is mainly for internal FINT use, but if you " +
 		"find it usefull, please use it!"
 

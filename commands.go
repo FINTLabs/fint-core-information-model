@@ -6,7 +6,6 @@ import (
 
 	"github.com/FINTLabs/fint-model/branches"
 	"github.com/FINTLabs/fint-model/common/metamodel"
-	"github.com/FINTLabs/fint-model/generate"
 	"github.com/FINTLabs/fint-model/tags"
 	"github.com/urfave/cli"
 )
@@ -44,27 +43,6 @@ var GlobalFlags = []cli.Flag{
 }
 
 var Commands = []cli.Command{
-	{
-		Name:   "generate",
-		Usage:  "generates JAVA/CS models",
-		Action: generate.CmdGenerate,
-		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "lang, l",
-				Value: "JAVA",
-				Usage: "the language to generate the code in - can be JAVA, CS or ALL",
-			},
-			cli.BoolFlag{
-				EnvVar: "",
-				Name:   "resource, r",
-				Usage:  "Generate resource classes.",
-			},
-			cli.StringFlag{
-				Name:  "from-json",
-				Usage: "read metamodel.json instead of fetching/parsing EA XMI (JAVA only)",
-			},
-		},
-	},
 	{
 		Name:   "metamodel",
 		Usage:  "produce canonical metamodel.json from EA XMI",
