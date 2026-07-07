@@ -1,8 +1,7 @@
 *.test
 .idea
 .DS_Store
-/java/
-/cs/
+/kotlin/
 *.xml
 fint-model
 build
