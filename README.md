@@ -2,15 +2,18 @@
 
 ## Description
 
-Tool for producing `metamodel.json` — a canonical, language-neutral
-snapshot of the FINT information model — from the EA XMI export:
+Tool for generating the FINT Kotlin model library from the EA
+information model. Two-stage pipeline:
 
 ```
-EA XMI ─► metamodel.json
+EA XMI ─► metamodel.json ─► Kotlin
 ```
 
-`metamodel.json` is the source of truth for language emitters, so new
-target languages can be added without touching the XMI parser.
+`metamodel.json` is a canonical, language-neutral snapshot of the FINT
+domain model and the source of truth for language emitters, so new
+target languages can be added without touching the XMI parser. (The
+old Java/C# emitters live in upstream FINTLabs/fint-model and in this
+repo's history.)
 
 ## Usage
 
@@ -24,14 +27,30 @@ Pulls the EA XMI from GitHub (`fint-informasjonsmodell`), parses it, and
 writes a canonical JSON document with components, types, attributes,
 relations, and inheritance.
 
+### Generate the Kotlin library
+
+`generate` reads `metamodel.json` only — no XMI access:
+
+```bash
+fint-model generate --from-json metamodel.json
+```
+
+Writes the source tree under `kotlin/` (one `.kt` file per model type
+plus the `FintObject` / `FintResource` / `Link` runtime files), rooted
+at package `no.novari.fint.kmodel`.
+
 ### CLI
 
 ```
 COMMANDS:
+   generate      emit Kotlin model sources from metamodel.json
    metamodel     produce canonical metamodel.json from EA XMI
    listTags      list FINT model release tags
    listBranches  list FINT model branches
    help, h       show command help
+
+GENERATE FLAGS:
+   --from-json PATH       metamodel.json to read (required)
 
 GLOBAL OPTIONS (used by metamodel / list*):
    --owner value          Git repository owner   (default "FINTLabs",                 $GITHUB_OWNER)
@@ -184,13 +203,45 @@ go mod vendor
 go build -a
 ```
 
+## Kotlin mapping
+
+The emitted library is deliberately plain — classes that hold the
+fields, one class per model type (no `Elev` / `ElevResource` split):
+
+- `abstrakt` types become **interfaces** declaring their own
+  attributes. This is safe because inheritance in the model only ever
+  targets `abstrakt` parents; the emitter fails loudly if that
+  invariant breaks.
+- Every other type becomes a **`data class`** whose constructor
+  parameters are the pre-flattened attribute list from the JSON, as
+  nullable `var`s defaulting to `null` (partial payloads never throw,
+  and Kotlin generates a no-arg constructor). Inherited attributes get
+  `override` since the parent interface declares them. Types with no
+  attributes become plain classes.
+- A type **is a resource** — implements `FintResource` and carries a
+  `links: MutableMap<String, MutableList<Link>>` — iff it is a
+  `hovedklasse` or its flattened relation list is non-empty (the old
+  Java `isResource` rule).
+- Primitives map to Kotlin/`java.time` types: `string → String`,
+  `boolean → Boolean`, `int → Int`, `long → Long`, `float → Float`,
+  `double → Double`, `date → LocalDate`, `datetime → LocalDateTime`.
+- Zero dependencies beyond `kotlin-stdlib` and `java.time`.
+
+Deliberately not emitted yet (added incrementally as they earn their
+way in): metadata companions (`idFields`, relation specs with `KClass`
+targets, the `FintModel` registry), serialization annotations,
+validation annotations, KDoc, `@Deprecated` stamping.
+
 ## Notes
 
 - **`dateTime` vs `date`**: EA uses both forms inconsistently for
   semantically distinct concepts (date-only vs timestamp). Both
   canonicalise to lowercase primitives in `metamodel.json` (`date`
-  stays `date`, `dateTime` becomes `datetime`). Emitters decide the
-  target-language mapping.
+  stays `date`, `dateTime` becomes `datetime`). The Kotlin emitter
+  maps them to `LocalDate` / `LocalDateTime`.
+- **No compile gate yet**: the generated tree is covered by exact-output
+  and invariant tests in `generate/kotlin`, but nothing compiles it in
+  CI. Wiring a `kotlinc` check is the next hardening step.
 
 ## Author
 

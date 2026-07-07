@@ -6,6 +6,7 @@ import (
 
 	"github.com/FINTLabs/fint-model/branches"
 	"github.com/FINTLabs/fint-model/common/metamodel"
+	"github.com/FINTLabs/fint-model/generate"
 	"github.com/FINTLabs/fint-model/tags"
 	"github.com/urfave/cli"
 )
@@ -43,6 +44,17 @@ var GlobalFlags = []cli.Flag{
 }
 
 var Commands = []cli.Command{
+	{
+		Name:   "generate",
+		Usage:  "emit Kotlin model sources from metamodel.json",
+		Action: generate.CmdGenerate,
+		Flags: []cli.Flag{
+			cli.StringFlag{
+				Name:  "from-json",
+				Usage: "metamodel.json to read (required)",
+			},
+		},
+	},
 	{
 		Name:   "metamodel",
 		Usage:  "produce canonical metamodel.json from EA XMI",
