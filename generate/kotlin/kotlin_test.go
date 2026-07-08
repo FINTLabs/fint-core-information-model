@@ -1,53 +1,59 @@
 package kotlin
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/FINTLabs/fint-model/common/metamodel"
 )
 
-func loadGolden(t *testing.T) *metamodel.Document {
+var (
+	goldenOnce  sync.Once
+	goldenDoc   *metamodel.Document
+	goldenFiles map[string]string
+	goldenErr   error
+)
+
+func golden(t *testing.T) (*metamodel.Document, map[string]string) {
 	t.Helper()
-	doc, err := metamodel.Load("../../testdata/golden/v4.0.20/metamodel.json")
-	if err != nil {
-		t.Fatalf("load golden metamodel: %v", err)
+	goldenOnce.Do(func() {
+		goldenDoc, goldenErr = metamodel.Load("../../testdata/golden/v4.0.20/metamodel.json")
+		if goldenErr != nil {
+			return
+		}
+		goldenFiles, goldenErr = Files(goldenDoc)
+	})
+	if goldenErr != nil {
+		t.Fatalf("golden setup: %v", goldenErr)
 	}
-	return doc
+	return goldenDoc, goldenFiles
 }
 
 func TestFiles_CountAndDeterminism(t *testing.T) {
-	doc := loadGolden(t)
-
-	first, err := Files(doc)
-	if err != nil {
-		t.Fatalf("Files: %v", err)
-	}
+	doc, files := golden(t)
 
 	typeCount := 0
 	for _, comp := range doc.Components {
 		typeCount += len(comp.Types)
 	}
-	if want := typeCount + 3; len(first) != want {
-		t.Fatalf("expected %d files (types + 3 runtime), got %d", want, len(first))
+	if want := typeCount + 11; len(files) != want {
+		t.Fatalf("expected %d files (types + 10 runtime + registry), got %d", want, len(files))
 	}
 
 	second, err := Files(doc)
 	if err != nil {
 		t.Fatalf("Files second run: %v", err)
 	}
-	if !reflect.DeepEqual(first, second) {
+	if !reflect.DeepEqual(files, second) {
 		t.Fatalf("output is not deterministic across runs")
 	}
 }
 
-func TestFiles_EveryConcreteResourceCarriesLinks(t *testing.T) {
-	doc := loadGolden(t)
-	files, err := Files(doc)
-	if err != nil {
-		t.Fatalf("Files: %v", err)
-	}
+func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
+	doc, files := golden(t)
 
 	for _, comp := range doc.Components {
 		for _, typ := range comp.Types {
@@ -55,27 +61,108 @@ func TestFiles_EveryConcreteResourceCarriesLinks(t *testing.T) {
 			if !ok {
 				t.Fatalf("missing file for %s:%s", comp.Name, typ.Name)
 			}
-			abstract := typ.Stereotype == metamodel.StereotypeAbstract
+			id := comp.Name + ":" + typ.Name
+
+			if typ.Stereotype == metamodel.StereotypeAbstract {
+				if strings.Contains(content, "companion object") {
+					t.Errorf("%s: abstrakt type should not carry a metadata companion", id)
+				}
+				if !strings.Contains(content, "interface "+typ.Name) {
+					t.Errorf("%s: abstrakt type not emitted as interface", id)
+				}
+				continue
+			}
+
 			resource := typ.Stereotype == metamodel.StereotypeMain || len(typ.Relations) > 0
+			metaInterface := "FintTypeMetadata"
+			if resource {
+				metaInterface = "FintResourceMetadata"
+			}
+			if !strings.Contains(content, "companion object Metadata : "+metaInterface+" {") {
+				t.Errorf("%s: missing companion implementing %s", id, metaInterface)
+			}
+			if !strings.Contains(content, fmt.Sprintf("override val ref = %q", id)) {
+				t.Errorf("%s: missing or wrong ref", id)
+			}
+			if got, want := strings.Count(content, `FintAttribute("`), len(typ.Attributes); got != want {
+				t.Errorf("%s: expected %d FintAttribute entries, found %d", id, want, got)
+			}
+
 			hasLinks := strings.Contains(content, "override val links")
-			if !abstract && resource && !hasLinks {
-				t.Errorf("%s:%s is a concrete resource but has no links override", comp.Name, typ.Name)
+			if resource != hasLinks {
+				t.Errorf("%s: resource=%t but links override present=%t", id, resource, hasLinks)
 			}
-			if (abstract || !resource) && hasLinks {
-				t.Errorf("%s:%s should not implement links", comp.Name, typ.Name)
+			if !resource {
+				continue
 			}
-			if abstract && !strings.Contains(content, "interface "+typ.Name) {
-				t.Errorf("%s:%s is abstrakt but not emitted as interface", comp.Name, typ.Name)
+
+			if typ.Path != nil {
+				if !strings.Contains(content, fmt.Sprintf("override val path = %q", *typ.Path)) {
+					t.Errorf("%s: missing path %q", id, *typ.Path)
+				}
+			} else if !strings.Contains(content, "override val path: String? = null") {
+				t.Errorf("%s: missing null path", id)
+			}
+
+			if len(typ.IdFields) > 0 {
+				for _, f := range typ.IdFields {
+					if !strings.Contains(content, fmt.Sprintf("visitor.visit(%q, %s)", f, f)) {
+						t.Errorf("%s: visitIdentifikators missing field %s", id, f)
+					}
+				}
+			} else if !strings.Contains(content, "override val idFields = emptyList<String>()") {
+				t.Errorf("%s: missing empty idFields", id)
+			}
+
+			if got, want := strings.Count(content, "FintRelation(\n"), len(typ.Relations); got != want {
+				t.Errorf("%s: expected %d FintRelation entries, found %d", id, want, got)
+			}
+			for _, rel := range typ.Relations {
+				if rel.Bidirectional != nil {
+					if !strings.Contains(content, fmt.Sprintf("inverseName = %q", rel.Bidirectional.InverseName)) {
+						t.Errorf("%s: relation %s missing inverseName %q", id, rel.Name, rel.Bidirectional.InverseName)
+					}
+				}
 			}
 		}
 	}
 }
 
-func TestFiles_MainClassWithComplexAttributes(t *testing.T) {
+func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
+	doc, files := golden(t)
+	registry, ok := files["no/novari/fint/kmodel/FintModel.kt"]
+	if !ok {
+		t.Fatalf("missing FintModel.kt")
+	}
+	if !strings.Contains(registry, "object FintModel {") {
+		t.Fatalf("registry missing FintModel object")
+	}
+	for _, comp := range doc.Components {
+		for _, typ := range comp.Types {
+			entry := packageFor(comp.Name) + "." + typ.Name + ".Metadata,"
+			if typ.Stereotype == metamodel.StereotypeAbstract {
+				if strings.Contains(registry, entry) {
+					t.Errorf("registry must not list abstrakt type %s:%s", comp.Name, typ.Name)
+				}
+			} else if !strings.Contains(registry, entry) {
+				t.Errorf("registry missing %s", entry)
+			}
+		}
+	}
+}
+
+func TestFiles_MainClassWithMetadata(t *testing.T) {
 	want := `package no.novari.fint.kmodel.utdanning.elev
 
+import no.novari.fint.kmodel.Bidirectional
+import no.novari.fint.kmodel.FintAttribute
+import no.novari.fint.kmodel.FintMultiplicity
+import no.novari.fint.kmodel.FintRelation
 import no.novari.fint.kmodel.FintResource
+import no.novari.fint.kmodel.FintResourceMetadata
+import no.novari.fint.kmodel.IdentifikatorVisitor
 import no.novari.fint.kmodel.Link
+import no.novari.fint.kmodel.felles.Person
 import no.novari.fint.kmodel.felles.kompleksedatatyper.Adresse
 import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.kmodel.felles.kompleksedatatyper.Kontaktinformasjon
@@ -90,6 +177,55 @@ data class Elev(
     var systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
+
+    override val metadata: FintResourceMetadata get() = Metadata
+
+    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
+        visitor.visit("brukernavn", brukernavn)
+        visitor.visit("elevnummer", elevnummer)
+        visitor.visit("feidenavn", feidenavn)
+        visitor.visit("systemId", systemId)
+    }
+
+    override fun identifikator(field: String): Identifikator? = when {
+        field.equals("brukernavn", ignoreCase = true) -> brukernavn
+        field.equals("elevnummer", ignoreCase = true) -> elevnummer
+        field.equals("feidenavn", ignoreCase = true) -> feidenavn
+        field.equals("systemId", ignoreCase = true) -> systemId
+        else -> null
+    }
+
+    companion object Metadata : FintResourceMetadata {
+        override val type = Elev::class
+        override val ref = "utdanning-elev:Elev"
+        override val path = "utdanning/elev/elev"
+        override val idFields = listOf("brukernavn", "elevnummer", "feidenavn", "systemId")
+        override val attributes = listOf(
+            FintAttribute("brukernavn", Identifikator::class, list = false, optional = true),
+            FintAttribute("elevnummer", Identifikator::class, list = false, optional = true),
+            FintAttribute("feidenavn", Identifikator::class, list = false, optional = true),
+            FintAttribute("gjest", Boolean::class, list = false, optional = true),
+            FintAttribute("hybeladresse", Adresse::class, list = false, optional = true),
+            FintAttribute("kontaktinformasjon", Kontaktinformasjon::class, list = false, optional = true),
+            FintAttribute("systemId", Identifikator::class, list = false, optional = false),
+        )
+        override val relations = listOf(
+            FintRelation(
+                name = "person",
+                target = Person::class,
+                targetPath = "felles/person",
+                multiplicity = FintMultiplicity.EXACTLY_ONE,
+                bidirectional = Bidirectional(inverseName = "elev", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
+            ),
+            FintRelation(
+                name = "elevforhold",
+                target = Elevforhold::class,
+                targetPath = "utdanning/elev/elevforhold",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "elev", isSource = false, inverseMultiplicity = FintMultiplicity.EXACTLY_ONE),
+            ),
+        )
+    }
 }
 `
 	assertFile(t, "no/novari/fint/kmodel/utdanning/elev/Elev.kt", want)
@@ -113,65 +249,114 @@ interface Begrep : FintObject {
 	assertFile(t, "no/novari/fint/kmodel/felles/basisklasser/Begrep.kt", want)
 }
 
-func TestFiles_InheritedAttributesGetOverride(t *testing.T) {
+func TestFiles_DatatypeCarriesTypeMetadata(t *testing.T) {
+	want := `package no.novari.fint.kmodel.felles.kompleksedatatyper
+
+import no.novari.fint.kmodel.FintAttribute
+import no.novari.fint.kmodel.FintObject
+import no.novari.fint.kmodel.FintTypeMetadata
+
+data class Identifikator(
+    var gyldighetsperiode: Periode? = null,
+    var identifikatorverdi: String? = null,
+) : FintObject {
+    override val metadata: FintTypeMetadata get() = Metadata
+
+    companion object Metadata : FintTypeMetadata {
+        override val type = Identifikator::class
+        override val ref = "felles-kompleksedatatyper:Identifikator"
+        override val attributes = listOf(
+            FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
+            FintAttribute("identifikatorverdi", String::class, list = false, optional = false),
+        )
+    }
+}
+`
+	assertFile(t, "no/novari/fint/kmodel/felles/kompleksedatatyper/Identifikator.kt", want)
+}
+
+func TestFiles_AttributelessReferanse(t *testing.T) {
 	want := `package no.novari.fint.kmodel.utdanning.kodeverk
 
-import no.novari.fint.kmodel.FintResource
-import no.novari.fint.kmodel.Link
-import no.novari.fint.kmodel.felles.basisklasser.Begrep
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Periode
-
-data class Fravarstype(
-    override var gyldighetsperiode: Periode? = null,
-    override var kode: String? = null,
-    override var navn: String? = null,
-    override var passiv: Boolean? = null,
-    override var systemId: Identifikator? = null,
-) : Begrep, FintResource {
-    override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
-}
-`
-	assertFile(t, "no/novari/fint/kmodel/utdanning/kodeverk/Fravarstype.kt", want)
-}
-
-func TestFiles_AttributelessTypesAreNotDataClasses(t *testing.T) {
-	wantPlain := `package no.novari.fint.kmodel.utdanning.kodeverk
-
+import no.novari.fint.kmodel.FintAttribute
 import no.novari.fint.kmodel.FintObject
+import no.novari.fint.kmodel.FintTypeMetadata
 
-class Grepreferanse : FintObject
-`
-	assertFile(t, "no/novari/fint/kmodel/utdanning/kodeverk/Grepreferanse.kt", wantPlain)
+class Grepreferanse : FintObject {
+    override val metadata: FintTypeMetadata get() = Metadata
 
-	wantResource := `package no.novari.fint.kmodel.administrasjon.kompleksedatatyper
-
-import no.novari.fint.kmodel.FintResource
-import no.novari.fint.kmodel.Link
-
-class Kontostreng : FintResource {
-    override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
+    companion object Metadata : FintTypeMetadata {
+        override val type = Grepreferanse::class
+        override val ref = "utdanning-kodeverk:Grepreferanse"
+        override val attributes = emptyList<FintAttribute>()
+    }
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/administrasjon/kompleksedatatyper/Kontostreng.kt", wantResource)
+	assertFile(t, "no/novari/fint/kmodel/utdanning/kodeverk/Grepreferanse.kt", want)
+}
+
+func TestFiles_AttributelessResource(t *testing.T) {
+	_, files := golden(t)
+	content := files["no/novari/fint/kmodel/administrasjon/kompleksedatatyper/Kontostreng.kt"]
+	for _, want := range []string{
+		"class Kontostreng : FintResource {",
+		"override val path: String? = null",
+		"override val idFields = emptyList<String>()",
+		"override val attributes = emptyList<FintAttribute>()",
+		"override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}",
+		"override fun identifikator(field: String): Identifikator? = null",
+	} {
+		if !strings.Contains(content, want) {
+			t.Errorf("Kontostreng.kt missing %q", want)
+		}
+	}
+	if got := strings.Count(content, "FintRelation(\n"); got != 13 {
+		t.Errorf("Kontostreng.kt expected 13 relations, found %d", got)
+	}
 }
 
 func TestFiles_RuntimeInterface(t *testing.T) {
 	want := `package no.novari.fint.kmodel
 
+import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
+
 interface FintResource : FintObject {
     val links: MutableMap<String, MutableList<Link>>
+    override val metadata: FintResourceMetadata
+
+    fun visitIdentifikators(visitor: IdentifikatorVisitor)
+
+    fun identifikator(field: String): Identifikator?
+
+    fun relationLinks(name: String): List<Link> = links[name].orEmpty()
+
+    fun addLink(relation: String, link: Link) {
+        links.getOrPut(relation) { mutableListOf() }.add(link)
+    }
 }
 `
 	assertFile(t, "no/novari/fint/kmodel/FintResource.kt", want)
 }
 
+func TestFiles_RuntimeMultiplicity(t *testing.T) {
+	want := `package no.novari.fint.kmodel
+
+enum class FintMultiplicity(val lower: Int, val upper: Int?) {
+    EXACTLY_ONE(1, 1),
+    ZERO_OR_ONE(0, 1),
+    ONE_OR_MORE(1, null),
+    ZERO_OR_MORE(0, null);
+
+    val required: Boolean get() = lower > 0
+    val many: Boolean get() = upper == null
+}
+`
+	assertFile(t, "no/novari/fint/kmodel/FintMultiplicity.kt", want)
+}
+
 func assertFile(t *testing.T, path, want string) {
 	t.Helper()
-	files, err := Files(loadGolden(t))
-	if err != nil {
-		t.Fatalf("Files: %v", err)
-	}
+	_, files := golden(t)
 	got, ok := files[path]
 	if !ok {
 		t.Fatalf("missing file %s", path)
@@ -181,21 +366,25 @@ func assertFile(t *testing.T, path, want string) {
 	}
 }
 
-func TestFiles_FailsOnUnknownPrimitive(t *testing.T) {
-	doc := &metamodel.Document{
+func minimalDoc(types ...metamodel.Type) *metamodel.Document {
+	identifikator := metamodel.Type{
+		Name:       "Identifikator",
+		Stereotype: metamodel.StereotypeDatatype,
+	}
+	return &metamodel.Document{
 		Components: []metamodel.Component{
-			{
-				Name: "test",
-				Types: []metamodel.Type{
-					{
-						Name:       "Broken",
-						Stereotype: metamodel.StereotypeDatatype,
-						Attributes: []metamodel.Attribute{{Name: "x", Type: "decimal"}},
-					},
-				},
-			},
+			{Name: "felles-kompleksedatatyper", Types: []metamodel.Type{identifikator}},
+			{Name: "test", Types: types},
 		},
 	}
+}
+
+func TestFiles_FailsOnUnknownPrimitive(t *testing.T) {
+	doc := minimalDoc(metamodel.Type{
+		Name:       "Broken",
+		Stereotype: metamodel.StereotypeDatatype,
+		Attributes: []metamodel.Attribute{{Name: "x", Type: "decimal"}},
+	})
 	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "unknown primitive") {
 		t.Fatalf("expected unknown primitive error, got %v", err)
 	}
@@ -203,38 +392,54 @@ func TestFiles_FailsOnUnknownPrimitive(t *testing.T) {
 
 func TestFiles_FailsOnConcreteParent(t *testing.T) {
 	parent := "test:Base"
-	doc := &metamodel.Document{
-		Components: []metamodel.Component{
-			{
-				Name: "test",
-				Types: []metamodel.Type{
-					{Name: "Base", Stereotype: metamodel.StereotypeDatatype},
-					{Name: "Child", Stereotype: metamodel.StereotypeDatatype, Parent: &parent},
-				},
-			},
-		},
-	}
+	doc := minimalDoc(
+		metamodel.Type{Name: "Base", Stereotype: metamodel.StereotypeDatatype},
+		metamodel.Type{Name: "Child", Stereotype: metamodel.StereotypeDatatype, Parent: &parent},
+	)
 	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "expected abstrakt") {
 		t.Fatalf("expected abstrakt-parent error, got %v", err)
 	}
 }
 
 func TestFiles_FailsOnUnresolvedReference(t *testing.T) {
-	doc := &metamodel.Document{
-		Components: []metamodel.Component{
-			{
-				Name: "test",
-				Types: []metamodel.Type{
-					{
-						Name:       "Dangling",
-						Stereotype: metamodel.StereotypeDatatype,
-						Attributes: []metamodel.Attribute{{Name: "x", Type: "missing:Type"}},
-					},
-				},
-			},
-		},
-	}
+	doc := minimalDoc(metamodel.Type{
+		Name:       "Dangling",
+		Stereotype: metamodel.StereotypeDatatype,
+		Attributes: []metamodel.Attribute{{Name: "x", Type: "missing:Type"}},
+	})
 	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "unresolved type") {
 		t.Fatalf("expected unresolved type error, got %v", err)
+	}
+}
+
+func TestFiles_FailsOnUnknownMultiplicityKind(t *testing.T) {
+	doc := minimalDoc(metamodel.Type{
+		Name:       "A",
+		Stereotype: metamodel.StereotypeMain,
+		Relations: []metamodel.Relation{
+			{Name: "b", Target: "test:A", Multiplicity: "1", MultiplicityKind: "ONE_TO_ONE"},
+		},
+	})
+	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "unknown multiplicityKind") {
+		t.Fatalf("expected unknown multiplicityKind error (old-schema values must be rejected), got %v", err)
+	}
+}
+
+func TestFiles_FailsOnMissingInverse(t *testing.T) {
+	doc := minimalDoc(metamodel.Type{
+		Name:       "A",
+		Stereotype: metamodel.StereotypeMain,
+		Relations: []metamodel.Relation{
+			{
+				Name:             "b",
+				Target:           "test:A",
+				Multiplicity:     "1",
+				MultiplicityKind: "EXACTLY_ONE",
+				Bidirectional:    &metamodel.Bidirectional{IsSource: true, InverseName: "missing"},
+			},
+		},
+	})
+	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "no inverse relation") {
+		t.Fatalf("expected missing inverse error, got %v", err)
 	}
 }

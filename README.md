@@ -35,9 +35,9 @@ relations, and inheritance.
 fint-model generate --from-json metamodel.json
 ```
 
-Writes the source tree under `kotlin/` (one `.kt` file per model type
-plus the `FintObject` / `FintResource` / `Link` runtime files), rooted
-at package `no.novari.fint.kmodel`.
+Writes the source tree under `kotlin/` (one `.kt` file per model type,
+a generated `FintModel` registry, and the runtime files), rooted at
+package `no.novari.fint.kmodel`.
 
 ### CLI
 
@@ -207,8 +207,8 @@ go build -a
 
 ## Kotlin mapping
 
-The emitted library is deliberately plain — classes that hold the
-fields, one class per model type (no `Elev` / `ElevResource` split):
+One class per model type (no `Elev` / `ElevResource` split), all
+metadata reachable without reflection:
 
 - `abstrakt` types become **interfaces** declaring their own
   attributes. This is safe because inheritance in the model only ever
@@ -224,15 +224,40 @@ fields, one class per model type (no `Elev` / `ElevResource` split):
   `links: MutableMap<String, MutableList<Link>>` — iff it is a
   `hovedklasse` or its flattened relation list is non-empty (the old
   Java `isResource` rule).
+- Every concrete type carries a **metadata companion**
+  (`companion object Metadata`): `FintTypeMetadata` (`type`, `ref`,
+  `attributes`) for datatypes and references, `FintResourceMetadata`
+  (plus `path`, `idFields`, `relations`) for resources. Relations bake
+  compile-time-known data flat: `targetPath` (the target's REST path,
+  for link building) and, when bidirectional, the inverse relation's
+  multiplicity. Metadata is reachable statically (`Elev.idFields`),
+  from an instance (`resource.metadata`), and from strings or classes
+  via the generated **`FintModel`** registry (`byPath` / `byRef` /
+  `byType`).
+- Resources implement **`visitIdentifikators(IdentifikatorVisitor)`**
+  (allocation-free iteration over declared id fields, unset ones
+  included) and **`identifikator(field)`** (case-insensitive
+  `when`-chain lookup).
+- **`Link` stores the parsed form** — `idField` + `idValue` — not the
+  href. `Link.parse(href)` decomposes incoming hrefs (last two
+  segments; anything that doesn't decompose is kept verbatim in
+  `unresolved`, e.g. grep.udir.no references), and
+  `link.href(baseUrl, path)` rebuilds the wire form using
+  `relationPath(...)` from the owning resource's metadata.
+- **`FintMultiplicity`** uses UML range names (`EXACTLY_ONE`,
+  `ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`) with `lower`/`upper`
+  bounds and derived `required`/`many` — the two flags consumer code
+  branches on. Direction is communicated by presence:
+  `relation.bidirectional` is `null` for unidirectional relations.
 - Primitives map to Kotlin/`java.time` types: `string → String`,
   `boolean → Boolean`, `int → Int`, `long → Long`, `float → Float`,
   `double → Double`, `date → LocalDate`, `datetime → LocalDateTime`.
 - Zero dependencies beyond `kotlin-stdlib` and `java.time`.
 
 Deliberately not emitted yet (added incrementally as they earn their
-way in): metadata companions (`idFields`, relation specs with `KClass`
-targets, the `FintModel` registry), serialization annotations,
-validation annotations, KDoc, `@Deprecated` stamping.
+way in): serialization annotations (`_links` mapping lives in a small
+Jackson module on the consumer side for now), validation annotations,
+KDoc, `@Deprecated` stamping.
 
 ## Notes
 
