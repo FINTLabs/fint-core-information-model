@@ -22,7 +22,7 @@
 //     either obvious or arbitrary which side is source.
 package metamodel
 
-const SchemaVersion = "1.0"
+const SchemaVersion = "1.1"
 
 type Document struct {
 	SchemaVersion string      `json:"schemaVersion"`
@@ -91,22 +91,22 @@ const (
 )
 
 const (
-	KindOneToOne   = "ONE_TO_ONE"
-	KindNoneToOne  = "NONE_TO_ONE"
-	KindOneToMany  = "ONE_TO_MANY"
-	KindNoneToMany = "NONE_TO_MANY"
+	KindExactlyOne = "EXACTLY_ONE"
+	KindZeroOrOne  = "ZERO_OR_ONE"
+	KindOneOrMore  = "ONE_OR_MORE"
+	KindZeroOrMore = "ZERO_OR_MORE"
 )
 
 func MultiplicityKind(m string) string {
 	switch m {
 	case MultiplicityOne:
-		return KindOneToOne
+		return KindExactlyOne
 	case MultiplicityZeroOrOne:
-		return KindNoneToOne
+		return KindZeroOrOne
 	case MultiplicityOneOrMany:
-		return KindOneToMany
+		return KindOneOrMore
 	case MultiplicityZeroOrMany:
-		return KindNoneToMany
+		return KindZeroOrMore
 	}
 	return ""
 }

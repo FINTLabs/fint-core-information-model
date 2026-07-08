@@ -67,7 +67,7 @@ The downloaded XMI is cached in `$HOME/.fint-model/.cache`. Subsequent
 
 ```json
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "1.1",
   "fintVersion": "v4.0.20",
   "generatedAt": "2026-05-09T12:00:00Z",
   "components": [
@@ -92,7 +92,7 @@ The downloaded XMI is cached in `$HOME/.fint-model/.cache`. Subsequent
             { "name": "elevforhold",
               "target": "utdanning-elev:Elevforhold",
               "multiplicity": "1",
-              "multiplicityKind": "ONE_TO_ONE",
+              "multiplicityKind": "EXACTLY_ONE",
               "bidirectional": {
                 "isSource": true,
                 "inverseName": "elevvurdering"
@@ -135,8 +135,10 @@ Conventions:
 - **`multiplicity` is shipped both ways.** `multiplicity` is the
   source-of-truth UML string (`"1"`, `"0..1"`, `"0..*"`, `"1..*"`)
   and diff-friendly. `multiplicityKind` is the derived enum-friendly
-  form (`ONE_TO_ONE`, `NONE_TO_ONE`, `ONE_TO_MANY`, `NONE_TO_MANY`)
-  so consumers don't repeat the same 4-line lookup.
+  form (`EXACTLY_ONE`, `ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`)
+  so consumers don't repeat the same 4-line lookup. These are UML
+  *end* multiplicities — the `lower..upper` bounds of the target end —
+  not database-style relationship cardinality.
 - **`bidirectional`** is a single nullable struct: `null` for
   unidirectional, `{ isSource, inverseName }` when bidirectional.
   `isSource` matters chiefly for many-to-many — for 1-1 / 1-* either
