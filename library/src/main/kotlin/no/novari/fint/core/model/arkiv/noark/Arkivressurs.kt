@@ -20,13 +20,13 @@ data class Arkivressurs(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        kildesystemId?.let { visitor.visit("kildesystemId", it) }
-        systemId?.let { visitor.visit("systemId", it) }
+        kildesystemId?.identifikatorverdi?.let { visitor.visit("kildesystemId", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("kildesystemId", ignoreCase = true) -> kildesystemId
-        field.equals("systemId", ignoreCase = true) -> systemId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("kildesystemId", ignoreCase = true) -> kildesystemId?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
     }
 

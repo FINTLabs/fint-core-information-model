@@ -25,11 +25,11 @@ data class Fakturagrunnlag(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        ordrenummer?.let { visitor.visit("ordrenummer", it) }
+        ordrenummer?.identifikatorverdi?.let { visitor.visit("ordrenummer", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("ordrenummer", ignoreCase = true) -> ordrenummer
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("ordrenummer", ignoreCase = true) -> ordrenummer?.identifikatorverdi
         else -> null
     }
 

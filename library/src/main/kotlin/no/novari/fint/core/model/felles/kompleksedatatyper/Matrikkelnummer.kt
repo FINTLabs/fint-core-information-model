@@ -22,7 +22,7 @@ data class Matrikkelnummer(
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Matrikkelnummer::class

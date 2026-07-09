@@ -13,30 +13,32 @@ import kotlin.test.assertTrue
 class ElevTest {
 
     @Test
-    fun `visitor visits only id fields that are set`() {
+    fun `visitor visits only usable id values`() {
         val elev = Elev(
             systemId = Identifikator(identifikatorverdi = "S-1"),
             elevnummer = Identifikator(identifikatorverdi = "42"),
         )
-        val seen = mutableMapOf<String, String?>()
-        elev.visitIdentifikators { name, id -> seen[name] = id.identifikatorverdi }
-        assertEquals(setOf("elevnummer", "systemId"), seen.keys)
-        assertEquals("S-1", seen["systemId"])
-        assertEquals("42", seen["elevnummer"])
+        val seen = mutableMapOf<String, String>()
+        elev.visitIdentifikators { field, value -> seen[field] = value }
+        assertEquals(mapOf("systemId" to "S-1", "elevnummer" to "42"), seen)
     }
 
     @Test
-    fun `visitor visits nothing when no id field is set`() {
+    fun `visitor skips unset fields and identifikators without verdi`() {
         var visits = 0
         Elev().visitIdentifikators { _, _ -> visits++ }
+        assertEquals(0, visits)
+
+        Elev(systemId = Identifikator()).visitIdentifikators { _, _ -> visits++ }
         assertEquals(0, visits)
     }
 
     @Test
-    fun `identifikator lookup is case-insensitive`() {
+    fun `identifikatorverdi lookup is case-insensitive`() {
         val elev = Elev(feidenavn = Identifikator(identifikatorverdi = "x@feide.no"))
-        assertEquals("x@feide.no", elev.identifikator("FEIDENAVN")?.identifikatorverdi)
-        assertNull(elev.identifikator("ukjent"))
+        assertEquals("x@feide.no", elev.identifikatorverdi("FEIDENAVN"))
+        assertNull(elev.identifikatorverdi("ukjent"))
+        assertNull(elev.identifikatorverdi("systemId"))
     }
 
     @Test

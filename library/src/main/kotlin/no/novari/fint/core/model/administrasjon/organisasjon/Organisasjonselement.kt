@@ -36,15 +36,15 @@ data class Organisasjonselement(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        organisasjonsnummer?.let { visitor.visit("organisasjonsnummer", it) }
-        organisasjonsId?.let { visitor.visit("organisasjonsId", it) }
-        organisasjonsKode?.let { visitor.visit("organisasjonsKode", it) }
+        organisasjonsnummer?.identifikatorverdi?.let { visitor.visit("organisasjonsnummer", it) }
+        organisasjonsId?.identifikatorverdi?.let { visitor.visit("organisasjonsId", it) }
+        organisasjonsKode?.identifikatorverdi?.let { visitor.visit("organisasjonsKode", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer
-        field.equals("organisasjonsId", ignoreCase = true) -> organisasjonsId
-        field.equals("organisasjonsKode", ignoreCase = true) -> organisasjonsKode
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer?.identifikatorverdi
+        field.equals("organisasjonsId", ignoreCase = true) -> organisasjonsId?.identifikatorverdi
+        field.equals("organisasjonsKode", ignoreCase = true) -> organisasjonsKode?.identifikatorverdi
         else -> null
     }
 

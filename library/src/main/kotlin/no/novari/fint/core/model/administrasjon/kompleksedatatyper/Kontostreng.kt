@@ -20,7 +20,6 @@ import no.novari.fint.core.model.administrasjon.kodeverk.Objekt
 import no.novari.fint.core.model.administrasjon.kodeverk.Prosjekt
 import no.novari.fint.core.model.administrasjon.kodeverk.Prosjektart
 import no.novari.fint.core.model.administrasjon.kodeverk.Ramme
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 class Kontostreng : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -29,7 +28,7 @@ class Kontostreng : FintResource {
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Kontostreng::class

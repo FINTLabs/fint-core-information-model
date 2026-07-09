@@ -22,11 +22,11 @@ data class Postering(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        posteringsId?.let { visitor.visit("posteringsId", it) }
+        posteringsId?.identifikatorverdi?.let { visitor.visit("posteringsId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("posteringsId", ignoreCase = true) -> posteringsId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("posteringsId", ignoreCase = true) -> posteringsId?.identifikatorverdi
         else -> null
     }
 

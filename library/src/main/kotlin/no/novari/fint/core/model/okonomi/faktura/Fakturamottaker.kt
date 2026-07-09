@@ -8,7 +8,6 @@ import no.novari.fint.core.model.FintResourceMetadata
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.Person
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 class Fakturamottaker : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -17,7 +16,7 @@ class Fakturamottaker : FintResource {
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Fakturamottaker::class

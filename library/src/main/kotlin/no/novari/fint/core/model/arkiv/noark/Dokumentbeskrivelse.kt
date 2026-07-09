@@ -11,7 +11,6 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.DokumentStatus
 import no.novari.fint.core.model.arkiv.kodeverk.DokumentType
 import no.novari.fint.core.model.arkiv.kodeverk.TilknyttetRegistreringSom
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Dokumentbeskrivelse(
     var beskrivelse: String? = null,
@@ -31,7 +30,7 @@ data class Dokumentbeskrivelse(
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Dokumentbeskrivelse::class

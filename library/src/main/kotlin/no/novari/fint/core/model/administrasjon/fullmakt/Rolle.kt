@@ -19,11 +19,11 @@ data class Rolle(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        navn?.let { visitor.visit("navn", it) }
+        navn?.identifikatorverdi?.let { visitor.visit("navn", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("navn", ignoreCase = true) -> navn
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("navn", ignoreCase = true) -> navn?.identifikatorverdi
         else -> null
     }
 

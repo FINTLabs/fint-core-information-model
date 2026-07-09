@@ -10,7 +10,6 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.JournalStatus
 import no.novari.fint.core.model.arkiv.kodeverk.JournalpostType
 import no.novari.fint.core.model.arkiv.kodeverk.Tilgangsgruppe
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Journalpost(
     var antallVedlegg: Long? = null,
@@ -46,7 +45,7 @@ data class Journalpost(
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Journalpost::class

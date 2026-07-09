@@ -9,7 +9,6 @@ import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Skjermingshjemmel
 import no.novari.fint.core.model.arkiv.kodeverk.Tilgangsrestriksjon
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 class Skjerming : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -18,7 +17,7 @@ class Skjerming : FintResource {
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Skjerming::class

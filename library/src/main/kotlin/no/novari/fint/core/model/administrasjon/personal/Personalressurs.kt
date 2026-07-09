@@ -32,15 +32,15 @@ data class Personalressurs(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        ansattnummer?.let { visitor.visit("ansattnummer", it) }
-        brukernavn?.let { visitor.visit("brukernavn", it) }
-        systemId?.let { visitor.visit("systemId", it) }
+        ansattnummer?.identifikatorverdi?.let { visitor.visit("ansattnummer", it) }
+        brukernavn?.identifikatorverdi?.let { visitor.visit("brukernavn", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("ansattnummer", ignoreCase = true) -> ansattnummer
-        field.equals("brukernavn", ignoreCase = true) -> brukernavn
-        field.equals("systemId", ignoreCase = true) -> systemId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("ansattnummer", ignoreCase = true) -> ansattnummer?.identifikatorverdi
+        field.equals("brukernavn", ignoreCase = true) -> brukernavn?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
     }
 

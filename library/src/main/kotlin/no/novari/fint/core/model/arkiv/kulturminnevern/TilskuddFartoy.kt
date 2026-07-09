@@ -49,15 +49,15 @@ data class TilskuddFartoy(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        mappeId?.let { visitor.visit("mappeId", it) }
-        systemId?.let { visitor.visit("systemId", it) }
-        soknadsnummer?.let { visitor.visit("soknadsnummer", it) }
+        mappeId?.identifikatorverdi?.let { visitor.visit("mappeId", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
+        soknadsnummer?.identifikatorverdi?.let { visitor.visit("soknadsnummer", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("mappeId", ignoreCase = true) -> mappeId
-        field.equals("systemId", ignoreCase = true) -> systemId
-        field.equals("soknadsnummer", ignoreCase = true) -> soknadsnummer
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("mappeId", ignoreCase = true) -> mappeId?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
+        field.equals("soknadsnummer", ignoreCase = true) -> soknadsnummer?.identifikatorverdi
         else -> null
     }
 

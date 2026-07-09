@@ -9,7 +9,6 @@ import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Format
 import no.novari.fint.core.model.arkiv.kodeverk.Variantformat
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Dokumentobjekt(
     var filstorrelse: String? = null,
@@ -24,7 +23,7 @@ data class Dokumentobjekt(
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Dokumentobjekt::class

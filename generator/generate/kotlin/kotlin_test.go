@@ -106,7 +106,7 @@ func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
 
 			if len(typ.IdFields) > 0 {
 				for _, f := range typ.IdFields {
-					if !strings.Contains(content, fmt.Sprintf("%s?.let { visitor.visit(%q, it) }", f, f)) {
+					if !strings.Contains(content, fmt.Sprintf("%s?.identifikatorverdi?.let { visitor.visit(%q, it) }", f, f)) {
 						t.Errorf("%s: visitIdentifikators missing field %s", id, f)
 					}
 				}
@@ -181,17 +181,17 @@ data class Elev(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        brukernavn?.let { visitor.visit("brukernavn", it) }
-        elevnummer?.let { visitor.visit("elevnummer", it) }
-        feidenavn?.let { visitor.visit("feidenavn", it) }
-        systemId?.let { visitor.visit("systemId", it) }
+        brukernavn?.identifikatorverdi?.let { visitor.visit("brukernavn", it) }
+        elevnummer?.identifikatorverdi?.let { visitor.visit("elevnummer", it) }
+        feidenavn?.identifikatorverdi?.let { visitor.visit("feidenavn", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("brukernavn", ignoreCase = true) -> brukernavn
-        field.equals("elevnummer", ignoreCase = true) -> elevnummer
-        field.equals("feidenavn", ignoreCase = true) -> feidenavn
-        field.equals("systemId", ignoreCase = true) -> systemId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("brukernavn", ignoreCase = true) -> brukernavn?.identifikatorverdi
+        field.equals("elevnummer", ignoreCase = true) -> elevnummer?.identifikatorverdi
+        field.equals("feidenavn", ignoreCase = true) -> feidenavn?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
     }
 
@@ -304,7 +304,7 @@ func TestFiles_AttributelessResource(t *testing.T) {
 		"override val idFields = emptyList<String>()",
 		"override val attributes = emptyList<FintAttribute>()",
 		"override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}",
-		"override fun identifikator(field: String): Identifikator? = null",
+		"override fun identifikatorverdi(field: String): String? = null",
 	} {
 		if !strings.Contains(content, want) {
 			t.Errorf("Kontostreng.kt missing %q", want)
@@ -318,15 +318,13 @@ func TestFiles_AttributelessResource(t *testing.T) {
 func TestFiles_RuntimeInterface(t *testing.T) {
 	want := `package no.novari.fint.core.model
 
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
-
 interface FintResource : FintObject {
     val links: MutableMap<String, MutableList<Link>>
     override val metadata: FintResourceMetadata
 
     fun visitIdentifikators(visitor: IdentifikatorVisitor)
 
-    fun identifikator(field: String): Identifikator?
+    fun identifikatorverdi(field: String): String?
 
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 
@@ -367,13 +365,8 @@ func assertFile(t *testing.T, path, want string) {
 }
 
 func minimalDoc(types ...metamodel.Type) *metamodel.Document {
-	identifikator := metamodel.Type{
-		Name:       "Identifikator",
-		Stereotype: metamodel.StereotypeDatatype,
-	}
 	return &metamodel.Document{
 		Components: []metamodel.Component{
-			{Name: "felles-kompleksedatatyper", Types: []metamodel.Type{identifikator}},
 			{Name: "test", Types: types},
 		},
 	}

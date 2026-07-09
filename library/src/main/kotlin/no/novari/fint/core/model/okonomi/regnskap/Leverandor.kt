@@ -21,13 +21,13 @@ data class Leverandor(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        leverandornummer?.let { visitor.visit("leverandornummer", it) }
-        systemId?.let { visitor.visit("systemId", it) }
+        leverandornummer?.identifikatorverdi?.let { visitor.visit("leverandornummer", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("leverandornummer", ignoreCase = true) -> leverandornummer
-        field.equals("systemId", ignoreCase = true) -> systemId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("leverandornummer", ignoreCase = true) -> leverandornummer?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
     }
 

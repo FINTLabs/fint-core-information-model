@@ -27,17 +27,17 @@ data class Elev(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        brukernavn?.let { visitor.visit("brukernavn", it) }
-        elevnummer?.let { visitor.visit("elevnummer", it) }
-        feidenavn?.let { visitor.visit("feidenavn", it) }
-        systemId?.let { visitor.visit("systemId", it) }
+        brukernavn?.identifikatorverdi?.let { visitor.visit("brukernavn", it) }
+        elevnummer?.identifikatorverdi?.let { visitor.visit("elevnummer", it) }
+        feidenavn?.identifikatorverdi?.let { visitor.visit("feidenavn", it) }
+        systemId?.identifikatorverdi?.let { visitor.visit("systemId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("brukernavn", ignoreCase = true) -> brukernavn
-        field.equals("elevnummer", ignoreCase = true) -> elevnummer
-        field.equals("feidenavn", ignoreCase = true) -> feidenavn
-        field.equals("systemId", ignoreCase = true) -> systemId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("brukernavn", ignoreCase = true) -> brukernavn?.identifikatorverdi
+        field.equals("elevnummer", ignoreCase = true) -> elevnummer?.identifikatorverdi
+        field.equals("feidenavn", ignoreCase = true) -> feidenavn?.identifikatorverdi
+        field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
     }
 

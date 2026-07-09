@@ -28,11 +28,11 @@ data class Transaksjon(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        transaksjonsId?.let { visitor.visit("transaksjonsId", it) }
+        transaksjonsId?.identifikatorverdi?.let { visitor.visit("transaksjonsId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("transaksjonsId", ignoreCase = true) -> transaksjonsId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("transaksjonsId", ignoreCase = true) -> transaksjonsId?.identifikatorverdi
         else -> null
     }
 

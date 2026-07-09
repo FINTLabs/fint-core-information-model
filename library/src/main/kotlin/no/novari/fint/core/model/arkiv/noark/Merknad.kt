@@ -9,7 +9,6 @@ import no.novari.fint.core.model.FintResourceMetadata
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Merknadstype
-import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Merknad(
     var merknadsdato: LocalDateTime? = null,
@@ -21,7 +20,7 @@ data class Merknad(
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
-    override fun identifikator(field: String): Identifikator? = null
+    override fun identifikatorverdi(field: String): String? = null
 
     companion object Metadata : FintResourceMetadata {
         override val type = Merknad::class

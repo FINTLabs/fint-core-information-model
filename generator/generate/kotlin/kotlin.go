@@ -84,17 +84,12 @@ func Files(doc *metamodel.Document) (map[string]string, error) {
 		}
 	}
 
-	identifikatorImport, err := findIdentifikatorImport(index)
-	if err != nil {
-		return nil, err
-	}
-
-	files := runtimeFiles(identifikatorImport)
+	files := runtimeFiles()
 	for ci := range doc.Components {
 		comp := &doc.Components[ci]
 		for ti := range comp.Types {
 			t := &comp.Types[ti]
-			content, err := render(comp.Name, t, index, identifikatorImport)
+			content, err := render(comp.Name, t, index)
 			if err != nil {
 				return nil, err
 			}
@@ -122,25 +117,11 @@ func isResource(t *metamodel.Type) bool {
 	return t.Stereotype == metamodel.StereotypeMain || len(t.Relations) > 0
 }
 
-func findIdentifikatorImport(index map[string]typeEntry) (string, error) {
-	found := make([]string, 0, 1)
-	for ref, e := range index {
-		if e.t.Name == "Identifikator" {
-			found = append(found, ref)
-		}
-	}
-	if len(found) != 1 {
-		return "", fmt.Errorf("expected exactly one Identifikator type in the model, found %d (%s)", len(found), strings.Join(found, ", "))
-	}
-	e := index[found[0]]
-	return packageFor(e.component) + ".Identifikator", nil
-}
-
-func render(component string, t *metamodel.Type, index map[string]typeEntry, identifikatorImport string) (string, error) {
+func render(component string, t *metamodel.Type, index map[string]typeEntry) (string, error) {
 	if t.Stereotype == metamodel.StereotypeAbstract {
 		return renderInterface(component, t, index)
 	}
-	return renderClass(component, t, index, identifikatorImport)
+	return renderClass(component, t, index)
 }
 
 type property struct {
@@ -222,7 +203,7 @@ func renderInterface(component string, t *metamodel.Type, index map[string]typeE
 	return b.String(), nil
 }
 
-func renderClass(component string, t *metamodel.Type, index map[string]typeEntry, identifikatorImport string) (string, error) {
+func renderClass(component string, t *metamodel.Type, index map[string]typeEntry) (string, error) {
 	pkg := packageFor(component)
 	resource := isResource(t)
 
@@ -246,9 +227,6 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 		imports.add(config.KOTLIN_PACKAGE_BASE + ".Link")
 		imports.add(config.KOTLIN_PACKAGE_BASE + ".IdentifikatorVisitor")
 		imports.add(config.KOTLIN_PACKAGE_BASE + ".FintRelation")
-		if identifikatorImport != pkg+".Identifikator" {
-			imports.add(identifikatorImport)
-		}
 		if len(t.Relations) > 0 {
 			imports.add(config.KOTLIN_PACKAGE_BASE + ".FintMultiplicity")
 		}
@@ -288,18 +266,18 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 		if len(t.IdFields) > 0 {
 			b.WriteString("    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {\n")
 			for _, f := range t.IdFields {
-				b.WriteString("        " + f + "?.let { visitor.visit(" + strconv.Quote(f) + ", it) }\n")
+				b.WriteString("        " + f + "?.identifikatorverdi?.let { visitor.visit(" + strconv.Quote(f) + ", it) }\n")
 			}
 			b.WriteString("    }\n\n")
-			b.WriteString("    override fun identifikator(field: String): Identifikator? = when {\n")
+			b.WriteString("    override fun identifikatorverdi(field: String): String? = when {\n")
 			for _, f := range t.IdFields {
-				b.WriteString("        field.equals(" + strconv.Quote(f) + ", ignoreCase = true) -> " + f + "\n")
+				b.WriteString("        field.equals(" + strconv.Quote(f) + ", ignoreCase = true) -> " + f + "?.identifikatorverdi\n")
 			}
 			b.WriteString("        else -> null\n")
 			b.WriteString("    }\n")
 		} else {
 			b.WriteString("    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}\n\n")
-			b.WriteString("    override fun identifikator(field: String): Identifikator? = null\n")
+			b.WriteString("    override fun identifikatorverdi(field: String): String? = null\n")
 		}
 	}
 
@@ -491,7 +469,7 @@ func renderRegistry(doc *metamodel.Document) string {
 	return b.String()
 }
 
-func runtimeFiles(identifikatorImport string) map[string]string {
+func runtimeFiles() map[string]string {
 	pkg := config.KOTLIN_PACKAGE_BASE
 	dir := baseDir()
 
@@ -572,15 +550,11 @@ enum class FintMultiplicity(val lower: Int, val upper: Int?) {
 `,
 		dir + "/IdentifikatorVisitor.kt": "package " + pkg + `
 
-import ` + identifikatorImport + `
-
 fun interface IdentifikatorVisitor {
-    fun visit(name: String, value: Identifikator)
+    fun visit(field: String, value: String)
 }
 `,
 		dir + "/FintResource.kt": "package " + pkg + `
-
-import ` + identifikatorImport + `
 
 interface FintResource : FintObject {
     val links: MutableMap<String, MutableList<Link>>
@@ -588,7 +562,7 @@ interface FintResource : FintObject {
 
     fun visitIdentifikators(visitor: IdentifikatorVisitor)
 
-    fun identifikator(field: String): Identifikator?
+    fun identifikatorverdi(field: String): String?
 
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 

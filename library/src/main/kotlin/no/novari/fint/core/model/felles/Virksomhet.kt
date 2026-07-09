@@ -27,13 +27,13 @@ data class Virksomhet(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        organisasjonsnummer?.let { visitor.visit("organisasjonsnummer", it) }
-        virksomhetsId?.let { visitor.visit("virksomhetsId", it) }
+        organisasjonsnummer?.identifikatorverdi?.let { visitor.visit("organisasjonsnummer", it) }
+        virksomhetsId?.identifikatorverdi?.let { visitor.visit("virksomhetsId", it) }
     }
 
-    override fun identifikator(field: String): Identifikator? = when {
-        field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer
-        field.equals("virksomhetsId", ignoreCase = true) -> virksomhetsId
+    override fun identifikatorverdi(field: String): String? = when {
+        field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer?.identifikatorverdi
+        field.equals("virksomhetsId", ignoreCase = true) -> virksomhetsId?.identifikatorverdi
         else -> null
     }
 
