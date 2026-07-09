@@ -9,9 +9,10 @@ import (
 )
 
 func Get(owner string, repo string, tag string, filename string, force bool) *xmlquery.Node {
+	return Open(github.GetXMIFile(owner, repo, tag, filename, force))
+}
 
-	fileName := github.GetXMIFile(owner, repo, tag, filename, force)
-
+func Open(fileName string) *xmlquery.Node {
 	f, err := os.Open(fileName)
 	if err != nil {
 		fmt.Println(err)
@@ -21,5 +22,4 @@ func Get(owner string, repo string, tag string, filename string, force bool) *xm
 		fmt.Println(err)
 	}
 	return doc
-
 }

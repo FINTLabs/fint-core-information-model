@@ -4,6 +4,7 @@
 /generator/kotlin/
 .gradle/
 *.xml
+!/generator/testdata/xmi/*.xml
 fint-model
 build
 fint-model.exe

@@ -17,7 +17,11 @@ The generated sources under `library/src/main/kotlin` are committed,
 so model bumps and generator changes land as reviewable Kotlin diffs.
 CI enforces the pairing: the `drift` job regenerates from the pinned
 `metamodel.json` and fails if the committed sources differ from what
-the generator in the same commit produces.
+the generator in the same commit produces. The XMI stage is pinned
+the same way — a committed EA export fixture
+(`generator/testdata/xmi/`) must produce the golden `metamodel.json`
+byte for byte, so the whole chain XMI → JSON → Kotlin → compile is
+regression-guarded without network access.
 
 ## Description
 

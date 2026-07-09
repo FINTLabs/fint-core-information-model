@@ -405,6 +405,19 @@ func TestFiles_FailsOnUnresolvedReference(t *testing.T) {
 	}
 }
 
+func TestFiles_FailsOnUnresolvedRelationTarget(t *testing.T) {
+	doc := minimalDoc(metamodel.Type{
+		Name:       "A",
+		Stereotype: metamodel.StereotypeMain,
+		Relations: []metamodel.Relation{
+			{Name: "b", Target: "missing:B", Multiplicity: "1", MultiplicityKind: "EXACTLY_ONE"},
+		},
+	})
+	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "unresolved target") {
+		t.Fatalf("expected unresolved target error, got %v", err)
+	}
+}
+
 func TestFiles_FailsOnUnknownMultiplicityKind(t *testing.T) {
 	doc := minimalDoc(metamodel.Type{
 		Name:       "A",

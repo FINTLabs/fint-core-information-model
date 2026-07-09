@@ -79,8 +79,10 @@ func resolveImportCandidate(packageContext string, candidates []importCandidate)
 }
 
 func GetClasses(owner string, repo string, tag string, filename string, force bool) []*types.Class {
-	doc := document.Get(owner, repo, tag, filename, force)
+	return ClassesFromDocument(document.Get(owner, repo, tag, filename, force))
+}
 
+func ClassesFromDocument(doc *xmlquery.Node) []*types.Class {
 	var classes []*types.Class
 	packageMap := make(map[string]string)
 	classMap := make(map[string]*types.Class)
