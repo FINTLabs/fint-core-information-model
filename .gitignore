@@ -1,7 +1,8 @@
 *.test
 .idea
 .DS_Store
-/kotlin/
+/generator/kotlin/
+.gradle/
 *.xml
 fint-model
 build

@@ -53,6 +53,11 @@ var Commands = []cli.Command{
 				Name:  "from-json",
 				Usage: "metamodel.json to read (required)",
 			},
+			cli.StringFlag{
+				Name:  "out, o",
+				Value: "kotlin",
+				Usage: "output directory for the generated source tree",
+			},
 		},
 	},
 	{

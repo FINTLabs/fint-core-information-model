@@ -26,14 +26,16 @@ func CmdGenerate(c *cli.Context) {
 		os.Exit(1)
 	}
 
+	outDir := c.String("out")
+
 	files, err := kotlin.Files(doc)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "ERROR: %v\n", err)
 		os.Exit(1)
 	}
 
-	if err := os.RemoveAll(config.KOTLIN_BASE_PATH); err != nil {
-		fmt.Fprintf(os.Stderr, "ERROR: clean %s: %v\n", config.KOTLIN_BASE_PATH, err)
+	if err := os.RemoveAll(outDir); err != nil {
+		fmt.Fprintf(os.Stderr, "ERROR: clean %s: %v\n", outDir, err)
 		os.Exit(1)
 	}
 
@@ -44,7 +46,7 @@ func CmdGenerate(c *cli.Context) {
 	sort.Strings(paths)
 
 	for _, path := range paths {
-		full := filepath.Join(config.KOTLIN_BASE_PATH, filepath.FromSlash(path))
+		full := filepath.Join(outDir, filepath.FromSlash(path))
 		if err := os.MkdirAll(filepath.Dir(full), 0755); err != nil {
 			fmt.Fprintf(os.Stderr, "ERROR: mkdir %s: %v\n", filepath.Dir(full), err)
 			os.Exit(1)
@@ -55,5 +57,5 @@ func CmdGenerate(c *cli.Context) {
 		}
 	}
 
-	fmt.Printf("Wrote %d Kotlin files to %s/ (%s %s)\n", len(files), config.KOTLIN_BASE_PATH, doc.FintVersion, config.KOTLIN_PACKAGE_BASE)
+	fmt.Printf("Wrote %d Kotlin files to %s/ (%s %s)\n", len(files), outDir, doc.FintVersion, config.KOTLIN_PACKAGE_BASE)
 }

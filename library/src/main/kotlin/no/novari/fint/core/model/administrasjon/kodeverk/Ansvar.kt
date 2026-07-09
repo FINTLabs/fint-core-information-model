@@ -1,0 +1,71 @@
+package no.novari.fint.core.model.administrasjon.kodeverk
+
+import no.novari.fint.core.model.Bidirectional
+import no.novari.fint.core.model.FintAttribute
+import no.novari.fint.core.model.FintMultiplicity
+import no.novari.fint.core.model.FintRelation
+import no.novari.fint.core.model.FintResource
+import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.IdentifikatorVisitor
+import no.novari.fint.core.model.Link
+import no.novari.fint.core.model.administrasjon.organisasjon.Organisasjonselement
+import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
+
+data class Ansvar(
+    override var gyldighetsperiode: Periode? = null,
+    override var kode: String? = null,
+    override var navn: String? = null,
+    override var passiv: Boolean? = null,
+    override var systemId: Identifikator? = null,
+) : Kontodimensjon, FintResource {
+    override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
+
+    override val metadata: FintResourceMetadata get() = Metadata
+
+    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
+        visitor.visit("systemId", systemId)
+    }
+
+    override fun identifikator(field: String): Identifikator? = when {
+        field.equals("systemId", ignoreCase = true) -> systemId
+        else -> null
+    }
+
+    companion object Metadata : FintResourceMetadata {
+        override val type = Ansvar::class
+        override val ref = "administrasjon-kodeverk:Ansvar"
+        override val path = "administrasjon/kodeverk/ansvar"
+        override val idFields = listOf("systemId")
+        override val attributes = listOf(
+            FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
+            FintAttribute("kode", String::class, list = false, optional = false),
+            FintAttribute("navn", String::class, list = false, optional = false),
+            FintAttribute("passiv", Boolean::class, list = false, optional = true),
+            FintAttribute("systemId", Identifikator::class, list = false, optional = false),
+        )
+        override val relations = listOf(
+            FintRelation(
+                name = "overordnet",
+                target = Ansvar::class,
+                targetPath = "administrasjon/kodeverk/ansvar",
+                multiplicity = FintMultiplicity.ZERO_OR_ONE,
+                bidirectional = Bidirectional(inverseName = "underordnet", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
+            ),
+            FintRelation(
+                name = "underordnet",
+                target = Ansvar::class,
+                targetPath = "administrasjon/kodeverk/ansvar",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "overordnet", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
+            ),
+            FintRelation(
+                name = "organisasjonselement",
+                target = Organisasjonselement::class,
+                targetPath = "administrasjon/organisasjon/organisasjonselement",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "ansvar", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
+            ),
+        )
+    }
+}

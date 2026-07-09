@@ -5,6 +5,20 @@ forked from [FINTLabs/fint-model](https://github.com/FINTLabs/fint-model).
 Here the core team owns the model library end-to-end; the original
 Java/C# generator lives on in the upstream repo.
 
+## Repository layout
+
+```
+generator/   Go tool: EA XMI ─► metamodel.json ─► Kotlin sources
+library/     the Kotlin library: generated sources (committed) plus
+             hand-written tests, built with Gradle
+```
+
+The generated sources under `library/src/main/kotlin` are committed,
+so model bumps and generator changes land as reviewable Kotlin diffs.
+CI enforces the pairing: the `drift` job regenerates from the pinned
+`metamodel.json` and fails if the committed sources differ from what
+the generator in the same commit produces.
+
 ## Description
 
 Tool for generating the FINT Kotlin model library from the EA
@@ -32,17 +46,30 @@ Pulls the EA XMI from GitHub (`fint-informasjonsmodell`), parses it, and
 writes a canonical JSON document with components, types, attributes,
 relations, and inheritance.
 
-### Generate the Kotlin library
+### Regenerate the library sources
 
 `generate` reads `metamodel.json` only — no XMI access:
 
 ```bash
-fint-model generate --from-json metamodel.json
+cd generator
+go run . generate --from-json testdata/golden/v4.0.20/metamodel.json \
+  --out ../library/src/main/kotlin
 ```
 
-Writes the source tree under `kotlin/` (one `.kt` file per model type,
-a generated `FintModel` registry, and the runtime files), rooted at
-package `no.novari.fint.core.model`.
+Writes one `.kt` file per model type, a generated `FintModel`
+registry, and the runtime files, rooted at package
+`no.novari.fint.core.model`. `--out` defaults to `kotlin/` for
+scratch runs.
+
+### Build the library
+
+```bash
+gradle -p library build
+```
+
+Compiles the generated sources (Kotlin 2.2, JVM 21 target, zero
+runtime dependencies) and runs the hand-written tests in
+`library/src/test/kotlin`.
 
 ### CLI
 
@@ -198,7 +225,7 @@ docker run -v ${pwd}:/src ghcr.io/fintlabs/fint-core-information-model:latest <A
 
 ```bash
 gh repo clone fintlabs/fint-core-information-model
-cd fint-core-information-model
+cd fint-core-information-model/generator
 go build -o fint-model .
 ```
 

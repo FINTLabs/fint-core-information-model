@@ -1,0 +1,117 @@
+package no.novari.fint.core.model.administrasjon.organisasjon
+
+import no.novari.fint.core.model.Bidirectional
+import no.novari.fint.core.model.FintAttribute
+import no.novari.fint.core.model.FintMultiplicity
+import no.novari.fint.core.model.FintRelation
+import no.novari.fint.core.model.FintResource
+import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.IdentifikatorVisitor
+import no.novari.fint.core.model.Link
+import no.novari.fint.core.model.administrasjon.kodeverk.Ansvar
+import no.novari.fint.core.model.administrasjon.kodeverk.Organisasjonstype
+import no.novari.fint.core.model.administrasjon.personal.Arbeidsforhold
+import no.novari.fint.core.model.administrasjon.personal.Personalressurs
+import no.novari.fint.core.model.felles.basisklasser.Enhet
+import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
+import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
+import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
+import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
+
+data class Organisasjonselement(
+    var gyldighetsperiode: Periode? = null,
+    var kortnavn: String? = null,
+    var navn: String? = null,
+    var organisasjonsId: Identifikator? = null,
+    var organisasjonsKode: Identifikator? = null,
+    override var forretningsadresse: Adresse? = null,
+    override var organisasjonsnavn: String? = null,
+    override var organisasjonsnummer: Identifikator? = null,
+    override var kontaktinformasjon: Kontaktinformasjon? = null,
+    override var postadresse: Adresse? = null,
+) : Enhet, FintResource {
+    override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
+
+    override val metadata: FintResourceMetadata get() = Metadata
+
+    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
+        visitor.visit("organisasjonsnummer", organisasjonsnummer)
+        visitor.visit("organisasjonsId", organisasjonsId)
+        visitor.visit("organisasjonsKode", organisasjonsKode)
+    }
+
+    override fun identifikator(field: String): Identifikator? = when {
+        field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer
+        field.equals("organisasjonsId", ignoreCase = true) -> organisasjonsId
+        field.equals("organisasjonsKode", ignoreCase = true) -> organisasjonsKode
+        else -> null
+    }
+
+    companion object Metadata : FintResourceMetadata {
+        override val type = Organisasjonselement::class
+        override val ref = "administrasjon-organisasjon:Organisasjonselement"
+        override val path = "administrasjon/organisasjon/organisasjonselement"
+        override val idFields = listOf("organisasjonsnummer", "organisasjonsId", "organisasjonsKode")
+        override val attributes = listOf(
+            FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
+            FintAttribute("kortnavn", String::class, list = false, optional = true),
+            FintAttribute("navn", String::class, list = false, optional = true),
+            FintAttribute("organisasjonsId", Identifikator::class, list = false, optional = false),
+            FintAttribute("organisasjonsKode", Identifikator::class, list = false, optional = false),
+            FintAttribute("forretningsadresse", Adresse::class, list = false, optional = true),
+            FintAttribute("organisasjonsnavn", String::class, list = false, optional = true),
+            FintAttribute("organisasjonsnummer", Identifikator::class, list = false, optional = true),
+            FintAttribute("kontaktinformasjon", Kontaktinformasjon::class, list = false, optional = true),
+            FintAttribute("postadresse", Adresse::class, list = false, optional = true),
+        )
+        override val relations = listOf(
+            FintRelation(
+                name = "ansvar",
+                target = Ansvar::class,
+                targetPath = "administrasjon/kodeverk/ansvar",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "organisasjonselement", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
+            ),
+            FintRelation(
+                name = "organisasjonstype",
+                target = Organisasjonstype::class,
+                targetPath = "administrasjon/kodeverk/organisasjonstype",
+                multiplicity = FintMultiplicity.ZERO_OR_ONE,
+            ),
+            FintRelation(
+                name = "leder",
+                target = Personalressurs::class,
+                targetPath = "administrasjon/personal/personalressurs",
+                multiplicity = FintMultiplicity.ZERO_OR_ONE,
+                bidirectional = Bidirectional(inverseName = "leder", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
+            ),
+            FintRelation(
+                name = "overordnet",
+                target = Organisasjonselement::class,
+                targetPath = "administrasjon/organisasjon/organisasjonselement",
+                multiplicity = FintMultiplicity.EXACTLY_ONE,
+            ),
+            FintRelation(
+                name = "underordnet",
+                target = Organisasjonselement::class,
+                targetPath = "administrasjon/organisasjon/organisasjonselement",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+            ),
+            FintRelation(
+                name = "skole",
+                target = Skole::class,
+                targetPath = "utdanning/utdanningsprogram/skole",
+                multiplicity = FintMultiplicity.ZERO_OR_ONE,
+                bidirectional = Bidirectional(inverseName = "organisasjon", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
+            ),
+            FintRelation(
+                name = "arbeidsforhold",
+                target = Arbeidsforhold::class,
+                targetPath = "administrasjon/personal/arbeidsforhold",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "arbeidssted", isSource = false, inverseMultiplicity = FintMultiplicity.EXACTLY_ONE),
+            ),
+        )
+    }
+}
