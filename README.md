@@ -90,10 +90,21 @@ thing and `generator/common/metamodel/schema.go` for the schema.
 
 Versions are plain semver starting at `0.x` while the API settles;
 each release states which model version it was generated from.
-Publishing goes to GitHub Packages as
-`no.novari.fint:fint-core-information-model`. The release workflow
-re-verifies the drift gate and the full test suite before publishing —
-a release is always exactly what's committed.
+Publishing goes to [repo.fintlabs.no](https://repo.fintlabs.no) as
+`no.novari:fint-core-information-model`:
+
+```kotlin
+repositories {
+    maven("https://repo.fintlabs.no/releases")
+}
+dependencies {
+    implementation("no.novari:fint-core-information-model:<version>")
+}
+```
+
+The release workflow re-verifies the drift gate and the full test
+suite before publishing — a release is always exactly what's
+committed.
 
 ## Author
 

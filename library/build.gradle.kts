@@ -5,7 +5,7 @@ plugins {
     `maven-publish`
 }
 
-group = "no.novari.fint"
+group = "no.novari"
 version = findProperty("releaseVersion")?.toString() ?: "0.0.0-SNAPSHOT"
 
 repositories {
@@ -40,11 +40,14 @@ publishing {
     }
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/FINTLabs/fint-core-information-model")
+            name = "Reposilite"
+            url = uri("https://repo.fintlabs.no/releases")
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("REPOSILITE_USERNAME")
+                password = System.getenv("REPOSILITE_PASSWORD")
+            }
+            authentication {
+                create<BasicAuthentication>("basic")
             }
         }
     }

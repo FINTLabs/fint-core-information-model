@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 jobs:
   publish:
@@ -39,9 +38,9 @@ jobs:
         with:
           gradle-version: '9.1.0'
 
-      - name: Build, test, and publish to GitHub Packages
+      - name: Build, test, and publish to Reposilite
         working-directory: library
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSILITE_USERNAME: ${{ secrets.REPOSILITE_USERNAME }}
+          REPOSILITE_PASSWORD: ${{ secrets.REPOSILITE_PASSWORD }}
         run: gradle build publish -PreleaseVersion="${GITHUB_REF_NAME#v}"
