@@ -1,13 +1,14 @@
 package metamodel
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
 	"github.com/FINTLabs/fint-core-information-model/generator/common/types"
 )
 
-func Build(classes []*types.Class, fintVersion, sourceCommit string) *Document {
+func Build(classes []*types.Class, fintVersion, sourceCommit string) (*Document, error) {
 	prefix := detectPackagePrefix(classes)
 
 	byQualified := make(map[string]*types.Class, len(classes))
@@ -27,9 +28,13 @@ func Build(classes []*types.Class, fintVersion, sourceCommit string) *Document {
 
 	components := make([]Component, 0, len(componentOrder))
 	for _, name := range componentOrder {
+		converted, err := convertTypes(name, byComponent[name], byQualified, prefix)
+		if err != nil {
+			return nil, err
+		}
 		components = append(components, Component{
 			Name:  name,
-			Types: convertTypes(name, byComponent[name], byQualified, prefix),
+			Types: converted,
 		})
 	}
 
@@ -39,7 +44,7 @@ func Build(classes []*types.Class, fintVersion, sourceCommit string) *Document {
 		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
 		SourceCommit:  sourceCommit,
 		Components:    components,
-	}
+	}, nil
 }
 
 func detectPackagePrefix(classes []*types.Class) string {
@@ -84,21 +89,29 @@ func componentRefForQualified(qualified, prefix string) string {
 	return strings.ReplaceAll(pkgRel, ".", "-") + ":" + name
 }
 
-func convertTypes(componentName string, classes []*types.Class, byQualified map[string]*types.Class, prefix string) []Type {
+func convertTypes(componentName string, classes []*types.Class, byQualified map[string]*types.Class, prefix string) ([]Type, error) {
 	out := make([]Type, 0, len(classes))
 	for _, c := range classes {
-		out = append(out, convertType(componentName, c, byQualified, prefix))
+		converted, err := convertType(componentName, c, byQualified, prefix)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, converted)
 	}
-	return out
+	return out, nil
 }
 
-func convertType(componentName string, c *types.Class, byQualified map[string]*types.Class, prefix string) Type {
+func convertType(componentName string, c *types.Class, byQualified map[string]*types.Class, prefix string) (Type, error) {
+	parent, err := resolveParent(c, byQualified, prefix)
+	if err != nil {
+		return Type{}, err
+	}
 	t := Type{
 		Name:          c.Name,
 		Stereotype:    c.Stereotype,
 		Abstract:      c.Abstract,
 		Deprecated:    c.Deprecated,
-		Parent:        resolveParent(c, byQualified, prefix),
+		Parent:        parent,
 		Documentation: c.Documentation,
 	}
 	if c.Stereotype == StereotypeMain {
@@ -110,7 +123,7 @@ func convertType(componentName string, c *types.Class, byQualified map[string]*t
 	}
 	t.Attributes = flatAttributes(c, byQualified, prefix)
 	t.Relations = flatRelations(c, byQualified, prefix)
-	return t
+	return t, nil
 }
 
 func typeRefFor(c *types.Class, prefix string) string {
@@ -246,16 +259,16 @@ func collectIdFields(c *types.Class, byQualified map[string]*types.Class) []stri
 	return out
 }
 
-func resolveParent(c *types.Class, byQualified map[string]*types.Class, prefix string) *string {
+func resolveParent(c *types.Class, byQualified map[string]*types.Class, prefix string) (*string, error) {
 	if c.Extends == "" {
-		return nil
+		return nil, nil
 	}
 	qualified, ok := resolveShortName(c.Extends, c, byQualified)
 	if !ok {
-		return nil
+		return nil, fmt.Errorf("%s.%s: unresolved parent %q", c.Package, c.Name, c.Extends)
 	}
 	ref := componentRefForQualified(qualified, prefix)
-	return &ref
+	return &ref, nil
 }
 
 func resolveShortName(name string, c *types.Class, byQualified map[string]*types.Class) (string, bool) {

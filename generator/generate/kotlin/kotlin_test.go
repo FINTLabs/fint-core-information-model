@@ -405,6 +405,16 @@ func TestFiles_FailsOnUnresolvedReference(t *testing.T) {
 	}
 }
 
+func TestFiles_FailsOnDuplicateTypeRef(t *testing.T) {
+	doc := minimalDoc(
+		metamodel.Type{Name: "A", Stereotype: metamodel.StereotypeDatatype},
+		metamodel.Type{Name: "A", Stereotype: metamodel.StereotypeDatatype},
+	)
+	if _, err := Files(doc); err == nil || !strings.Contains(err.Error(), "duplicate type") {
+		t.Fatalf("expected duplicate type error, got %v", err)
+	}
+}
+
 func TestFiles_FailsOnUnresolvedRelationTarget(t *testing.T) {
 	doc := minimalDoc(metamodel.Type{
 		Name:       "A",

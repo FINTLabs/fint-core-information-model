@@ -19,7 +19,10 @@ func CmdMetamodel(c *cli.Context) error {
 
 	classes := parser.GetClasses(owner, repo, tag, filename, force)
 
-	doc := Build(classes, tag, "")
+	doc, err := Build(classes, tag, "")
+	if err != nil {
+		return fmt.Errorf("build metamodel: %w", err)
+	}
 
 	data, err := json.MarshalIndent(doc, "", "  ")
 	if err != nil {

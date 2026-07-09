@@ -80,7 +80,11 @@ func Files(doc *metamodel.Document) (map[string]string, error) {
 		comp := &doc.Components[ci]
 		for ti := range comp.Types {
 			t := &comp.Types[ti]
-			index[comp.Name+":"+t.Name] = typeEntry{component: comp.Name, t: t}
+			ref := comp.Name + ":" + t.Name
+			if _, dup := index[ref]; dup {
+				return nil, fmt.Errorf("duplicate type %q in the model", ref)
+			}
+			index[ref] = typeEntry{component: comp.Name, t: t}
 		}
 	}
 

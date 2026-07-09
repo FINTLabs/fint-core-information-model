@@ -30,7 +30,10 @@ func TestPipeline_XMIFixtureProducesGoldenDocument(t *testing.T) {
 		t.Fatalf("load golden: %v", err)
 	}
 
-	built := Build(classes, goldenDoc.FintVersion, goldenDoc.SourceCommit)
+	built, err := Build(classes, goldenDoc.FintVersion, goldenDoc.SourceCommit)
+	if err != nil {
+		t.Fatalf("build: %v", err)
+	}
 	built.GeneratedAt = goldenDoc.GeneratedAt
 
 	data, err := json.MarshalIndent(built, "", "  ")
