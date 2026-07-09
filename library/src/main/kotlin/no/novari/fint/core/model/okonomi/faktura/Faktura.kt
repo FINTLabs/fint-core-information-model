@@ -29,7 +29,7 @@ data class Faktura(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("fakturanummer", fakturanummer)
+        fakturanummer?.let { visitor.visit("fakturanummer", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

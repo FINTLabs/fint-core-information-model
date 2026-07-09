@@ -50,8 +50,8 @@ data class Personalmappe(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("mappeId", mappeId)
-        visitor.visit("systemId", systemId)
+        mappeId?.let { visitor.visit("mappeId", it) }
+        systemId?.let { visitor.visit("systemId", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

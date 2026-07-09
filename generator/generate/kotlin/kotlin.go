@@ -288,7 +288,7 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 		if len(t.IdFields) > 0 {
 			b.WriteString("    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {\n")
 			for _, f := range t.IdFields {
-				b.WriteString("        visitor.visit(" + strconv.Quote(f) + ", " + f + ")\n")
+				b.WriteString("        " + f + "?.let { visitor.visit(" + strconv.Quote(f) + ", it) }\n")
 			}
 			b.WriteString("    }\n\n")
 			b.WriteString("    override fun identifikator(field: String): Identifikator? = when {\n")
@@ -575,7 +575,7 @@ enum class FintMultiplicity(val lower: Int, val upper: Int?) {
 import ` + identifikatorImport + `
 
 fun interface IdentifikatorVisitor {
-    fun visit(name: String, value: Identifikator?)
+    fun visit(name: String, value: Identifikator)
 }
 `,
 		dir + "/FintResource.kt": "package " + pkg + `

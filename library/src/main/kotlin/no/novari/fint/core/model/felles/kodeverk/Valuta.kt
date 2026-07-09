@@ -18,8 +18,8 @@ data class Valuta(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("bokstavkode", bokstavkode)
-        visitor.visit("nummerkode", nummerkode)
+        bokstavkode?.let { visitor.visit("bokstavkode", it) }
+        nummerkode?.let { visitor.visit("nummerkode", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

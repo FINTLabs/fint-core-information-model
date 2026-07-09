@@ -30,8 +30,8 @@ data class DigitalEnhet(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("dataobjektId", dataobjektId)
-        visitor.visit("systemId", systemId)
+        dataobjektId?.let { visitor.visit("dataobjektId", it) }
+        systemId?.let { visitor.visit("systemId", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

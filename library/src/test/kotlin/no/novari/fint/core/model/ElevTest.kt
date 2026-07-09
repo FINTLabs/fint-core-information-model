@@ -13,13 +13,23 @@ import kotlin.test.assertTrue
 class ElevTest {
 
     @Test
-    fun `visitor visits all declared id fields including unset ones`() {
-        val elev = Elev(systemId = Identifikator(identifikatorverdi = "S-1"))
+    fun `visitor visits only id fields that are set`() {
+        val elev = Elev(
+            systemId = Identifikator(identifikatorverdi = "S-1"),
+            elevnummer = Identifikator(identifikatorverdi = "42"),
+        )
         val seen = mutableMapOf<String, String?>()
-        elev.visitIdentifikators { name, id -> seen[name] = id?.identifikatorverdi }
-        assertEquals(setOf("brukernavn", "elevnummer", "feidenavn", "systemId"), seen.keys)
+        elev.visitIdentifikators { name, id -> seen[name] = id.identifikatorverdi }
+        assertEquals(setOf("elevnummer", "systemId"), seen.keys)
         assertEquals("S-1", seen["systemId"])
-        assertNull(seen["feidenavn"])
+        assertEquals("42", seen["elevnummer"])
+    }
+
+    @Test
+    fun `visitor visits nothing when no id field is set`() {
+        var visits = 0
+        Elev().visitIdentifikators { _, _ -> visits++ }
+        assertEquals(0, visits)
     }
 
     @Test

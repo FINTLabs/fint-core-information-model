@@ -37,7 +37,7 @@ data class Person(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("fodselsnummer", fodselsnummer)
+        fodselsnummer?.let { visitor.visit("fodselsnummer", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

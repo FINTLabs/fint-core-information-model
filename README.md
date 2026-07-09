@@ -270,9 +270,10 @@ metadata reachable without reflection:
   via the generated **`FintModel`** registry (`byPath` / `byRef` /
   `byType`).
 - Resources implement **`visitIdentifikators(IdentifikatorVisitor)`**
-  (allocation-free iteration over declared id fields, unset ones
-  included) and **`identifikator(field)`** (case-insensitive
-  `when`-chain lookup).
+  (allocation-free iteration over the id fields that are *set* — the
+  callback value is non-null; declared names live on
+  `metadata.idFields`) and **`identifikator(field)`**
+  (case-insensitive `when`-chain lookup).
 - **`Link` stores the parsed form** — `idField` + `idValue` — not the
   href. `Link.parse(href)` decomposes incoming hrefs (last two
   segments; anything that doesn't decompose is kept verbatim in

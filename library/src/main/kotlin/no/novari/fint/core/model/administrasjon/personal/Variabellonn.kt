@@ -31,8 +31,8 @@ data class Variabellonn(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("kildesystemId", kildesystemId)
-        visitor.visit("systemId", systemId)
+        kildesystemId?.let { visitor.visit("kildesystemId", it) }
+        systemId?.let { visitor.visit("systemId", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

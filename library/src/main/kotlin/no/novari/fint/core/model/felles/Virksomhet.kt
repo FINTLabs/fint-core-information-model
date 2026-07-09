@@ -27,8 +27,8 @@ data class Virksomhet(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("organisasjonsnummer", organisasjonsnummer)
-        visitor.visit("virksomhetsId", virksomhetsId)
+        organisasjonsnummer?.let { visitor.visit("organisasjonsnummer", it) }
+        virksomhetsId?.let { visitor.visit("virksomhetsId", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {

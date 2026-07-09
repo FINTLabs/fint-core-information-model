@@ -106,7 +106,7 @@ func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
 
 			if len(typ.IdFields) > 0 {
 				for _, f := range typ.IdFields {
-					if !strings.Contains(content, fmt.Sprintf("visitor.visit(%q, %s)", f, f)) {
+					if !strings.Contains(content, fmt.Sprintf("%s?.let { visitor.visit(%q, it) }", f, f)) {
 						t.Errorf("%s: visitIdentifikators missing field %s", id, f)
 					}
 				}
@@ -181,10 +181,10 @@ data class Elev(
     override val metadata: FintResourceMetadata get() = Metadata
 
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {
-        visitor.visit("brukernavn", brukernavn)
-        visitor.visit("elevnummer", elevnummer)
-        visitor.visit("feidenavn", feidenavn)
-        visitor.visit("systemId", systemId)
+        brukernavn?.let { visitor.visit("brukernavn", it) }
+        elevnummer?.let { visitor.visit("elevnummer", it) }
+        feidenavn?.let { visitor.visit("feidenavn", it) }
+        systemId?.let { visitor.visit("systemId", it) }
     }
 
     override fun identifikator(field: String): Identifikator? = when {
