@@ -12,13 +12,13 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Fakturagrunnlag(
-    var avgiftsbelop: Long? = null,
-    var fakturalinjer: List<Fakturalinje>? = null,
-    var leveringsdato: LocalDate? = null,
-    var mottaker: Fakturamottaker? = null,
-    var nettobelop: Long? = null,
-    var ordrenummer: Identifikator? = null,
-    var totalbelop: Long? = null,
+    val avgiftsbelop: Long? = null,
+    val fakturalinjer: List<Fakturalinje>? = null,
+    val leveringsdato: LocalDate? = null,
+    val mottaker: Fakturamottaker? = null,
+    val nettobelop: Long? = null,
+    val ordrenummer: Identifikator? = null,
+    val totalbelop: Long? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

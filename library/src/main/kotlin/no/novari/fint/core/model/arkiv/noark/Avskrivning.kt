@@ -6,9 +6,9 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Avskrivning(
-    var avskrevetAv: String? = null,
-    var avskrivningsdato: LocalDateTime? = null,
-    var avskrivningsmate: String? = null,
+    val avskrevetAv: String? = null,
+    val avskrivningsdato: LocalDateTime? = null,
+    val avskrivningsmate: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

@@ -18,10 +18,10 @@ import no.novari.fint.core.model.utdanning.kodeverk.Karakterstatus
 import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
 
 data class Eksamensgruppemedlemskap(
-    var delegert: Boolean? = null,
-    var kandidatnummer: String? = null,
-    override var gyldighetsperiode: Periode? = null,
-    override var systemId: Identifikator? = null,
+    val delegert: Boolean? = null,
+    val kandidatnummer: String? = null,
+    override val gyldighetsperiode: Periode? = null,
+    override val systemId: Identifikator? = null,
 ) : Gruppemedlemskap, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

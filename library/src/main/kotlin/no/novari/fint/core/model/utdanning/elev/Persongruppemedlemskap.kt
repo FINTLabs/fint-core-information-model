@@ -13,8 +13,8 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.basisklasser.Gruppemedlemskap
 
 data class Persongruppemedlemskap(
-    override var gyldighetsperiode: Periode? = null,
-    override var systemId: Identifikator? = null,
+    override val gyldighetsperiode: Periode? = null,
+    override val systemId: Identifikator? = null,
 ) : Gruppemedlemskap, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

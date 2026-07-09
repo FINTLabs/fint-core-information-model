@@ -10,11 +10,11 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kodeverk.Kommune
 
 data class Matrikkelnummer(
-    var adresse: Adresse? = null,
-    var bruksnummer: String? = null,
-    var festenummer: String? = null,
-    var gardsnummer: String? = null,
-    var seksjonsnummer: String? = null,
+    val adresse: Adresse? = null,
+    val bruksnummer: String? = null,
+    val festenummer: String? = null,
+    val gardsnummer: String? = null,
+    val seksjonsnummer: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

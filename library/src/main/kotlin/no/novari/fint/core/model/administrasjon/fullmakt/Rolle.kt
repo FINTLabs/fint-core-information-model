@@ -11,8 +11,8 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Rolle(
-    var beskrivelse: String? = null,
-    var navn: Identifikator? = null,
+    val beskrivelse: String? = null,
+    val navn: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

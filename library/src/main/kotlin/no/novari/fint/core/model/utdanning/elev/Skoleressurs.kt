@@ -15,8 +15,8 @@ import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
 import no.novari.fint.core.model.utdanning.vurdering.Sensor
 
 data class Skoleressurs(
-    var feidenavn: Identifikator? = null,
-    var systemId: Identifikator? = null,
+    val feidenavn: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

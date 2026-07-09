@@ -19,13 +19,13 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 
 data class Personalressurs(
-    var ansattnummer: Identifikator? = null,
-    var ansettelsesperiode: Periode? = null,
-    var ansiennitet: LocalDate? = null,
-    var brukernavn: Identifikator? = null,
-    var jobbtittel: String? = null,
-    var kontaktinformasjon: Kontaktinformasjon? = null,
-    var systemId: Identifikator? = null,
+    val ansattnummer: Identifikator? = null,
+    val ansettelsesperiode: Periode? = null,
+    val ansiennitet: LocalDate? = null,
+    val brukernavn: Identifikator? = null,
+    val jobbtittel: String? = null,
+    val kontaktinformasjon: Kontaktinformasjon? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -5,6 +5,6 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 interface Gruppemedlemskap : FintObject {
-    var gyldighetsperiode: Periode?
-    var systemId: Identifikator?
+    val gyldighetsperiode: Periode?
+    val systemId: Identifikator?
 }

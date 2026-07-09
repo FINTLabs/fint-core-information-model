@@ -5,11 +5,11 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Kontaktinformasjon(
-    var epostadresse: String? = null,
-    var mobiltelefonnummer: String? = null,
-    var nettsted: String? = null,
-    var sip: String? = null,
-    var telefonnummer: String? = null,
+    val epostadresse: String? = null,
+    val mobiltelefonnummer: String? = null,
+    val nettsted: String? = null,
+    val sip: String? = null,
+    val telefonnummer: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

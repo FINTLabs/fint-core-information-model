@@ -14,7 +14,7 @@ import no.novari.fint.core.model.utdanning.kodeverk.Tilrettelegging
 import no.novari.fint.core.model.utdanning.timeplan.Fag
 
 data class Elevtilrettelegging(
-    var systemId: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

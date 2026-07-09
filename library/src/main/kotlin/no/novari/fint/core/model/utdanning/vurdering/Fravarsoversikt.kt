@@ -13,9 +13,9 @@ import no.novari.fint.core.model.utdanning.elev.Elevforhold
 import no.novari.fint.core.model.utdanning.timeplan.Fag
 
 data class Fravarsoversikt(
-    var halvar: Fravarsprosent? = null,
-    var skolear: Fravarsprosent? = null,
-    var systemId: Identifikator? = null,
+    val halvar: Fravarsprosent? = null,
+    val skolear: Fravarsprosent? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

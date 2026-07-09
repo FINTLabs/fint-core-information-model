@@ -9,10 +9,10 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Dokumentfil(
-    var data: String? = null,
-    var filnavn: String? = null,
-    var format: String? = null,
-    var systemId: Identifikator? = null,
+    val data: String? = null,
+    val filnavn: String? = null,
+    val format: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

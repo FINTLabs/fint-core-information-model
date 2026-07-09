@@ -14,10 +14,10 @@ import no.novari.fint.core.model.personvern.kodeverk.Behandlingsgrunnlag
 import no.novari.fint.core.model.personvern.kodeverk.Personopplysning
 
 data class Behandling(
-    var aktiv: Boolean? = null,
-    var formal: String? = null,
-    var slettet: LocalDateTime? = null,
-    var systemId: Identifikator? = null,
+    val aktiv: Boolean? = null,
+    val formal: String? = null,
+    val slettet: LocalDateTime? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

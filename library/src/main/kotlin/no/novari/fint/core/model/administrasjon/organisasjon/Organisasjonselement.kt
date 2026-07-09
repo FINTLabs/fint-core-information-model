@@ -20,16 +20,16 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
 
 data class Organisasjonselement(
-    var gyldighetsperiode: Periode? = null,
-    var kortnavn: String? = null,
-    var navn: String? = null,
-    var organisasjonsId: Identifikator? = null,
-    var organisasjonsKode: Identifikator? = null,
-    override var forretningsadresse: Adresse? = null,
-    override var organisasjonsnavn: String? = null,
-    override var organisasjonsnummer: Identifikator? = null,
-    override var kontaktinformasjon: Kontaktinformasjon? = null,
-    override var postadresse: Adresse? = null,
+    val gyldighetsperiode: Periode? = null,
+    val kortnavn: String? = null,
+    val navn: String? = null,
+    val organisasjonsId: Identifikator? = null,
+    val organisasjonsKode: Identifikator? = null,
+    override val forretningsadresse: Adresse? = null,
+    override val organisasjonsnavn: String? = null,
+    override val organisasjonsnummer: Identifikator? = null,
+    override val kontaktinformasjon: Kontaktinformasjon? = null,
+    override val postadresse: Adresse? = null,
 ) : Enhet, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

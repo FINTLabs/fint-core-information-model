@@ -14,9 +14,9 @@ import no.novari.fint.core.model.utdanning.kodeverk.Grepreferanse
 import no.novari.fint.core.model.utdanning.kodeverk.Vigoreferanse
 
 data class Utdanningsprogram(
-    override var beskrivelse: String? = null,
-    override var navn: String? = null,
-    override var systemId: Identifikator? = null,
+    override val beskrivelse: String? = null,
+    override val navn: String? = null,
+    override val systemId: Identifikator? = null,
 ) : Gruppe, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

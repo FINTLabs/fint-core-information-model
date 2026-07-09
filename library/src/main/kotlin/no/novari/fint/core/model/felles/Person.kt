@@ -24,13 +24,13 @@ import no.novari.fint.core.model.utdanning.larling.Larling
 import no.novari.fint.core.model.utdanning.ot.OtUngdom
 
 data class Person(
-    var bilde: String? = null,
-    var bostedsadresse: Adresse? = null,
-    var fodselsdato: LocalDate? = null,
-    var fodselsnummer: Identifikator? = null,
-    var navn: Personnavn? = null,
-    override var kontaktinformasjon: Kontaktinformasjon? = null,
-    override var postadresse: Adresse? = null,
+    val bilde: String? = null,
+    val bostedsadresse: Adresse? = null,
+    val fodselsdato: LocalDate? = null,
+    val fodselsnummer: Identifikator? = null,
+    val navn: Personnavn? = null,
+    override val kontaktinformasjon: Kontaktinformasjon? = null,
+    override val postadresse: Adresse? = null,
 ) : Aktor, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -5,6 +5,6 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
 import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 
 interface Aktor : FintObject {
-    var kontaktinformasjon: Kontaktinformasjon?
-    var postadresse: Adresse?
+    val kontaktinformasjon: Kontaktinformasjon?
+    val postadresse: Adresse?
 }

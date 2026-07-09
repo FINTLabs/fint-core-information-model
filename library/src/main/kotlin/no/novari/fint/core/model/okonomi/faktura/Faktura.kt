@@ -13,16 +13,16 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Faktura(
-    var adresse: Adresse? = null,
-    var belop: Long? = null,
-    var betalt: Boolean? = null,
-    var dato: LocalDate? = null,
-    var fakturanummer: Identifikator? = null,
-    var fakturert: Boolean? = null,
-    var forfallsdato: LocalDate? = null,
-    var kreditert: Boolean? = null,
-    var mottaker: String? = null,
-    var restbelop: Long? = null,
+    val adresse: Adresse? = null,
+    val belop: Long? = null,
+    val betalt: Boolean? = null,
+    val dato: LocalDate? = null,
+    val fakturanummer: Identifikator? = null,
+    val fakturert: Boolean? = null,
+    val forfallsdato: LocalDate? = null,
+    val kreditert: Boolean? = null,
+    val mottaker: String? = null,
+    val restbelop: Long? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

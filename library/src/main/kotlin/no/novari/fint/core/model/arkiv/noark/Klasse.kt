@@ -9,10 +9,10 @@ import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 
 data class Klasse(
-    var klasseId: String? = null,
-    var rekkefolge: Int? = null,
-    var skjerming: Skjerming? = null,
-    var tittel: String? = null,
+    val klasseId: String? = null,
+    val rekkefolge: Int? = null,
+    val skjerming: Skjerming? = null,
+    val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

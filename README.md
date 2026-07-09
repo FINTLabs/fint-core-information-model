@@ -249,12 +249,17 @@ metadata reachable without reflection:
   attributes. This is safe because inheritance in the model only ever
   targets `abstrakt` parents; the emitter fails loudly if that
   invariant breaks.
-- Every other type becomes a **`data class`** whose constructor
-  parameters are the pre-flattened attribute list from the JSON, as
-  nullable `var`s defaulting to `null` (partial payloads never throw,
-  and Kotlin generates a no-arg constructor). Inherited attributes get
-  `override` since the parent interface declares them. Types with no
-  attributes become plain classes.
+- Every other type becomes an **immutable `data class`** whose
+  constructor parameters are the pre-flattened attribute list from the
+  JSON, as nullable `val`s defaulting to `null` (partial payloads
+  never throw). Inherited attributes get `override` since the parent
+  interface declares them. Types with no attributes become plain
+  classes. The `links` map is deliberately the *only* mutable surface
+  — consumers enrich links (`addLink`), never fields; cached entities
+  stay thread-safe. Deserialization goes through the constructor, so
+  consumers need `jackson-module-kotlin` (auto-registered in Spring
+  Boot Kotlin apps) — without it, Jackson produces silently empty
+  objects.
 - A type **is a resource** — implements `FintResource` and carries a
   `links: MutableMap<String, MutableList<Link>>` — iff it is a
   `hovedklasse` or its flattened relation list is non-empty (the old

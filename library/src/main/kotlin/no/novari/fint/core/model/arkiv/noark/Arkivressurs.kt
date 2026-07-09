@@ -12,8 +12,8 @@ import no.novari.fint.core.model.administrasjon.personal.Personalressurs
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Arkivressurs(
-    var kildesystemId: Identifikator? = null,
-    var systemId: Identifikator? = null,
+    val kildesystemId: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

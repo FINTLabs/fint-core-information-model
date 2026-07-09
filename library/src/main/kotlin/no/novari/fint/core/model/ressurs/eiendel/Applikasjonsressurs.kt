@@ -16,13 +16,13 @@ import no.novari.fint.core.model.ressurs.kodeverk.Handhevingstype
 import no.novari.fint.core.model.ressurs.kodeverk.Lisensmodell
 
 data class Applikasjonsressurs(
-    var beskrivelse: String? = null,
-    var enhetskostnad: Long? = null,
-    var gyldighetsperiode: Periode? = null,
-    var kreverGodkjenning: Boolean? = null,
-    var lisensantall: Long? = null,
-    var navn: String? = null,
-    var systemId: Identifikator? = null,
+    val beskrivelse: String? = null,
+    val enhetskostnad: Long? = null,
+    val gyldighetsperiode: Periode? = null,
+    val kreverGodkjenning: Boolean? = null,
+    val lisensantall: Long? = null,
+    val navn: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -5,7 +5,7 @@ import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 interface Ordensvurdering : FintResource {
-    var kommentar: String?
-    var systemId: Identifikator?
-    var vurderingsdato: LocalDateTime?
+    val kommentar: String?
+    val systemId: Identifikator?
+    val vurderingsdato: LocalDateTime?
 }

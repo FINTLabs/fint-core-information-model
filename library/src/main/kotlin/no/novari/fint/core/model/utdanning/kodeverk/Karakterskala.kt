@@ -14,11 +14,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.vurdering.Karakterverdi
 
 data class Karakterskala(
-    override var gyldighetsperiode: Periode? = null,
-    override var kode: String? = null,
-    override var navn: String? = null,
-    override var passiv: Boolean? = null,
-    override var systemId: Identifikator? = null,
+    override val gyldighetsperiode: Periode? = null,
+    override val kode: String? = null,
+    override val navn: String? = null,
+    override val passiv: Boolean? = null,
+    override val systemId: Identifikator? = null,
 ) : Begrep, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -195,7 +195,7 @@ func renderInterface(component string, t *metamodel.Type, index map[string]typeE
 	if len(properties) > 0 {
 		b.WriteString(" {\n")
 		for _, p := range properties {
-			b.WriteString("    var " + p.name + ": " + p.typ + "?\n")
+			b.WriteString("    val " + p.name + ": " + p.typ + "?\n")
 		}
 		b.WriteString("}")
 	}
@@ -247,7 +247,7 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 			if p.override {
 				b.WriteString("override ")
 			}
-			b.WriteString("var " + p.name + ": " + p.typ + "? = null,\n")
+			b.WriteString("val " + p.name + ": " + p.typ + "? = null,\n")
 		}
 		b.WriteString(")")
 	} else {
@@ -577,9 +577,9 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 data class Link(
-    var idField: String? = null,
-    var idValue: String? = null,
-    var unresolved: String? = null,
+    val idField: String? = null,
+    val idValue: String? = null,
+    val unresolved: String? = null,
 ) {
     fun href(baseUrl: String, path: String): String =
         unresolved ?: baseUrl.trimEnd('/') + "/" + path + "/" + idField + "/" + encode(idValue.orEmpty())

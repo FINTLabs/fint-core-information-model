@@ -14,16 +14,16 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Fasttillegg(
-    var belop: Long? = null,
-    override var anvist: LocalDateTime? = null,
-    override var attestert: LocalDateTime? = null,
-    override var beskrivelse: String? = null,
-    override var kildesystemId: Identifikator? = null,
-    override var kontert: LocalDateTime? = null,
-    override var kontostreng: Kontostreng? = null,
-    override var opptjent: Periode? = null,
-    override var periode: Periode? = null,
-    override var systemId: Identifikator? = null,
+    val belop: Long? = null,
+    override val anvist: LocalDateTime? = null,
+    override val attestert: LocalDateTime? = null,
+    override val beskrivelse: String? = null,
+    override val kildesystemId: Identifikator? = null,
+    override val kontert: LocalDateTime? = null,
+    override val kontostreng: Kontostreng? = null,
+    override val opptjent: Periode? = null,
+    override val periode: Periode? = null,
+    override val systemId: Identifikator? = null,
 ) : Lonn {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

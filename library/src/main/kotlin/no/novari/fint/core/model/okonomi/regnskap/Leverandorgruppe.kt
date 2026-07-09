@@ -10,8 +10,8 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Leverandorgruppe(
-    var navn: String? = null,
-    var systemId: Identifikator? = null,
+    val navn: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

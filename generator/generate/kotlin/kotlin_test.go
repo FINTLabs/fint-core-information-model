@@ -168,13 +168,13 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 
 data class Elev(
-    var brukernavn: Identifikator? = null,
-    var elevnummer: Identifikator? = null,
-    var feidenavn: Identifikator? = null,
-    var gjest: Boolean? = null,
-    var hybeladresse: Adresse? = null,
-    var kontaktinformasjon: Kontaktinformasjon? = null,
-    var systemId: Identifikator? = null,
+    val brukernavn: Identifikator? = null,
+    val elevnummer: Identifikator? = null,
+    val feidenavn: Identifikator? = null,
+    val gjest: Boolean? = null,
+    val hybeladresse: Adresse? = null,
+    val kontaktinformasjon: Kontaktinformasjon? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 
@@ -239,11 +239,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 interface Begrep : FintObject {
-    var gyldighetsperiode: Periode?
-    var kode: String?
-    var navn: String?
-    var passiv: Boolean?
-    var systemId: Identifikator?
+    val gyldighetsperiode: Periode?
+    val kode: String?
+    val navn: String?
+    val passiv: Boolean?
+    val systemId: Identifikator?
 }
 `
 	assertFile(t, "no/novari/fint/core/model/felles/basisklasser/Begrep.kt", want)
@@ -257,8 +257,8 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Identifikator(
-    var gyldighetsperiode: Periode? = null,
-    var identifikatorverdi: String? = null,
+    val gyldighetsperiode: Periode? = null,
+    val identifikatorverdi: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

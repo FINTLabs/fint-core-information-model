@@ -12,10 +12,10 @@ import no.novari.fint.core.model.administrasjon.kompleksedatatyper.Kontostreng
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Postering(
-    var belop: Long? = null,
-    var debet: Boolean? = null,
-    var kontering: Kontostreng? = null,
-    var posteringsId: Identifikator? = null,
+    val belop: Long? = null,
+    val debet: Boolean? = null,
+    val kontering: Kontostreng? = null,
+    val posteringsId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

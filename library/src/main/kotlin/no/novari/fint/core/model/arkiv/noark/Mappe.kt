@@ -5,16 +5,16 @@ import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 interface Mappe : FintResource {
-    var avsluttetDato: LocalDateTime?
-    var beskrivelse: String?
-    var klasse: List<Klasse>?
-    var mappeId: Identifikator?
-    var merknad: List<Merknad>?
-    var noekkelord: List<String>?
-    var offentligTittel: String?
-    var opprettetDato: LocalDateTime?
-    var part: List<Part>?
-    var skjerming: Skjerming?
-    var systemId: Identifikator?
-    var tittel: String?
+    val avsluttetDato: LocalDateTime?
+    val beskrivelse: String?
+    val klasse: List<Klasse>?
+    val mappeId: Identifikator?
+    val merknad: List<Merknad>?
+    val noekkelord: List<String>?
+    val offentligTittel: String?
+    val opprettetDato: LocalDateTime?
+    val part: List<Part>?
+    val skjerming: Skjerming?
+    val systemId: Identifikator?
+    val tittel: String?
 }

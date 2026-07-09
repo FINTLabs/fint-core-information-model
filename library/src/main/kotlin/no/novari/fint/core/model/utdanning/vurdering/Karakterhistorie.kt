@@ -13,8 +13,8 @@ import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 import no.novari.fint.core.model.utdanning.kodeverk.Karakterstatus
 
 data class Karakterhistorie(
-    var endretDato: LocalDateTime? = null,
-    var systemId: Identifikator? = null,
+    val endretDato: LocalDateTime? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

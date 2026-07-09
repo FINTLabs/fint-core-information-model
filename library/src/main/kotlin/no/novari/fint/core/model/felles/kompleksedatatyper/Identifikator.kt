@@ -5,8 +5,8 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Identifikator(
-    var gyldighetsperiode: Periode? = null,
-    var identifikatorverdi: String? = null,
+    val gyldighetsperiode: Periode? = null,
+    val identifikatorverdi: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

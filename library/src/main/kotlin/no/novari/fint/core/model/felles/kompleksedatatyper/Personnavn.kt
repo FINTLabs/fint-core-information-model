@@ -5,9 +5,9 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Personnavn(
-    var etternavn: String? = null,
-    var fornavn: String? = null,
-    var mellomnavn: String? = null,
+    val etternavn: String? = null,
+    val fornavn: String? = null,
+    val mellomnavn: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

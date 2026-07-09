@@ -15,9 +15,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.utdanningsprogram.Programomrade
 
 data class Larling(
-    var kontraktstype: String? = null,
-    var laretid: Periode? = null,
-    var systemId: Identifikator? = null,
+    val kontraktstype: String? = null,
+    val laretid: Periode? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

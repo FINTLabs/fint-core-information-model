@@ -5,9 +5,9 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Fravarsprosent(
-    var fravarstimer: Int? = null,
-    var prosent: Int? = null,
-    var undervisningstimer: Int? = null,
+    val fravarstimer: Int? = null,
+    val prosent: Int? = null,
+    val undervisningstimer: Int? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

@@ -4,9 +4,9 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 
 data class Link(
-    var idField: String? = null,
-    var idValue: String? = null,
-    var unresolved: String? = null,
+    val idField: String? = null,
+    val idValue: String? = null,
+    val unresolved: String? = null,
 ) {
     fun href(baseUrl: String, path: String): String =
         unresolved ?: baseUrl.trimEnd('/') + "/" + path + "/" + idField + "/" + encode(idValue.orEmpty())

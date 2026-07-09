@@ -13,9 +13,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Applikasjonsressurstilgjengelighet(
-    var gyldighetsperiode: Periode? = null,
-    var lisensantall: Long? = null,
-    var systemId: Identifikator? = null,
+    val gyldighetsperiode: Periode? = null,
+    val lisensantall: Long? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

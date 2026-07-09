@@ -20,10 +20,10 @@ import no.novari.fint.core.model.utdanning.timeplan.Fag
 import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
 
 data class Eksamensgruppe(
-    var eksamensdato: LocalDateTime? = null,
-    override var beskrivelse: String? = null,
-    override var navn: String? = null,
-    override var systemId: Identifikator? = null,
+    val eksamensdato: LocalDateTime? = null,
+    override val beskrivelse: String? = null,
+    override val navn: String? = null,
+    override val systemId: Identifikator? = null,
 ) : Gruppe, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

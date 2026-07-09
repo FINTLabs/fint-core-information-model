@@ -13,9 +13,9 @@ import no.novari.fint.core.model.utdanning.kodeverk.Skolear
 import no.novari.fint.core.model.utdanning.timeplan.Fag
 
 data class Underveisfagvurdering(
-    override var kommentar: String? = null,
-    override var systemId: Identifikator? = null,
-    override var vurderingsdato: LocalDateTime? = null,
+    override val kommentar: String? = null,
+    override val systemId: Identifikator? = null,
+    override val vurderingsdato: LocalDateTime? = null,
 ) : Fagvurdering {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

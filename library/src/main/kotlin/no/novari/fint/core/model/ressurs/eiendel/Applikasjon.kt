@@ -14,10 +14,10 @@ import no.novari.fint.core.model.ressurs.kodeverk.Applikasjonskategori
 import no.novari.fint.core.model.ressurs.kodeverk.Plattform
 
 data class Applikasjon(
-    var beskrivelse: String? = null,
-    var gyldighetsperiode: Periode? = null,
-    var navn: String? = null,
-    var systemId: Identifikator? = null,
+    val beskrivelse: String? = null,
+    val gyldighetsperiode: Periode? = null,
+    val navn: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

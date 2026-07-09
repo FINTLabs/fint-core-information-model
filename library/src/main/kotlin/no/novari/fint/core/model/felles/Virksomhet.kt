@@ -15,12 +15,12 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 import no.novari.fint.core.model.utdanning.larling.Larling
 
 data class Virksomhet(
-    var virksomhetsId: Identifikator? = null,
-    override var forretningsadresse: Adresse? = null,
-    override var organisasjonsnavn: String? = null,
-    override var organisasjonsnummer: Identifikator? = null,
-    override var kontaktinformasjon: Kontaktinformasjon? = null,
-    override var postadresse: Adresse? = null,
+    val virksomhetsId: Identifikator? = null,
+    override val forretningsadresse: Adresse? = null,
+    override val organisasjonsnavn: String? = null,
+    override val organisasjonsnummer: Identifikator? = null,
+    override val kontaktinformasjon: Kontaktinformasjon? = null,
+    override val postadresse: Adresse? = null,
 ) : Enhet, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

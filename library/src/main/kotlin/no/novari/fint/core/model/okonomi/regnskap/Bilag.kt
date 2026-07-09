@@ -6,12 +6,12 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Bilag(
-    var bilagsdato: LocalDate? = null,
-    var bilagsnummer: String? = null,
-    var data: String? = null,
-    var filnavn: String? = null,
-    var referanse: String? = null,
-    var url: String? = null,
+    val bilagsdato: LocalDate? = null,
+    val bilagsnummer: String? = null,
+    val data: String? = null,
+    val filnavn: String? = null,
+    val referanse: String? = null,
+    val url: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

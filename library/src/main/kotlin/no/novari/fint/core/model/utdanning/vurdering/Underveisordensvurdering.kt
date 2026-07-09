@@ -12,9 +12,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.utdanning.kodeverk.Skolear
 
 data class Underveisordensvurdering(
-    override var kommentar: String? = null,
-    override var systemId: Identifikator? = null,
-    override var vurderingsdato: LocalDateTime? = null,
+    override val kommentar: String? = null,
+    override val systemId: Identifikator? = null,
+    override val vurderingsdato: LocalDateTime? = null,
 ) : Ordensvurdering {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

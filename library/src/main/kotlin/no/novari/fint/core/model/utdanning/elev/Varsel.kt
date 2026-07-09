@@ -14,10 +14,10 @@ import no.novari.fint.core.model.utdanning.kodeverk.Varseltype
 import no.novari.fint.core.model.utdanning.timeplan.Faggruppemedlemskap
 
 data class Varsel(
-    var fravarsprosent: Long? = null,
-    var sendt: LocalDate? = null,
-    var systemId: Identifikator? = null,
-    var tekst: String? = null,
+    val fravarsprosent: Long? = null,
+    val sendt: LocalDate? = null,
+    val systemId: Identifikator? = null,
+    val tekst: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

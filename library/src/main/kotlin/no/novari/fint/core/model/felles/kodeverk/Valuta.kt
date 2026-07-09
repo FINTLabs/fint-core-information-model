@@ -9,9 +9,9 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Valuta(
-    var bokstavkode: Identifikator? = null,
-    var navn: String? = null,
-    var nummerkode: Identifikator? = null,
+    val bokstavkode: Identifikator? = null,
+    val navn: String? = null,
+    val nummerkode: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

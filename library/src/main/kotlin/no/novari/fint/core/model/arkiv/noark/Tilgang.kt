@@ -12,8 +12,8 @@ import no.novari.fint.core.model.arkiv.kodeverk.Rolle
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Tilgang(
-    var systemId: Identifikator? = null,
-    var tittel: String? = null,
+    val systemId: Identifikator? = null,
+    val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

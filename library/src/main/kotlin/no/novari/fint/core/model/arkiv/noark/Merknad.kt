@@ -11,8 +11,8 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Merknadstype
 
 data class Merknad(
-    var merknadsdato: LocalDateTime? = null,
-    var merknadstekst: String? = null,
+    val merknadsdato: LocalDateTime? = null,
+    val merknadstekst: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

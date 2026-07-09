@@ -30,16 +30,16 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.elev.Undervisningsforhold
 
 data class Arbeidsforhold(
-    var ansettelsesprosent: Long? = null,
-    var arbeidsforholdsperiode: Periode? = null,
-    var arslonn: Long? = null,
-    var gyldighetsperiode: Periode? = null,
-    var hovedstilling: Boolean? = null,
-    var lonnsprosent: Long? = null,
-    var stillingsnummer: String? = null,
-    var stillingstittel: String? = null,
-    var systemId: Identifikator? = null,
-    var tilstedeprosent: Long? = null,
+    val ansettelsesprosent: Long? = null,
+    val arbeidsforholdsperiode: Periode? = null,
+    val arslonn: Long? = null,
+    val gyldighetsperiode: Periode? = null,
+    val hovedstilling: Boolean? = null,
+    val lonnsprosent: Long? = null,
+    val stillingsnummer: String? = null,
+    val stillingstittel: String? = null,
+    val systemId: Identifikator? = null,
+    val tilstedeprosent: Long? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -12,9 +12,9 @@ import no.novari.fint.core.model.felles.Virksomhet
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Leverandor(
-    var kontonummer: String? = null,
-    var leverandornummer: Identifikator? = null,
-    var systemId: Identifikator? = null,
+    val kontonummer: String? = null,
+    val leverandornummer: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

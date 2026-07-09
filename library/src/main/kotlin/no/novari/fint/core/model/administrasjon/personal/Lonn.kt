@@ -7,13 +7,13 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 interface Lonn : FintResource {
-    var anvist: LocalDateTime?
-    var attestert: LocalDateTime?
-    var beskrivelse: String?
-    var kildesystemId: Identifikator?
-    var kontert: LocalDateTime?
-    var kontostreng: Kontostreng?
-    var opptjent: Periode?
-    var periode: Periode?
-    var systemId: Identifikator?
+    val anvist: LocalDateTime?
+    val attestert: LocalDateTime?
+    val beskrivelse: String?
+    val kildesystemId: Identifikator?
+    val kontert: LocalDateTime?
+    val kontostreng: Kontostreng?
+    val opptjent: Periode?
+    val periode: Periode?
+    val systemId: Identifikator?
 }

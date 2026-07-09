@@ -14,11 +14,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.vurdering.Eksamensgruppe
 
 data class Eksamen(
-    var beskrivelse: String? = null,
-    var navn: String? = null,
-    var oppmotetidspunkt: LocalDateTime? = null,
-    var systemId: Identifikator? = null,
-    var tidsrom: Periode? = null,
+    val beskrivelse: String? = null,
+    val navn: String? = null,
+    val oppmotetidspunkt: LocalDateTime? = null,
+    val systemId: Identifikator? = null,
+    val tidsrom: Periode? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -15,13 +15,13 @@ import no.novari.fint.core.model.felles.kodeverk.Valuta
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Transaksjon(
-    var belop: Long? = null,
-    var beskrivelse: String? = null,
-    var bilag: List<Bilag>? = null,
-    var forfallsdato: LocalDate? = null,
-    var oppdateringstidspunkt: LocalDateTime? = null,
-    var transaksjonsId: Identifikator? = null,
-    var transaksjonstidspunkt: LocalDateTime? = null,
+    val belop: Long? = null,
+    val beskrivelse: String? = null,
+    val bilag: List<Bilag>? = null,
+    val forfallsdato: LocalDate? = null,
+    val oppdateringstidspunkt: LocalDateTime? = null,
+    val transaksjonsId: Identifikator? = null,
+    val transaksjonstidspunkt: LocalDateTime? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

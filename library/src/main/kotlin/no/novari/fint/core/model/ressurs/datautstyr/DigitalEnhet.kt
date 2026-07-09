@@ -18,12 +18,12 @@ import no.novari.fint.core.model.ressurs.kodeverk.Status
 import no.novari.fint.core.model.utdanning.elev.Elev
 
 data class DigitalEnhet(
-    var dataobjektId: Identifikator? = null,
-    var flerbrukerenhet: Boolean? = null,
-    var navn: String? = null,
-    var privateid: Boolean? = null,
-    var serienummer: String? = null,
-    var systemId: Identifikator? = null,
+    val dataobjektId: Identifikator? = null,
+    val flerbrukerenhet: Boolean? = null,
+    val navn: String? = null,
+    val privateid: Boolean? = null,
+    val serienummer: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -17,9 +17,9 @@ import no.novari.fint.core.model.utdanning.utdanningsprogram.Skole
 import no.novari.fint.core.model.utdanning.vurdering.Eksamensgruppe
 
 data class Undervisningsforhold(
-    var hovedskole: Boolean? = null,
-    override var beskrivelse: String? = null,
-    override var systemId: Identifikator? = null,
+    val hovedskole: Boolean? = null,
+    override val beskrivelse: String? = null,
+    override val systemId: Identifikator? = null,
 ) : Utdanningsforhold, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

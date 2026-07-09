@@ -13,16 +13,16 @@ import no.novari.fint.core.model.arkiv.kodeverk.DokumentType
 import no.novari.fint.core.model.arkiv.kodeverk.TilknyttetRegistreringSom
 
 data class Dokumentbeskrivelse(
-    var beskrivelse: String? = null,
-    var dokumentnummer: Long? = null,
-    var dokumentobjekt: List<Dokumentobjekt>? = null,
-    var forfatter: List<String>? = null,
-    var opprettetDato: LocalDateTime? = null,
-    var part: List<Part>? = null,
-    var referanseArkivdel: List<String>? = null,
-    var skjerming: Skjerming? = null,
-    var tilknyttetDato: LocalDateTime? = null,
-    var tittel: String? = null,
+    val beskrivelse: String? = null,
+    val dokumentnummer: Long? = null,
+    val dokumentobjekt: List<Dokumentobjekt>? = null,
+    val forfatter: List<String>? = null,
+    val opprettetDato: LocalDateTime? = null,
+    val part: List<Part>? = null,
+    val referanseArkivdel: List<String>? = null,
+    val skjerming: Skjerming? = null,
+    val tilknyttetDato: LocalDateTime? = null,
+    val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

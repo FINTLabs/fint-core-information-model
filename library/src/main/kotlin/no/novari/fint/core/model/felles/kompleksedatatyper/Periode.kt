@@ -6,9 +6,9 @@ import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Periode(
-    var beskrivelse: String? = null,
-    var slutt: LocalDateTime? = null,
-    var start: LocalDateTime? = null,
+    val beskrivelse: String? = null,
+    val slutt: LocalDateTime? = null,
+    val start: LocalDateTime? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
 

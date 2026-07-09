@@ -15,14 +15,14 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.okonomi.faktura.Fakturautsteder
 
 data class Vare(
-    var enhet: String? = null,
-    var kontering: Kontostreng? = null,
-    var pris: Long? = null,
-    override var gyldighetsperiode: Periode? = null,
-    override var kode: String? = null,
-    override var navn: String? = null,
-    override var passiv: Boolean? = null,
-    override var systemId: Identifikator? = null,
+    val enhet: String? = null,
+    val kontering: Kontostreng? = null,
+    val pris: Long? = null,
+    override val gyldighetsperiode: Periode? = null,
+    override val kode: String? = null,
+    override val navn: String? = null,
+    override val passiv: Boolean? = null,
+    override val systemId: Identifikator? = null,
 ) : Begrep, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

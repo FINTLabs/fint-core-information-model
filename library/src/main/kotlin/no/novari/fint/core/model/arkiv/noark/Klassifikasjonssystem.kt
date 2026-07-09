@@ -13,14 +13,14 @@ import no.novari.fint.core.model.arkiv.kodeverk.Klassifikasjonstype
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Klassifikasjonssystem(
-    var avsluttetAv: String? = null,
-    var avsluttetDato: LocalDateTime? = null,
-    var beskrivelse: String? = null,
-    var klasse: List<Klasse>? = null,
-    var opprettetAv: String? = null,
-    var opprettetDato: LocalDateTime? = null,
-    var systemId: Identifikator? = null,
-    var tittel: String? = null,
+    val avsluttetAv: String? = null,
+    val avsluttetDato: LocalDateTime? = null,
+    val beskrivelse: String? = null,
+    val klasse: List<Klasse>? = null,
+    val opprettetAv: String? = null,
+    val opprettetDato: LocalDateTime? = null,
+    val systemId: Identifikator? = null,
+    val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

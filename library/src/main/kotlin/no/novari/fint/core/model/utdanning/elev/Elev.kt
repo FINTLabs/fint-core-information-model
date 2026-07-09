@@ -14,13 +14,13 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 
 data class Elev(
-    var brukernavn: Identifikator? = null,
-    var elevnummer: Identifikator? = null,
-    var feidenavn: Identifikator? = null,
-    var gjest: Boolean? = null,
-    var hybeladresse: Adresse? = null,
-    var kontaktinformasjon: Kontaktinformasjon? = null,
-    var systemId: Identifikator? = null,
+    val brukernavn: Identifikator? = null,
+    val elevnummer: Identifikator? = null,
+    val feidenavn: Identifikator? = null,
+    val gjest: Boolean? = null,
+    val hybeladresse: Adresse? = null,
+    val kontaktinformasjon: Kontaktinformasjon? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

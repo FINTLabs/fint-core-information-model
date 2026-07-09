@@ -13,10 +13,10 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 import no.novari.fint.core.model.felles.kompleksedatatyper.Personnavn
 
 data class Kontaktperson(
-    var kontaktinformasjon: Kontaktinformasjon? = null,
-    var navn: Personnavn? = null,
-    var systemId: Identifikator? = null,
-    var type: String? = null,
+    val kontaktinformasjon: Kontaktinformasjon? = null,
+    val navn: Personnavn? = null,
+    val systemId: Identifikator? = null,
+    val type: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -14,8 +14,8 @@ import no.novari.fint.core.model.ressurs.kodeverk.Enhetstype
 import no.novari.fint.core.model.ressurs.kodeverk.Plattform
 
 data class Enhetsgruppe(
-    var navn: String? = null,
-    var systemId: Identifikator? = null,
+    val navn: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

@@ -15,7 +15,7 @@ import no.novari.fint.core.model.utdanning.kodeverk.OtStatus
 import no.novari.fint.core.model.utdanning.utdanningsprogram.Programomrade
 
 data class OtUngdom(
-    var systemId: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

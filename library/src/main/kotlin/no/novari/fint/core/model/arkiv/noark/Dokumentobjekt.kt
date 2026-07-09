@@ -11,11 +11,11 @@ import no.novari.fint.core.model.arkiv.kodeverk.Format
 import no.novari.fint.core.model.arkiv.kodeverk.Variantformat
 
 data class Dokumentobjekt(
-    var filstorrelse: String? = null,
-    var formatDetaljer: String? = null,
-    var sjekksum: String? = null,
-    var sjekksumAlgoritme: String? = null,
-    var versjonsnummer: Long? = null,
+    val filstorrelse: String? = null,
+    val formatDetaljer: String? = null,
+    val sjekksum: String? = null,
+    val sjekksumAlgoritme: String? = null,
+    val versjonsnummer: Long? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

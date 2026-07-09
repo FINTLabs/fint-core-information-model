@@ -12,7 +12,7 @@ import no.novari.fint.core.model.arkiv.kodeverk.Tilgangsrestriksjon
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Autorisasjon(
-    var systemId: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

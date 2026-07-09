@@ -5,9 +5,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 interface Begrep : FintObject {
-    var gyldighetsperiode: Periode?
-    var kode: String?
-    var navn: String?
-    var passiv: Boolean?
-    var systemId: Identifikator?
+    val gyldighetsperiode: Periode?
+    val kode: String?
+    val navn: String?
+    val passiv: Boolean?
+    val systemId: Identifikator?
 }

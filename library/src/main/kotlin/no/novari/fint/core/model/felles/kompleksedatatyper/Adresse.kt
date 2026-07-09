@@ -10,9 +10,9 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kodeverk.iso.Landkode
 
 data class Adresse(
-    var adresselinje: List<String>? = null,
-    var postnummer: String? = null,
-    var poststed: String? = null,
+    val adresselinje: List<String>? = null,
+    val postnummer: String? = null,
+    val poststed: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

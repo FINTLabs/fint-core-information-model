@@ -12,12 +12,12 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
 import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 
 data class Part(
-    var adresse: Adresse? = null,
-    var fodselsnummer: String? = null,
-    var kontaktinformasjon: Kontaktinformasjon? = null,
-    var kontaktperson: String? = null,
-    var organisasjonsnummer: String? = null,
-    var partNavn: String? = null,
+    val adresse: Adresse? = null,
+    val fodselsnummer: String? = null,
+    val kontaktinformasjon: Kontaktinformasjon? = null,
+    val kontaktperson: String? = null,
+    val organisasjonsnummer: String? = null,
+    val partNavn: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

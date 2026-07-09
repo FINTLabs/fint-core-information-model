@@ -26,13 +26,13 @@ import no.novari.fint.core.model.utdanning.vurdering.Elevvurdering
 import no.novari.fint.core.model.utdanning.vurdering.Fravarsoversikt
 
 data class Elevforhold(
-    var anmerkninger: List<Anmerkninger>? = null,
-    var avbruddsdato: LocalDate? = null,
-    var gyldighetsperiode: Periode? = null,
-    var hovedskole: Boolean? = null,
-    var tosprakligFagopplaring: Boolean? = null,
-    override var beskrivelse: String? = null,
-    override var systemId: Identifikator? = null,
+    val anmerkninger: List<Anmerkninger>? = null,
+    val avbruddsdato: LocalDate? = null,
+    val gyldighetsperiode: Periode? = null,
+    val hovedskole: Boolean? = null,
+    val tosprakligFagopplaring: Boolean? = null,
+    override val beskrivelse: String? = null,
+    override val systemId: Identifikator? = null,
 ) : Utdanningsforhold, FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

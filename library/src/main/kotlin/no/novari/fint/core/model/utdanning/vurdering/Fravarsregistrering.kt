@@ -16,10 +16,10 @@ import no.novari.fint.core.model.utdanning.timeplan.Faggruppe
 import no.novari.fint.core.model.utdanning.timeplan.Undervisningsgruppe
 
 data class Fravarsregistrering(
-    var foresPaVitnemal: Boolean? = null,
-    var kommentar: String? = null,
-    var periode: Periode? = null,
-    var systemId: Identifikator? = null,
+    val foresPaVitnemal: Boolean? = null,
+    val kommentar: String? = null,
+    val periode: Periode? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

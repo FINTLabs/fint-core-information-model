@@ -13,7 +13,7 @@ import no.novari.fint.core.model.utdanning.elev.Elevforhold
 import no.novari.fint.core.model.utdanning.kodeverk.Vitnemalsmerknad
 
 data class Elevvurdering(
-    var systemId: Identifikator? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

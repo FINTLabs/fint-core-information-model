@@ -15,11 +15,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Fravar(
-    var godkjent: LocalDateTime? = null,
-    var kildesystemId: Identifikator? = null,
-    var periode: Periode? = null,
-    var prosent: Long? = null,
-    var systemId: Identifikator? = null,
+    val godkjent: LocalDateTime? = null,
+    val kildesystemId: Identifikator? = null,
+    val periode: Periode? = null,
+    val prosent: Long? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

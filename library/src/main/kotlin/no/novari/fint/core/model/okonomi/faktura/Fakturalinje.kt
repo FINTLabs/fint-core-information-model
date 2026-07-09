@@ -10,9 +10,9 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.okonomi.kodeverk.Vare
 
 data class Fakturalinje(
-    var antall: Float? = null,
-    var fritekst: List<String>? = null,
-    var pris: Long? = null,
+    val antall: Float? = null,
+    val fritekst: List<String>? = null,
+    val pris: Long? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

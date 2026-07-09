@@ -11,9 +11,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.utdanning.kodeverk.Skolear
 
 data class Anmerkninger(
-    var atferd: Int? = null,
-    var orden: Int? = null,
-    var systemId: Identifikator? = null,
+    val atferd: Int? = null,
+    val orden: Int? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

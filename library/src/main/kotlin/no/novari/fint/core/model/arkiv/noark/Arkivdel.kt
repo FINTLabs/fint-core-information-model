@@ -11,8 +11,8 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Arkivdel(
-    var systemId: Identifikator? = null,
-    var tittel: String? = null,
+    val systemId: Identifikator? = null,
+    val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

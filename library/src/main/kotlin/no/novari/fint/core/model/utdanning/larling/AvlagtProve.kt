@@ -16,8 +16,8 @@ import no.novari.fint.core.model.utdanning.kodeverk.Fullfortkode
 import no.novari.fint.core.model.utdanning.kodeverk.Provestatus
 
 data class AvlagtProve(
-    var provedato: LocalDate? = null,
-    var systemId: Identifikator? = null,
+    val provedato: LocalDate? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

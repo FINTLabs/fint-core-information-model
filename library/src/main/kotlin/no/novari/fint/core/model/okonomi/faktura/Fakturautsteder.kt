@@ -13,8 +13,8 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.okonomi.kodeverk.Vare
 
 data class Fakturautsteder(
-    var navn: String? = null,
-    var systemId: Identifikator? = null,
+    val navn: String? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 

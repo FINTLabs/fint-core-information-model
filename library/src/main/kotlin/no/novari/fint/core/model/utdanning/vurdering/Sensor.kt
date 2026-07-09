@@ -12,9 +12,9 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 
 data class Sensor(
-    var aktiv: Boolean? = null,
-    var sensornummer: Int? = null,
-    var systemId: Identifikator? = null,
+    val aktiv: Boolean? = null,
+    val sensornummer: Int? = null,
+    val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 
