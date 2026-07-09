@@ -37,7 +37,7 @@ fint-model generate --from-json metamodel.json
 
 Writes the source tree under `kotlin/` (one `.kt` file per model type,
 a generated `FintModel` registry, and the runtime files), rooted at
-package `no.novari.fint.kmodel`.
+package `no.novari.fint.core.model`.
 
 ### CLI
 

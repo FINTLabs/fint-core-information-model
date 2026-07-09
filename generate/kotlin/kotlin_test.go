@@ -130,7 +130,7 @@ func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
 
 func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	doc, files := golden(t)
-	registry, ok := files["no/novari/fint/kmodel/FintModel.kt"]
+	registry, ok := files["no/novari/fint/core/model/FintModel.kt"]
 	if !ok {
 		t.Fatalf("missing FintModel.kt")
 	}
@@ -152,20 +152,20 @@ func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 }
 
 func TestFiles_MainClassWithMetadata(t *testing.T) {
-	want := `package no.novari.fint.kmodel.utdanning.elev
+	want := `package no.novari.fint.core.model.utdanning.elev
 
-import no.novari.fint.kmodel.Bidirectional
-import no.novari.fint.kmodel.FintAttribute
-import no.novari.fint.kmodel.FintMultiplicity
-import no.novari.fint.kmodel.FintRelation
-import no.novari.fint.kmodel.FintResource
-import no.novari.fint.kmodel.FintResourceMetadata
-import no.novari.fint.kmodel.IdentifikatorVisitor
-import no.novari.fint.kmodel.Link
-import no.novari.fint.kmodel.felles.Person
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Adresse
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Kontaktinformasjon
+import no.novari.fint.core.model.Bidirectional
+import no.novari.fint.core.model.FintAttribute
+import no.novari.fint.core.model.FintMultiplicity
+import no.novari.fint.core.model.FintRelation
+import no.novari.fint.core.model.FintResource
+import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.IdentifikatorVisitor
+import no.novari.fint.core.model.Link
+import no.novari.fint.core.model.felles.Person
+import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
+import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Kontaktinformasjon
 
 data class Elev(
     var brukernavn: Identifikator? = null,
@@ -228,15 +228,15 @@ data class Elev(
     }
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/utdanning/elev/Elev.kt", want)
+	assertFile(t, "no/novari/fint/core/model/utdanning/elev/Elev.kt", want)
 }
 
 func TestFiles_AbstractTypeBecomesInterface(t *testing.T) {
-	want := `package no.novari.fint.kmodel.felles.basisklasser
+	want := `package no.novari.fint.core.model.felles.basisklasser
 
-import no.novari.fint.kmodel.FintObject
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Periode
+import no.novari.fint.core.model.FintObject
+import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 interface Begrep : FintObject {
     var gyldighetsperiode: Periode?
@@ -246,15 +246,15 @@ interface Begrep : FintObject {
     var systemId: Identifikator?
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/felles/basisklasser/Begrep.kt", want)
+	assertFile(t, "no/novari/fint/core/model/felles/basisklasser/Begrep.kt", want)
 }
 
 func TestFiles_DatatypeCarriesTypeMetadata(t *testing.T) {
-	want := `package no.novari.fint.kmodel.felles.kompleksedatatyper
+	want := `package no.novari.fint.core.model.felles.kompleksedatatyper
 
-import no.novari.fint.kmodel.FintAttribute
-import no.novari.fint.kmodel.FintObject
-import no.novari.fint.kmodel.FintTypeMetadata
+import no.novari.fint.core.model.FintAttribute
+import no.novari.fint.core.model.FintObject
+import no.novari.fint.core.model.FintTypeMetadata
 
 data class Identifikator(
     var gyldighetsperiode: Periode? = null,
@@ -272,15 +272,15 @@ data class Identifikator(
     }
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/felles/kompleksedatatyper/Identifikator.kt", want)
+	assertFile(t, "no/novari/fint/core/model/felles/kompleksedatatyper/Identifikator.kt", want)
 }
 
 func TestFiles_AttributelessReferanse(t *testing.T) {
-	want := `package no.novari.fint.kmodel.utdanning.kodeverk
+	want := `package no.novari.fint.core.model.utdanning.kodeverk
 
-import no.novari.fint.kmodel.FintAttribute
-import no.novari.fint.kmodel.FintObject
-import no.novari.fint.kmodel.FintTypeMetadata
+import no.novari.fint.core.model.FintAttribute
+import no.novari.fint.core.model.FintObject
+import no.novari.fint.core.model.FintTypeMetadata
 
 class Grepreferanse : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
@@ -292,12 +292,12 @@ class Grepreferanse : FintObject {
     }
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/utdanning/kodeverk/Grepreferanse.kt", want)
+	assertFile(t, "no/novari/fint/core/model/utdanning/kodeverk/Grepreferanse.kt", want)
 }
 
 func TestFiles_AttributelessResource(t *testing.T) {
 	_, files := golden(t)
-	content := files["no/novari/fint/kmodel/administrasjon/kompleksedatatyper/Kontostreng.kt"]
+	content := files["no/novari/fint/core/model/administrasjon/kompleksedatatyper/Kontostreng.kt"]
 	for _, want := range []string{
 		"class Kontostreng : FintResource {",
 		"override val path: String? = null",
@@ -316,9 +316,9 @@ func TestFiles_AttributelessResource(t *testing.T) {
 }
 
 func TestFiles_RuntimeInterface(t *testing.T) {
-	want := `package no.novari.fint.kmodel
+	want := `package no.novari.fint.core.model
 
-import no.novari.fint.kmodel.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 interface FintResource : FintObject {
     val links: MutableMap<String, MutableList<Link>>
@@ -335,11 +335,11 @@ interface FintResource : FintObject {
     }
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/FintResource.kt", want)
+	assertFile(t, "no/novari/fint/core/model/FintResource.kt", want)
 }
 
 func TestFiles_RuntimeMultiplicity(t *testing.T) {
-	want := `package no.novari.fint.kmodel
+	want := `package no.novari.fint.core.model
 
 enum class FintMultiplicity(val lower: Int, val upper: Int?) {
     EXACTLY_ONE(1, 1),
@@ -351,7 +351,7 @@ enum class FintMultiplicity(val lower: Int, val upper: Int?) {
     val many: Boolean get() = upper == null
 }
 `
-	assertFile(t, "no/novari/fint/kmodel/FintMultiplicity.kt", want)
+	assertFile(t, "no/novari/fint/core/model/FintMultiplicity.kt", want)
 }
 
 func assertFile(t *testing.T, path, want string) {
