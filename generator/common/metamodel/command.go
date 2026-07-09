@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FINTLabs/fint-core-information-model/common/parser"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/parser"
 	"github.com/urfave/cli"
 )
 

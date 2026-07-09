@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/FINTLabs/fint-core-information-model/common/config"
-	"github.com/FINTLabs/fint-core-information-model/common/document"
-	"github.com/FINTLabs/fint-core-information-model/common/types"
-	"github.com/FINTLabs/fint-core-information-model/common/utils"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/config"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/document"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/types"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/utils"
 	xmlquery "github.com/antchfx/xquery/xml"
 )
 

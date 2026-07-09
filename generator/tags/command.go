@@ -3,7 +3,7 @@ package tags
 import (
 	"fmt"
 
-	"github.com/FINTLabs/fint-core-information-model/common/github"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/github"
 	"github.com/urfave/cli"
 )
 

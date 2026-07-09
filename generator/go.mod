@@ -1,4 +1,4 @@
-module github.com/FINTLabs/fint-core-information-model
+module github.com/FINTLabs/fint-core-information-model/generator
 
 go 1.13
 

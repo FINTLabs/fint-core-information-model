@@ -25,8 +25,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/FINTLabs/fint-core-information-model/common/config"
-	"github.com/FINTLabs/fint-core-information-model/common/metamodel"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/config"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/metamodel"
 )
 
 var primitiveTypes = map[string]string{

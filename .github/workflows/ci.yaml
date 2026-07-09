@@ -16,10 +16,13 @@ jobs:
           go-version: '1.20.x'
 
       - name: Install dependencies
+        working-directory: generator
         run: go get .
 
       - name: Test
+        working-directory: generator
         run: go test ./...
 
       - name: Build
+        working-directory: generator
         run: go build -a -v

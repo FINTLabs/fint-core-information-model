@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FINTLabs/fint-core-information-model/common/github"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/github"
 	"github.com/antchfx/xquery/xml"
 )
 

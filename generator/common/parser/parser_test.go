@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/FINTLabs/fint-core-information-model/common/types"
+	"github.com/FINTLabs/fint-core-information-model/generator/common/types"
 )
 
 func TestFindClass_PrefersPackageQualifiedAndDisambiguatesCollisions(t *testing.T) {
