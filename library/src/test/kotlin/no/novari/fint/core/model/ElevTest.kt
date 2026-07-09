@@ -58,6 +58,17 @@ class ElevTest {
     }
 
     @Test
+    fun `equality hashing and copy are blind to links by design`() {
+        val a = Elev(systemId = Identifikator(identifikatorverdi = "S-1"))
+        val b = Elev(systemId = Identifikator(identifikatorverdi = "S-1"))
+        b.addLink("elevforhold", Link(idField = "systemid", idValue = "1"))
+
+        assertEquals(a, b)
+        assertEquals(a.hashCode(), b.hashCode())
+        assertTrue(b.copy().links.isEmpty())
+    }
+
+    @Test
     fun `relations carry baked target data and multiplicity flags`() {
         val elevforhold = Elev.relations.first { it.name == "elevforhold" }
         assertEquals("utdanning/elev/elevforhold", elevforhold.targetPath)
