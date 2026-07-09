@@ -13,7 +13,7 @@ import kotlin.test.assertTrue
 class ElevTest {
 
     @Test
-    fun visitorVisitsAllDeclaredIdFieldsIncludingUnset() {
+    fun `visitor visits all declared id fields including unset ones`() {
         val elev = Elev(systemId = Identifikator(identifikatorverdi = "S-1"))
         val seen = mutableMapOf<String, String?>()
         elev.visitIdentifikators { name, id -> seen[name] = id?.identifikatorverdi }
@@ -23,14 +23,14 @@ class ElevTest {
     }
 
     @Test
-    fun identifikatorLookupIsCaseInsensitive() {
+    fun `identifikator lookup is case-insensitive`() {
         val elev = Elev(feidenavn = Identifikator(identifikatorverdi = "x@feide.no"))
         assertEquals("x@feide.no", elev.identifikator("FEIDENAVN")?.identifikatorverdi)
         assertNull(elev.identifikator("ukjent"))
     }
 
     @Test
-    fun addLinkAndRelationLinks() {
+    fun `addLink stores and relationLinks reads back`() {
         val elev = Elev()
         elev.addLink("elevforhold", Link(idField = "systemid", idValue = "1"))
         assertEquals(1, elev.relationLinks("elevforhold").size)
@@ -38,7 +38,7 @@ class ElevTest {
     }
 
     @Test
-    fun staticMetadataAnswersRoutingQuestions() {
+    fun `static metadata answers routing questions without an instance`() {
         assertEquals("utdanning/elev/elev", Elev.path)
         assertTrue(Elev.Metadata.isIdField("SYSTEMID"))
         assertFalse(Elev.Metadata.isIdField("navn"))
@@ -46,7 +46,7 @@ class ElevTest {
     }
 
     @Test
-    fun relationsCarryBakedTargetDataAndMultiplicity() {
+    fun `relations carry baked target data and multiplicity flags`() {
         val elevforhold = Elev.relations.first { it.name == "elevforhold" }
         assertEquals("utdanning/elev/elevforhold", elevforhold.targetPath)
         assertTrue(elevforhold.multiplicity.many)
