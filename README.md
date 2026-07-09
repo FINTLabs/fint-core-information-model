@@ -1,5 +1,12 @@
 # fint-model
 
+> **Branch note (`fint-core`):** this branch is the FINT core team's
+> edition of fint-model. Here we generate and own our own Kotlin model
+> library (`EA XMI → metamodel.json → Kotlin`, replacing the Java/C#
+> emitters that remain on `master`). It lives as a branch of the
+> original repository rather than a separate repo to avoid naming
+> conflicts with other projects.
+
 ## Description
 
 Tool for generating the FINT Kotlin model library from the EA
