@@ -1,322 +1,99 @@
 # fint-core-information-model
 
-The FINT core team's edition of the information model pipeline,
-forked from [FINTLabs/fint-model](https://github.com/FINTLabs/fint-model).
-Here the core team owns the model library end-to-end; the original
-Java/C# generator lives on in the upstream repo.
-
-## Repository layout
+The FINT core team's edition of the information model pipeline, forked
+from [FINTLabs/fint-model](https://github.com/FINTLabs/fint-model)
+(where the original Java/C# generator lives on). One repo owns the
+whole chain:
 
 ```
-generator/   Go tool: EA XMI ─► metamodel.json ─► Kotlin sources
-library/     the Kotlin library: generated sources (committed) plus
-             hand-written tests, built with Gradle
+EA XMI ─► metamodel.json ─► Kotlin library
 ```
 
-The generated sources under `library/src/main/kotlin` are committed,
-so model bumps and generator changes land as reviewable Kotlin diffs.
-CI enforces the pairing: the `drift` job regenerates from the pinned
-`metamodel.json` and fails if the committed sources differ from what
-the generator in the same commit produces. The XMI stage is pinned
-the same way — a committed EA export fixture
-(`generator/testdata/xmi/`) must produce the golden `metamodel.json`
-byte for byte, so the whole chain XMI → JSON → Kotlin → compile is
-regression-guarded without network access.
-
-## Description
-
-Tool for generating the FINT Kotlin model library from the EA
-information model. Two-stage pipeline:
+## Layout
 
 ```
-EA XMI ─► metamodel.json ─► Kotlin
+generator/   Go tool that parses the EA export and emits the sources
+library/     the Kotlin library: generated sources (committed) + tests
 ```
 
-`metamodel.json` is a canonical, language-neutral snapshot of the FINT
-domain model and the source of truth for language emitters, so new
-target languages can be added without touching the XMI parser. (The
-old Java/C# emitters live in upstream FINTLabs/fint-model and in this
-repo's history.)
+Generated sources are committed, so every model bump and generator
+change lands as a reviewable diff. CI keeps the stages welded
+together: the committed XMI fixture must produce the golden
+`metamodel.json` byte for byte, the committed Kotlin must match what
+the same-commit generator produces (drift gate), and the library must
+compile and pass its tests.
 
 ## Usage
 
-### Produce `metamodel.json`
-
-```bash
-fint-model -t v4.0.20 metamodel -o metamodel.json
-```
-
-Pulls the EA XMI from GitHub (`fint-informasjonsmodell`), parses it, and
-writes a canonical JSON document with components, types, attributes,
-relations, and inheritance.
-
-### Regenerate the library sources
-
-`generate` reads `metamodel.json` only — no XMI access:
-
 ```bash
 cd generator
+
+go run . -t v4.0.20 metamodel -o metamodel.json
+
 go run . generate --from-json testdata/golden/v4.0.20/metamodel.json \
   --out ../library/src/main/kotlin
+
+gradle -p ../library build
 ```
 
-Writes one `.kt` file per model type, a generated `FintModel`
-registry, and the runtime files, rooted at package
-`no.novari.fint.core.model`. `--out` defaults to `kotlin/` for
-scratch runs.
+## The library
 
-### Build the library
+One class per model type — no `Elev` / `ElevResource` split — with all
+model metadata reachable statically, from instances, and from strings,
+without reflection:
 
-```bash
-gradle -p library build
+```kotlin
+val meta = FintModel.byPath("utdanning/elev/elev") ?: throw NotFound()
+meta.isIdField("systemid")
+
+val elev: FintResource = deserialize(payload)
+elev.visitIdentifikators { field, value -> index.put(field, value) }
+elev.identifikatorverdi("systemid")
+
+Elev.relations.first { it.name == "elevforhold" }.targetPath
 ```
 
-Compiles the generated sources (Kotlin 2.2, JVM 21 target, zero
-runtime dependencies) and runs the hand-written tests in
-`library/src/test/kotlin`.
+The essentials:
 
-### CLI
+- **Immutable**: attribute properties are `val`; the `links` map
+  (`addLink`) is the only mutable surface. Cached entities are
+  thread-safe. `equals`/`hashCode`/`copy()` deliberately ignore links.
+- **Metadata companions** on every concrete type (`ref`, `attributes`;
+  resources add `path`, `idFields`, `relations`), plus the generated
+  `FintModel` registry (`byPath` / `byRef` / `byType`).
+- **Relations carry baked data**: `targetPath` for link building,
+  `multiplicity` with `required`/`many` flags, and
+  `bidirectional` (`null` means unidirectional) with the inverse
+  relation's multiplicity.
+- **`Link` stores the parsed form** (`idField` + `idValue`, or
+  `unresolved` verbatim for external hrefs); `href(baseUrl, path)`
+  rebuilds the wire form.
+- **Zero runtime dependencies** beyond `kotlin-stdlib` and
+  `java.time`. Deserialization is constructor-based, so consumers
+  need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
+  apps).
+- `abstrakt` model types are interfaces; everything else is a data
+  class over the pre-flattened attribute list from the JSON.
 
-```
-COMMANDS:
-   generate      emit Kotlin model sources from metamodel.json
-   metamodel     produce canonical metamodel.json from EA XMI
-   listTags      list FINT model release tags
-   listBranches  list FINT model branches
-   help, h       show command help
+## metamodel.json
 
-GENERATE FLAGS:
-   --from-json PATH       metamodel.json to read (required)
+Canonical, language-neutral snapshot of the model (schema 1.1):
+components → types → pre-flattened attributes and relations,
+`"component:Name"` cross-references, UML multiplicities shipped as
+both the source string and the derived kind (`EXACTLY_ONE`,
+`ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`). Dangling references
+fail the build — a model that doesn't make sense never generates.
+See `generator/testdata/golden/v4.0.20/metamodel.json` for the real
+thing and `generator/common/metamodel/schema.go` for the schema.
 
-GLOBAL OPTIONS (used by metamodel / list*):
-   --owner value          Git repository owner   (default "FINTLabs",                 $GITHUB_OWNER)
-   --repo value           Git repository name    (default "fint-informasjonsmodell",  $GITHUB_PROJECT)
-   --filename value       XMI filename           (default "FINT-informasjonsmodell.xml", $MODEL_FILENAME)
-   --tag, -t value        model release/tag      (default "latest")
-   --force, -f            re-download XMI even if cached
-```
+## Releases
 
-The downloaded XMI is cached in `$HOME/.fint-model/.cache`. Subsequent
-`metamodel` runs reuse the cache unless `--force` is set.
-
-## `metamodel.json` shape
-
-```json
-{
-  "schemaVersion": "1.1",
-  "fintVersion": "v4.0.20",
-  "generatedAt": "2026-05-09T12:00:00Z",
-  "components": [
-    {
-      "name": "utdanning-vurdering",
-      "types": [
-        {
-          "name": "Elevvurdering",
-          "stereotype": "hovedklasse",
-          "parent": null,
-          "path": "utdanning/vurdering/elevvurdering",
-          "idFields": ["systemId"],
-          "attributes": [
-            { "name": "systemId",
-              "type": "felles-kompleksedatatyper:Identifikator",
-              "list": false, "optional": false,
-              "deprecated": false,
-              "inherited": false,
-              "from": "utdanning-vurdering:Elevvurdering" }
-          ],
-          "relations": [
-            { "name": "elevforhold",
-              "target": "utdanning-elev:Elevforhold",
-              "multiplicity": "1",
-              "multiplicityKind": "EXACTLY_ONE",
-              "bidirectional": {
-                "isSource": true,
-                "inverseName": "elevvurdering"
-              },
-              "deprecated": false,
-              "inherited": false,
-              "from": "utdanning-vurdering:Elevvurdering" }
-          ]
-        }
-      ]
-    }
-  ]
-}
-```
-
-Conventions:
-
-- **Components** are URL-style lowercase names (`utdanning-vurdering`,
-  `felles-kodeverk-iso`). Consumers derive language-specific package
-  forms by splitting on `-`.
-- **Cross-references** between types use `"component:Name"` strings.
-  Primitives stay bare and lowercase: `string`, `boolean`, `date`,
-  `datetime`, `int`, `long`, `float`, `double`. The closed primitive set
-  is enumerated in `common/metamodel/schema.go`.
-- **Stereotypes** are the EA-canonical Norwegian values: `hovedklasse`
-  (the identifiable, REST-exposed kind), `datatype`, `abstrakt`,
-  `referanse`.
-- **Attributes and relations are pre-flattened.** Each type's
-  `attributes` and `relations` arrays contain *both* its own entries
-  *and* everything inherited from the parent chain (own first, then
-  parent's, then grandparent's, …). Each entry carries:
-  - `inherited` (bool) — `false` for the type's own entries, `true` if
-    the entry was inherited from a parent.
-  - `from` (`"component:Name"`) — the type that *declares* the entry.
-    Populated for both own and inherited entries (own entries point at
-    the type itself), so consumers can grep "who declares X" without
-    special-casing.
-  Pre-flattening means consumers don't re-implement the parent walk.
-  Filter `inherited: false` to recover own-only when needed.
-- **`multiplicity` is shipped both ways.** `multiplicity` is the
-  source-of-truth UML string (`"1"`, `"0..1"`, `"0..*"`, `"1..*"`)
-  and diff-friendly. `multiplicityKind` is the derived enum-friendly
-  form (`EXACTLY_ONE`, `ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`)
-  so consumers don't repeat the same 4-line lookup. These are UML
-  *end* multiplicities — the `lower..upper` bounds of the target end —
-  not database-style relationship cardinality.
-- **`bidirectional`** is a single nullable struct: `null` for
-  unidirectional, `{ isSource, inverseName }` when bidirectional.
-  `isSource` matters chiefly for many-to-many — for 1-1 / 1-* either
-  side is structurally fine.
-- **No `identifiable` flag** — derive it from `idFields`: a type is
-  identifiable iff `idFields != null && idFields.length > 0`. Same
-  info, expressed once.
-- **`path`** (REST URL fragment) is populated only for `hovedklasse`
-  types — derived as `<component-with-slashes>/<lowercase-typename>`,
-  e.g. `utdanning/vurdering/elevvurdering`. `null` for everything else
-  (datatypes, abstracts, references aren't REST-exposed).
-- **`idFields`** is the parent-chain-flattened list of attribute names
-  whose type is `Identifikator`. Populated whenever the type or any of
-  its ancestors has at least one such attribute (so abstract bases
-  like `Begrep` get `idFields: ["systemId"]` too); `null` otherwise.
-
-## CI integration
-
-Recommended setup: a GitHub Action in `fint-informasjonsmodell` that
-runs this tool on every EA model change, regenerates `metamodel.json`,
-and commits it back to the model repo:
-
-```bash
-docker run --rm -v $(pwd):/src ghcr.io/fintlabs/fint-core-information-model:<version> \
-  metamodel -o /src/metamodel.json -t <release>
-```
-
-Then every model PR carries both the unreadable XMI diff and a clean
-JSON diff in the same review. Downstream emitter repos pin a tagged
-version of `fint-informasjonsmodell` and read its `metamodel.json`.
-
-## Install
-
-### Binaries
-
-Precompiled images are available on
-[GHCR](https://github.com/FINTLabs/fint-core-information-model/pkgs/container/fint-core-information-model).
-
-Mount the output directory as `/src`:
-
-Linux / macOS:
-```bash
-docker run -v $(pwd):/src ghcr.io/fintlabs/fint-core-information-model:latest <ARGS>
-```
-
-Windows PowerShell:
-```ps1
-docker run -v ${pwd}:/src ghcr.io/fintlabs/fint-core-information-model:latest <ARGS>
-```
-
-### Source
-
-```bash
-gh repo clone fintlabs/fint-core-information-model
-cd fint-core-information-model/generator
-go build -o fint-model .
-```
-
-(`go build -o` keeps the CLI named `fint-model`; a bare `go install`
-would name the binary after the module path.)
-
-Update dependencies:
-
-```bash
-go get .
-go mod vendor
-go build -a
-```
-
-## Kotlin mapping
-
-One class per model type (no `Elev` / `ElevResource` split), all
-metadata reachable without reflection:
-
-- `abstrakt` types become **interfaces** declaring their own
-  attributes. This is safe because inheritance in the model only ever
-  targets `abstrakt` parents; the emitter fails loudly if that
-  invariant breaks.
-- Every other type becomes an **immutable `data class`** whose
-  constructor parameters are the pre-flattened attribute list from the
-  JSON, as nullable `val`s defaulting to `null` (partial payloads
-  never throw). Inherited attributes get `override` since the parent
-  interface declares them. Types with no attributes become plain
-  classes. The `links` map is deliberately the *only* mutable surface
-  — consumers enrich links (`addLink`), never fields; cached entities
-  stay thread-safe. Deserialization goes through the constructor, so
-  consumers need `jackson-module-kotlin` (auto-registered in Spring
-  Boot Kotlin apps) — without it, Jackson produces silently empty
-  objects.
-- A type **is a resource** — implements `FintResource` and carries a
-  `links: MutableMap<String, MutableList<Link>>` — iff it is a
-  `hovedklasse` or its flattened relation list is non-empty (the old
-  Java `isResource` rule).
-- Every concrete type carries a **metadata companion**
-  (`companion object Metadata`): `FintTypeMetadata` (`type`, `ref`,
-  `attributes`) for datatypes and references, `FintResourceMetadata`
-  (plus `path`, `idFields`, `relations`) for resources. Relations bake
-  compile-time-known data flat: `targetPath` (the target's REST path,
-  for link building) and, when bidirectional, the inverse relation's
-  multiplicity. Metadata is reachable statically (`Elev.idFields`),
-  from an instance (`resource.metadata`), and from strings or classes
-  via the generated **`FintModel`** registry (`byPath` / `byRef` /
-  `byType`).
-- Resources implement **`visitIdentifikators(IdentifikatorVisitor)`**
-  (allocation-free iteration over *usable* ids — fields whose
-  `identifikatorverdi` is set; the callback gets the field name and
-  the non-null verdi string; declared names live on
-  `metadata.idFields`) and **`identifikatorverdi(field)`**
-  (case-insensitive `when`-chain lookup returning the verdi). The full
-  `Identifikator` object — e.g. for `gyldighetsperiode` — is always
-  reachable through the typed property.
-- **`Link` stores the parsed form** — `idField` + `idValue` — not the
-  href. `Link.parse(href)` decomposes incoming hrefs (last two
-  segments; anything that doesn't decompose is kept verbatim in
-  `unresolved`, e.g. grep.udir.no references), and
-  `link.href(baseUrl, path)` rebuilds the wire form using
-  `relationPath(...)` from the owning resource's metadata.
-- **`FintMultiplicity`** uses UML range names (`EXACTLY_ONE`,
-  `ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`) with `lower`/`upper`
-  bounds and derived `required`/`many` — the two flags consumer code
-  branches on. Direction is communicated by presence:
-  `relation.bidirectional` is `null` for unidirectional relations.
-- Primitives map to Kotlin/`java.time` types: `string → String`,
-  `boolean → Boolean`, `int → Int`, `long → Long`, `float → Float`,
-  `double → Double`, `date → LocalDate`, `datetime → LocalDateTime`.
-- Zero dependencies beyond `kotlin-stdlib` and `java.time`.
-
-Deliberately not emitted yet (added incrementally as they earn their
-way in): serialization annotations (`_links` mapping lives in a small
-Jackson module on the consumer side for now), validation annotations,
-KDoc, `@Deprecated` stamping.
-
-## Notes
-
-- **`dateTime` vs `date`**: EA uses both forms inconsistently for
-  semantically distinct concepts (date-only vs timestamp). Both
-  canonicalise to lowercase primitives in `metamodel.json` (`date`
-  stays `date`, `dateTime` becomes `datetime`). The Kotlin emitter
-  maps them to `LocalDate` / `LocalDateTime`.
-- **No compile gate yet**: the generated tree is covered by exact-output
-  and invariant tests in `generate/kotlin`, but nothing compiles it in
-  CI. Wiring a `kotlinc` check is the next hardening step.
+Versions are plain semver starting at `0.x` while the API settles;
+each release states which model version it was generated from.
+Publishing goes to GitHub Packages as
+`no.novari.fint:fint-core-information-model`. The release workflow
+re-verifies the drift gate and the full test suite before publishing —
+a release is always exactly what's committed.
 
 ## Author
 
