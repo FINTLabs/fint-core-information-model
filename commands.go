@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/FINTLabs/fint-model/branches"
-	"github.com/FINTLabs/fint-model/common/metamodel"
-	"github.com/FINTLabs/fint-model/generate"
-	"github.com/FINTLabs/fint-model/tags"
+	"github.com/FINTLabs/fint-core-information-model/branches"
+	"github.com/FINTLabs/fint-core-information-model/common/metamodel"
+	"github.com/FINTLabs/fint-core-information-model/generate"
+	"github.com/FINTLabs/fint-core-information-model/tags"
 	"github.com/urfave/cli"
 )
 

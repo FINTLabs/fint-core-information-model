@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/FINTLabs/fint-model/common/metamodel"
+	"github.com/FINTLabs/fint-core-information-model/common/metamodel"
 )
 
 var (

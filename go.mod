@@ -1,4 +1,4 @@
-module github.com/FINTLabs/fint-model
+module github.com/FINTLabs/fint-core-information-model
 
 go 1.13
 

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/FINTLabs/fint-model/common/types"
+	"github.com/FINTLabs/fint-core-information-model/common/types"
 )
 
 func Build(classes []*types.Class, fintVersion, sourceCommit string) *Document {

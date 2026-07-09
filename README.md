@@ -1,11 +1,9 @@
-# fint-model
+# fint-core-information-model
 
-> **Branch note (`fint-core`):** this branch is the FINT core team's
-> edition of fint-model. Here we generate and own our own Kotlin model
-> library (`EA XMI → metamodel.json → Kotlin`, replacing the Java/C#
-> emitters that remain on `master`). It lives as a branch of the
-> original repository rather than a separate repo to avoid naming
-> conflicts with other projects.
+The FINT core team's edition of the information model pipeline,
+forked from [FINTLabs/fint-model](https://github.com/FINTLabs/fint-model).
+Here the core team owns the model library end-to-end; the original
+Java/C# generator lives on in the upstream repo.
 
 ## Description
 
@@ -169,7 +167,7 @@ runs this tool on every EA model change, regenerates `metamodel.json`,
 and commits it back to the model repo:
 
 ```bash
-docker run --rm -v $(pwd):/src ghcr.io/fintlabs/fint-model:<version> \
+docker run --rm -v $(pwd):/src ghcr.io/fintlabs/fint-core-information-model:<version> \
   metamodel -o /src/metamodel.json -t <release>
 ```
 
@@ -182,27 +180,30 @@ version of `fint-informasjonsmodell` and read its `metamodel.json`.
 ### Binaries
 
 Precompiled images are available on
-[GHCR](https://github.com/FINTLabs/fint-model/pkgs/container/fint-model).
+[GHCR](https://github.com/FINTLabs/fint-core-information-model/pkgs/container/fint-core-information-model).
 
 Mount the output directory as `/src`:
 
 Linux / macOS:
 ```bash
-docker run -v $(pwd):/src ghcr.io/fintlabs/fint-model:latest <ARGS>
+docker run -v $(pwd):/src ghcr.io/fintlabs/fint-core-information-model:latest <ARGS>
 ```
 
 Windows PowerShell:
 ```ps1
-docker run -v ${pwd}:/src ghcr.io/fintlabs/fint-model:latest <ARGS>
+docker run -v ${pwd}:/src ghcr.io/fintlabs/fint-core-information-model:latest <ARGS>
 ```
 
 ### Source
 
 ```bash
-gh repo clone fintlabs/fint-model
-cd fint-model
-go install
+gh repo clone fintlabs/fint-core-information-model
+cd fint-core-information-model
+go build -o fint-model .
 ```
+
+(`go build -o` keeps the CLI named `fint-model`; a bare `go install`
+would name the binary after the module path.)
 
 Update dependencies:
 
