@@ -2,7 +2,15 @@ package no.novari.fint.core.model
 
 import kotlin.reflect.KClass
 
+/**
+ * Registry over every type in the FINT model.
+ *
+ * Use [byPath] to find a resource from the three parts of a REST path, or
+ * follow a relation with [FintRelation.targetMetadata].
+ */
 object FintModel {
+
+    /** Metadata for every concrete type in the model. */
     val types: List<FintTypeMetadata> = listOf(
         no.novari.fint.core.model.arkiv.kodeverk.DokumentStatus.Metadata,
         no.novari.fint.core.model.arkiv.kodeverk.DokumentType.Metadata,
@@ -194,18 +202,22 @@ object FintModel {
         no.novari.fint.core.model.ressurs.tilgang.Rettighet.Metadata,
     )
 
+    /** Metadata for every resource: the types that can carry links. */
     val resources: List<FintResourceMetadata> = types.filterIsInstance<FintResourceMetadata>()
+
+    internal val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }
 
     private val pathIndex: Map<String, FintResourceMetadata> =
         resources.mapNotNull { meta -> meta.path?.let { it to meta } }.toMap()
-    private val refIndex: Map<String, FintTypeMetadata> = types.associateBy { it.ref }
-    private val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }
 
-    fun byPath(path: String): FintResourceMetadata? = pathIndex[path.trim('/').lowercase()]
-    fun byRef(ref: String): FintTypeMetadata? = refIndex[ref]
-    fun byType(type: KClass<*>): FintTypeMetadata? = typeIndex[type]
-    fun resourceByType(type: KClass<*>): FintResourceMetadata? = byType(type) as? FintResourceMetadata
+    /**
+     * Finds the resource served at /[domainName]/[packageName]/[resourceName].
+     * Returns null when no such resource exists. Case does not matter.
+     */
+    fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
+        pathIndex["$domainName/$packageName/$resourceName".lowercase()]
 }
 
+/** Metadata for the type this relation points to, or null for targets outside the model. */
 val FintRelation.targetMetadata: FintTypeMetadata?
-    get() = FintModel.byType(target)
+    get() = FintModel.typeIndex[target]

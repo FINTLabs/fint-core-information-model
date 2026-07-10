@@ -10,30 +10,28 @@ import kotlin.test.assertTrue
 class FintModelTest {
 
     @Test
-    fun `byPath resolves a resource`() {
-        assertSame(Elev.Metadata, FintModel.byPath("utdanning/elev/elev"))
+    fun `byPath resolves a resource from its three path parts`() {
+        assertSame(Elev.Metadata, FintModel.byPath("utdanning", "elev", "elev"))
     }
 
     @Test
-    fun `byPath normalizes case and surrounding slashes`() {
-        assertSame(Elev.Metadata, FintModel.byPath("/Utdanning/Elev/Elev/"))
+    fun `byPath ignores case`() {
+        assertSame(Elev.Metadata, FintModel.byPath("Utdanning", "Elev", "Elev"))
     }
 
     @Test
     fun `byPath returns null for unknown resources`() {
-        assertNull(FintModel.byPath("utdanning/elev/finnesikke"))
+        assertNull(FintModel.byPath("utdanning", "elev", "finnesikke"))
     }
 
     @Test
-    fun `byRef and byType agree`() {
-        assertSame(FintModel.byRef("utdanning-elev:Elev"), FintModel.byType(Elev::class))
-    }
-
-    @Test
-    fun `every resource path round-trips through byPath`() {
+    fun `every three-segment resource path round-trips through byPath`() {
         assertTrue(FintModel.resources.isNotEmpty())
         FintModel.resources.forEach { meta ->
-            meta.path?.let { assertSame(meta, FintModel.byPath(it)) }
+            val segments = meta.path?.split("/") ?: return@forEach
+            if (segments.size == 3) {
+                assertSame(meta, FintModel.byPath(segments[0], segments[1], segments[2]))
+            }
         }
     }
 

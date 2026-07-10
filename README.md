@@ -43,7 +43,7 @@ model metadata reachable statically, from instances, and from strings,
 without reflection:
 
 ```kotlin
-val meta = FintModel.byPath("utdanning/elev/elev") ?: throw NotFound()
+val meta = FintModel.byPath("utdanning", "elev", "elev") ?: throw NotFound()
 meta.isIdField("systemid")
 
 val elev: FintResource = deserialize(payload)
@@ -60,7 +60,9 @@ The essentials:
   thread-safe. `equals`/`hashCode`/`copy()` deliberately ignore links.
 - **Metadata companions** on every concrete type (`ref`, `attributes`;
   resources add `path`, `idFields`, `relations`), plus the generated
-  `FintModel` registry (`byPath` / `byRef` / `byType`).
+  `FintModel` registry: `byPath(domainName, packageName, resourceName)`
+  answers REST routing; relations are walked via
+  `relation.targetMetadata`.
 - **Relations carry baked data**: `targetPath` for link building,
   `multiplicity` with `required`/`many` flags, and
   `bidirectional` (`null` means unidirectional) with the inverse

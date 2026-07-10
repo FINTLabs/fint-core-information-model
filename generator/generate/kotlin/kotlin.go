@@ -445,8 +445,17 @@ func renderRegistry(doc *metamodel.Document) string {
 	var b strings.Builder
 	b.WriteString("package " + pkg + "\n\n")
 	b.WriteString("import kotlin.reflect.KClass\n\n")
-	b.WriteString("object FintModel {\n")
-	b.WriteString("    val types: List<FintTypeMetadata> = listOf(\n")
+	b.WriteString(`/**
+ * Registry over every type in the FINT model.
+ *
+ * Use [byPath] to find a resource from the three parts of a REST path, or
+ * follow a relation with [FintRelation.targetMetadata].
+ */
+object FintModel {
+
+    /** Metadata for every concrete type in the model. */
+    val types: List<FintTypeMetadata> = listOf(
+`)
 	for ci := range doc.Components {
 		comp := &doc.Components[ci]
 		for ti := range comp.Types {
@@ -457,19 +466,28 @@ func renderRegistry(doc *metamodel.Document) string {
 			b.WriteString("        " + packageFor(comp.Name) + "." + t.Name + ".Metadata,\n")
 		}
 	}
-	b.WriteString("    )\n\n")
-	b.WriteString("    val resources: List<FintResourceMetadata> = types.filterIsInstance<FintResourceMetadata>()\n\n")
-	b.WriteString("    private val pathIndex: Map<String, FintResourceMetadata> =\n")
-	b.WriteString("        resources.mapNotNull { meta -> meta.path?.let { it to meta } }.toMap()\n")
-	b.WriteString("    private val refIndex: Map<String, FintTypeMetadata> = types.associateBy { it.ref }\n")
-	b.WriteString("    private val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }\n\n")
-	b.WriteString("    fun byPath(path: String): FintResourceMetadata? = pathIndex[path.trim('/').lowercase()]\n")
-	b.WriteString("    fun byRef(ref: String): FintTypeMetadata? = refIndex[ref]\n")
-	b.WriteString("    fun byType(type: KClass<*>): FintTypeMetadata? = typeIndex[type]\n")
-	b.WriteString("    fun resourceByType(type: KClass<*>): FintResourceMetadata? = byType(type) as? FintResourceMetadata\n")
-	b.WriteString("}\n\n")
-	b.WriteString("val FintRelation.targetMetadata: FintTypeMetadata?\n")
-	b.WriteString("    get() = FintModel.byType(target)\n")
+	b.WriteString(`    )
+
+    /** Metadata for every resource: the types that can carry links. */
+    val resources: List<FintResourceMetadata> = types.filterIsInstance<FintResourceMetadata>()
+
+    internal val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }
+
+    private val pathIndex: Map<String, FintResourceMetadata> =
+        resources.mapNotNull { meta -> meta.path?.let { it to meta } }.toMap()
+
+    /**
+     * Finds the resource served at /[domainName]/[packageName]/[resourceName].
+     * Returns null when no such resource exists. Case does not matter.
+     */
+    fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
+        pathIndex["$domainName/$packageName/$resourceName".lowercase()]
+}
+
+/** Metadata for the type this relation points to, or null for targets outside the model. */
+val FintRelation.targetMetadata: FintTypeMetadata?
+    get() = FintModel.typeIndex[target]
+`)
 	return b.String()
 }
 
@@ -480,7 +498,12 @@ func runtimeFiles() map[string]string {
 	return map[string]string{
 		dir + "/FintObject.kt": "package " + pkg + `
 
+/**
+ * Base type for everything generated from the FINT model.
+ */
 interface FintObject {
+
+    /** Metadata describing this type. */
     val metadata: FintTypeMetadata
 }
 `,
@@ -488,21 +511,41 @@ interface FintObject {
 
 import kotlin.reflect.KClass
 
+/**
+ * Describes one type from the FINT model.
+ */
 interface FintTypeMetadata {
+
+    /** The Kotlin class this metadata belongs to. */
     val type: KClass<*>
+
+    /** The model reference, e.g. "utdanning-elev:Elev". */
     val ref: String
+
+    /** Every field on the type, including inherited ones. */
     val attributes: List<FintAttribute>
 }
 `,
 		dir + "/FintResourceMetadata.kt": "package " + pkg + `
 
+/**
+ * Describes a resource: a type with a REST path, id fields and relations.
+ */
 interface FintResourceMetadata : FintTypeMetadata {
+
+    /** The REST path, e.g. "utdanning/elev/elev", or null when the resource has no own endpoint. */
     val path: String?
+
+    /** The names of the fields that can identify this resource. */
     val idFields: List<String>
+
+    /** Every relation from this resource, including inherited ones. */
     val relations: List<FintRelation>
 
+    /** True when [name] is one of this resource's id fields. Case does not matter. */
     fun isIdField(name: String): Boolean = idFields.any { it.equals(name, ignoreCase = true) }
 
+    /** The REST path of the resource [relationName] points to, or null. Case does not matter. */
     fun relationPath(relationName: String): String? =
         relations.firstOrNull { it.name.equals(relationName, ignoreCase = true) }?.targetPath
 }
@@ -511,6 +554,14 @@ interface FintResourceMetadata : FintTypeMetadata {
 
 import kotlin.reflect.KClass
 
+/**
+ * One field on a model type.
+ *
+ * @property name the field name
+ * @property type the Kotlin class of the field's value
+ * @property list true when the field holds a list of values
+ * @property optional true when the model allows the field to be empty
+ */
 data class FintAttribute(
     val name: String,
     val type: KClass<*>,
@@ -522,6 +573,15 @@ data class FintAttribute(
 
 import kotlin.reflect.KClass
 
+/**
+ * A relation from one model type to another.
+ *
+ * @property name the relation name, as used in links
+ * @property target the class the relation points to
+ * @property targetPath the REST path of the target, or null when the target is outside the model
+ * @property multiplicity how many links the model expects on this side
+ * @property bidirectional set when the relation goes both ways, null when it only goes one way
+ */
 data class FintRelation(
     val name: String,
     val target: KClass<out FintObject>,
@@ -529,11 +589,19 @@ data class FintRelation(
     val multiplicity: FintMultiplicity,
     val bidirectional: Bidirectional? = null,
 ) {
+    /** True when the relation goes both ways. */
     val isBidirectional: Boolean get() = bidirectional != null
 }
 `,
 		dir + "/Bidirectional.kt": "package " + pkg + `
 
+/**
+ * Extra information for a relation that goes both ways.
+ *
+ * @property inverseName the relation name seen from the other side
+ * @property isSource true when this side owns the relation in the model
+ * @property inverseMultiplicity how many links the other side expects
+ */
 data class Bidirectional(
     val inverseName: String,
     val isSource: Boolean,
@@ -542,34 +610,60 @@ data class Bidirectional(
 `,
 		dir + "/FintMultiplicity.kt": "package " + pkg + `
 
+/**
+ * How many of something the model expects, given as a range.
+ */
 enum class FintMultiplicity(val lower: Int, val upper: Int?) {
     EXACTLY_ONE(1, 1),
     ZERO_OR_ONE(0, 1),
     ONE_OR_MORE(1, null),
     ZERO_OR_MORE(0, null);
 
+    /** True when at least one is required. */
     val required: Boolean get() = lower > 0
+
+    /** True when there can be more than one. */
     val many: Boolean get() = upper == null
 }
 `,
 		dir + "/IdentifikatorVisitor.kt": "package " + pkg + `
 
+/**
+ * Receives id fields from [FintResource.visitIdentifikators], one at a time.
+ */
 fun interface IdentifikatorVisitor {
+
+    /** Called with the field name and its value. */
     fun visit(field: String, value: String)
 }
 `,
 		dir + "/FintResource.kt": "package " + pkg + `
 
+/**
+ * A resource from the FINT model: a type that can carry links to other
+ * resources.
+ *
+ * Fields are immutable — the [links] map is the only thing that can change.
+ * Note that equals, hashCode and copy() ignore links on purpose.
+ */
 interface FintResource : FintObject {
+
+    /** Links to related resources, grouped by relation name. */
     val links: MutableMap<String, MutableList<Link>>
+
+    /** Metadata for this resource: its path, id fields and relations. */
     override val metadata: FintResourceMetadata
 
+    /** Calls [visitor] once for every id field that has a value. */
     fun visitIdentifikators(visitor: IdentifikatorVisitor)
 
+    /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
 
+    /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 
+    /** Adds [link] under [relation]. */
     fun addLink(relation: String, link: Link) {
         links.getOrPut(relation) { mutableListOf() }.add(link)
     }
@@ -580,15 +674,25 @@ interface FintResource : FintObject {
 import java.net.URLDecoder
 import java.net.URLEncoder
 
+/**
+ * A link to a resource, stored as the id that points it out instead of the
+ * full href.
+ *
+ * @property idField the id field name from the href, e.g. "systemid"
+ * @property idValue the id value from the href
+ * @property unresolved the original href, kept as-is when it does not follow the FINT id pattern
+ */
 data class Link(
     val idField: String? = null,
     val idValue: String? = null,
     val unresolved: String? = null,
 ) {
+    /** Builds the full href from [baseUrl], the target's [path] and the stored id. */
     fun href(baseUrl: String, path: String): String =
         unresolved ?: baseUrl.trimEnd('/') + "/" + path + "/" + idField + "/" + encode(idValue.orEmpty())
 
     companion object {
+        /** Parses [href] into an id field and value, using the last two path segments. */
         fun parse(href: String): Link {
             val segments = href.substringAfter("://").split('/').filter { it.isNotEmpty() }
             if (segments.size < 4) return Link(unresolved = href)

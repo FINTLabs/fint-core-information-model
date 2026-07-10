@@ -134,7 +134,7 @@ func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	if !ok {
 		t.Fatalf("missing FintModel.kt")
 	}
-	if !strings.Contains(registry, "object FintModel {") {
+	if !strings.Contains(registry, "object FintModel {") || !strings.Contains(registry, "fun byPath(domainName: String, packageName: String, resourceName: String)") {
 		t.Fatalf("registry missing FintModel object")
 	}
 	for _, comp := range doc.Components {
@@ -318,16 +318,31 @@ func TestFiles_AttributelessResource(t *testing.T) {
 func TestFiles_RuntimeInterface(t *testing.T) {
 	want := `package no.novari.fint.core.model
 
+/**
+ * A resource from the FINT model: a type that can carry links to other
+ * resources.
+ *
+ * Fields are immutable — the [links] map is the only thing that can change.
+ * Note that equals, hashCode and copy() ignore links on purpose.
+ */
 interface FintResource : FintObject {
+
+    /** Links to related resources, grouped by relation name. */
     val links: MutableMap<String, MutableList<Link>>
+
+    /** Metadata for this resource: its path, id fields and relations. */
     override val metadata: FintResourceMetadata
 
+    /** Calls [visitor] once for every id field that has a value. */
     fun visitIdentifikators(visitor: IdentifikatorVisitor)
 
+    /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
 
+    /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 
+    /** Adds [link] under [relation]. */
     fun addLink(relation: String, link: Link) {
         links.getOrPut(relation) { mutableListOf() }.add(link)
     }
@@ -339,13 +354,19 @@ interface FintResource : FintObject {
 func TestFiles_RuntimeMultiplicity(t *testing.T) {
 	want := `package no.novari.fint.core.model
 
+/**
+ * How many of something the model expects, given as a range.
+ */
 enum class FintMultiplicity(val lower: Int, val upper: Int?) {
     EXACTLY_ONE(1, 1),
     ZERO_OR_ONE(0, 1),
     ONE_OR_MORE(1, null),
     ZERO_OR_MORE(0, null);
 
+    /** True when at least one is required. */
     val required: Boolean get() = lower > 0
+
+    /** True when there can be more than one. */
     val many: Boolean get() = upper == null
 }
 `
