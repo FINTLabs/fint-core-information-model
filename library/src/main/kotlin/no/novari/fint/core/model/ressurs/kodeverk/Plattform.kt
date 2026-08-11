@@ -34,6 +34,8 @@ data class Plattform(
         override val type = Plattform::class
         override val ref = "ressurs-kodeverk:Plattform"
         override val path = "ressurs/kodeverk/plattform"
+        override val name = "plattform"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

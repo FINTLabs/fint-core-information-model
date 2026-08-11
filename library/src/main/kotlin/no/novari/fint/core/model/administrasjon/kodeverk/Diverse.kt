@@ -33,6 +33,8 @@ data class Diverse(
         override val type = Diverse::class
         override val ref = "administrasjon-kodeverk:Diverse"
         override val path = "administrasjon/kodeverk/diverse"
+        override val name = "diverse"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

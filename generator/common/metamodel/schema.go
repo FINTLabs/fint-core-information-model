@@ -20,9 +20,16 @@
 //     (e.g. inverseName set on a unidirectional relation) are unrepresentable.
 //     IsSource is meaningful chiefly for many-to-many; for 1-1 / 1-* it's
 //     either obvious or arbitrary which side is source.
+//
+//   - Common types have no Path. A component without a package part — today
+//     only "felles" — owns no endpoints: its hovedklasser are served under the
+//     domain and package of whatever links to them, so felles:Person is reached
+//     at "utdanning/elev/person" and at "administrasjon/personal/person", never
+//     at "felles/person". Emitting a Path for those would name an endpoint that
+//     does not exist, so they carry Common instead.
 package metamodel
 
-const SchemaVersion = "1.1"
+const SchemaVersion = "1.2"
 
 type Document struct {
 	SchemaVersion string      `json:"schemaVersion"`
@@ -45,6 +52,7 @@ type Type struct {
 	Parent        *string     `json:"parent"`
 	Documentation string      `json:"documentation"`
 	Path          *string     `json:"path"`
+	Common        bool        `json:"common,omitempty"`
 	IdFields      []string    `json:"idFields"`
 	Attributes    []Attribute `json:"attributes"`
 	Relations     []Relation  `json:"relations"`

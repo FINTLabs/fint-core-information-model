@@ -34,6 +34,8 @@ data class Fravarsgrunn(
         override val type = Fravarsgrunn::class
         override val ref = "administrasjon-kodeverk:Fravarsgrunn"
         override val path = "administrasjon/kodeverk/fravarsgrunn"
+        override val name = "fravarsgrunn"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

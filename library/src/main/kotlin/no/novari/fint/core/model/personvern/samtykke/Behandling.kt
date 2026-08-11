@@ -36,6 +36,8 @@ data class Behandling(
         override val type = Behandling::class
         override val ref = "personvern-samtykke:Behandling"
         override val path = "personvern/samtykke/behandling"
+        override val name = "behandling"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("aktiv", Boolean::class, list = false, optional = false),

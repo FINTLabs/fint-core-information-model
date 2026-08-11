@@ -34,6 +34,8 @@ data class Fagstatus(
         override val type = Fagstatus::class
         override val ref = "utdanning-kodeverk:Fagstatus"
         override val path = "utdanning/kodeverk/fagstatus"
+        override val name = "fagstatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

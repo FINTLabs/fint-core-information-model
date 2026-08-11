@@ -34,6 +34,8 @@ data class Sprak(
         override val type = Sprak::class
         override val ref = "felles-kodeverk-iso:Sprak"
         override val path = "felles/kodeverk/iso/sprak"
+        override val name = "sprak"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

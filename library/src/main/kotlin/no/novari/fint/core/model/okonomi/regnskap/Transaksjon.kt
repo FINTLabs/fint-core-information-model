@@ -40,6 +40,8 @@ data class Transaksjon(
         override val type = Transaksjon::class
         override val ref = "okonomi-regnskap:Transaksjon"
         override val path = "okonomi/regnskap/transaksjon"
+        override val name = "transaksjon"
+        override val isCommon = false
         override val idFields = listOf("transaksjonsId")
         override val attributes = listOf(
             FintAttribute("belop", Long::class, list = false, optional = false),

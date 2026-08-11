@@ -34,6 +34,8 @@ data class Termin(
         override val type = Termin::class
         override val ref = "utdanning-kodeverk:Termin"
         override val path = "utdanning/kodeverk/termin"
+        override val name = "termin"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

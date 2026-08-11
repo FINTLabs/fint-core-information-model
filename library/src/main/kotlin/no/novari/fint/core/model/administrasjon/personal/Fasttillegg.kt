@@ -44,6 +44,8 @@ data class Fasttillegg(
         override val type = Fasttillegg::class
         override val ref = "administrasjon-personal:Fasttillegg"
         override val path = "administrasjon/personal/fasttillegg"
+        override val name = "fasttillegg"
+        override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("belop", Long::class, list = false, optional = false),

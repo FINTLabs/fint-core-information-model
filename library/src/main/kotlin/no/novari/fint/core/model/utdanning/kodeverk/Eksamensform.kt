@@ -34,6 +34,8 @@ data class Eksamensform(
         override val type = Eksamensform::class
         override val ref = "utdanning-kodeverk:Eksamensform"
         override val path = "utdanning/kodeverk/eksamensform"
+        override val name = "eksamensform"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

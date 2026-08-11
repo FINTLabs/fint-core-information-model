@@ -48,7 +48,9 @@ data class Person(
     companion object Metadata : FintResourceMetadata {
         override val type = Person::class
         override val ref = "felles:Person"
-        override val path = "felles/person"
+        override val path: String? = null
+        override val name = "person"
+        override val isCommon = true
         override val idFields = listOf("fodselsnummer")
         override val attributes = listOf(
             FintAttribute("bilde", String::class, list = false, optional = true),
@@ -81,7 +83,7 @@ data class Person(
             FintRelation(
                 name = "foreldreansvar",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
                 bidirectional = Bidirectional(inverseName = "foreldre", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
@@ -107,14 +109,14 @@ data class Person(
             FintRelation(
                 name = "parorende",
                 target = Kontaktperson::class,
-                targetPath = "felles/kontaktperson",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
                 bidirectional = Bidirectional(inverseName = "kontaktperson", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
             FintRelation(
                 name = "foreldre",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
                 bidirectional = Bidirectional(inverseName = "foreldreansvar", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),

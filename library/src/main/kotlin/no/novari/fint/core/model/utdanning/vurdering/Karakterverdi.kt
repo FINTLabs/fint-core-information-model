@@ -37,6 +37,8 @@ data class Karakterverdi(
         override val type = Karakterverdi::class
         override val ref = "utdanning-vurdering:Karakterverdi"
         override val path = "utdanning/vurdering/karakterverdi"
+        override val name = "karakterverdi"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -37,6 +37,8 @@ data class Fakturagrunnlag(
         override val type = Fakturagrunnlag::class
         override val ref = "okonomi-faktura:Fakturagrunnlag"
         override val path = "okonomi/faktura/fakturagrunnlag"
+        override val name = "fakturagrunnlag"
+        override val isCommon = false
         override val idFields = listOf("ordrenummer")
         override val attributes = listOf(
             FintAttribute("avgiftsbelop", Long::class, list = false, optional = true),

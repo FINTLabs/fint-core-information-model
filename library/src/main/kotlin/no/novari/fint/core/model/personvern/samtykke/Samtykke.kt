@@ -36,6 +36,8 @@ data class Samtykke(
         override val type = Samtykke::class
         override val ref = "personvern-samtykke:Samtykke"
         override val path = "personvern/samtykke/samtykke"
+        override val name = "samtykke"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = false),
@@ -53,7 +55,7 @@ data class Samtykke(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
             ),
             FintRelation(

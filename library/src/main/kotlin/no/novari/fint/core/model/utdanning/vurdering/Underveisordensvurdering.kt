@@ -33,6 +33,8 @@ data class Underveisordensvurdering(
         override val type = Underveisordensvurdering::class
         override val ref = "utdanning-vurdering:Underveisordensvurdering"
         override val path = "utdanning/vurdering/underveisordensvurdering"
+        override val name = "underveisordensvurdering"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kommentar", String::class, list = false, optional = false),

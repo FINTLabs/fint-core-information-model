@@ -33,6 +33,8 @@ data class Art(
         override val type = Art::class
         override val ref = "administrasjon-kodeverk:Art"
         override val path = "administrasjon/kodeverk/art"
+        override val name = "art"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

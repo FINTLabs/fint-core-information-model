@@ -34,6 +34,8 @@ data class JournalpostType(
         override val type = JournalpostType::class
         override val ref = "arkiv-kodeverk:JournalpostType"
         override val path = "arkiv/kodeverk/journalposttype"
+        override val name = "journalposttype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

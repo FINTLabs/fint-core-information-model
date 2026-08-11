@@ -41,6 +41,8 @@ data class Faktura(
         override val type = Faktura::class
         override val ref = "okonomi-faktura:Faktura"
         override val path = "okonomi/faktura/faktura"
+        override val name = "faktura"
+        override val isCommon = false
         override val idFields = listOf("fakturanummer")
         override val attributes = listOf(
             FintAttribute("adresse", Adresse::class, list = false, optional = true),

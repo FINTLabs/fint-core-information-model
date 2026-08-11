@@ -22,13 +22,15 @@ class Fakturamottaker : FintResource {
         override val type = Fakturamottaker::class
         override val ref = "okonomi-faktura:Fakturamottaker"
         override val path: String? = null
+        override val name = "fakturamottaker"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = emptyList<FintAttribute>()
         override val relations = listOf(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
             ),
         )

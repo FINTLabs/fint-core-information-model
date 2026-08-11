@@ -33,6 +33,8 @@ data class AdministrativEnhet(
         override val type = AdministrativEnhet::class
         override val ref = "arkiv-noark:AdministrativEnhet"
         override val path = "arkiv/noark/administrativenhet"
+        override val name = "administrativenhet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

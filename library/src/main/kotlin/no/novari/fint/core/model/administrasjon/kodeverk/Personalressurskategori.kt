@@ -34,6 +34,8 @@ data class Personalressurskategori(
         override val type = Personalressurskategori::class
         override val ref = "administrasjon-kodeverk:Personalressurskategori"
         override val path = "administrasjon/kodeverk/personalressurskategori"
+        override val name = "personalressurskategori"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -31,6 +31,8 @@ data class Identitet(
         override val type = Identitet::class
         override val ref = "ressurs-tilgang:Identitet"
         override val path = "ressurs/tilgang/identitet"
+        override val name = "identitet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

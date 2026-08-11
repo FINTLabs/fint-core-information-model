@@ -34,6 +34,8 @@ data class Enhetstype(
         override val type = Enhetstype::class
         override val ref = "ressurs-kodeverk:Enhetstype"
         override val path = "ressurs/kodeverk/enhetstype"
+        override val name = "enhetstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

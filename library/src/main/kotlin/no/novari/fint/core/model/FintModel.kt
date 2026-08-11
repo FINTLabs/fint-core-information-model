@@ -208,14 +208,22 @@ object FintModel {
     internal val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }
 
     private val pathIndex: Map<String, FintResourceMetadata> =
-        resources.mapNotNull { meta -> meta.path?.let { it to meta } }.toMap()
+        resources.mapNotNull { meta -> meta.path?.let { it.lowercase() to meta } }.toMap()
+
+    private val commonIndex: Map<String, FintResourceMetadata> =
+        resources.filter { it.isCommon }.associateBy { it.name.lowercase() }
 
     /**
      * Finds the resource served at /[domainName]/[packageName]/[resourceName].
      * Returns null when no such resource exists. Case does not matter.
+     *
+     * A common resource answers under the domain and package it is served
+     * through, so byPath("utdanning", "elev", "person") and
+     * byPath("administrasjon", "personal", "person") both find felles:Person.
      */
     fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
         pathIndex["$domainName/$packageName/$resourceName".lowercase()]
+            ?: commonIndex[resourceName.lowercase()]
 }
 
 /** Metadata for the type this relation points to, or null for targets outside the model. */

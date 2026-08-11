@@ -66,6 +66,8 @@ data class DispensasjonAutomatiskFredaKulturminne(
         override val type = DispensasjonAutomatiskFredaKulturminne::class
         override val ref = "arkiv-kulturminnevern:DispensasjonAutomatiskFredaKulturminne"
         override val path = "arkiv/kulturminnevern/dispensasjonautomatiskfredakulturminne"
+        override val name = "dispensasjonautomatiskfredakulturminne"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId", "soknadsnummer")
         override val attributes = listOf(
             FintAttribute("kulturminneId", String::class, list = false, optional = false),

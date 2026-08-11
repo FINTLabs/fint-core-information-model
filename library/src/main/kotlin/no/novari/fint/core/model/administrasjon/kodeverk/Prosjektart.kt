@@ -35,6 +35,8 @@ data class Prosjektart(
         override val type = Prosjektart::class
         override val ref = "administrasjon-kodeverk:Prosjektart"
         override val path = "administrasjon/kodeverk/prosjektart"
+        override val name = "prosjektart"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

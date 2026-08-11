@@ -30,6 +30,8 @@ data class Enhetsgruppemedlemskap(
         override val type = Enhetsgruppemedlemskap::class
         override val ref = "ressurs-datautstyr:Enhetsgruppemedlemskap"
         override val path = "ressurs/datautstyr/enhetsgruppemedlemskap"
+        override val name = "enhetsgruppemedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

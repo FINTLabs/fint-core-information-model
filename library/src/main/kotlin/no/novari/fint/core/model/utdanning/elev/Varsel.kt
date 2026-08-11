@@ -36,6 +36,8 @@ data class Varsel(
         override val type = Varsel::class
         override val ref = "utdanning-elev:Varsel"
         override val path = "utdanning/elev/varsel"
+        override val name = "varsel"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("fravarsprosent", Long::class, list = false, optional = false),

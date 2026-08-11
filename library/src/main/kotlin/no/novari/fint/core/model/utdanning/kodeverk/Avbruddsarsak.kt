@@ -34,6 +34,8 @@ data class Avbruddsarsak(
         override val type = Avbruddsarsak::class
         override val ref = "utdanning-kodeverk:Avbruddsarsak"
         override val path = "utdanning/kodeverk/avbruddsarsak"
+        override val name = "avbruddsarsak"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

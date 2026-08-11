@@ -42,6 +42,8 @@ data class Arbeidslokasjon(
         override val type = Arbeidslokasjon::class
         override val ref = "administrasjon-organisasjon:Arbeidslokasjon"
         override val path = "administrasjon/organisasjon/arbeidslokasjon"
+        override val name = "arbeidslokasjon"
+        override val isCommon = false
         override val idFields = listOf("organisasjonsnummer", "lokasjonskode")
         override val attributes = listOf(
             FintAttribute("lokasjonskode", Identifikator::class, list = false, optional = false),

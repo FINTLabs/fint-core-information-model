@@ -34,6 +34,8 @@ data class Fravarstype(
         override val type = Fravarstype::class
         override val ref = "utdanning-kodeverk:Fravarstype"
         override val path = "utdanning/kodeverk/fravarstype"
+        override val name = "fravarstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

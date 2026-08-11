@@ -26,6 +26,8 @@ data class Adresse(
         override val type = Adresse::class
         override val ref = "felles-kompleksedatatyper:Adresse"
         override val path: String? = null
+        override val name = "adresse"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("adresselinje", String::class, list = true, optional = true),

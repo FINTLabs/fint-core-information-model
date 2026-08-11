@@ -34,6 +34,8 @@ data class Vitnemalsmerknad(
         override val type = Vitnemalsmerknad::class
         override val ref = "utdanning-kodeverk:Vitnemalsmerknad"
         override val path = "utdanning/kodeverk/vitnemalsmerknad"
+        override val name = "vitnemalsmerknad"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

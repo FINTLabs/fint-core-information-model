@@ -33,6 +33,8 @@ data class Sensor(
         override val type = Sensor::class
         override val ref = "utdanning-vurdering:Sensor"
         override val path = "utdanning/vurdering/sensor"
+        override val name = "sensor"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("aktiv", Boolean::class, list = false, optional = false),

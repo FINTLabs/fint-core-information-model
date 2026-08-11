@@ -31,6 +31,8 @@ data class Part(
         override val type = Part::class
         override val ref = "arkiv-noark:Part"
         override val path: String? = null
+        override val name = "part"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("adresse", Adresse::class, list = false, optional = true),

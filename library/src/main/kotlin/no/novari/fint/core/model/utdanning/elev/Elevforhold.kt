@@ -51,6 +51,8 @@ data class Elevforhold(
         override val type = Elevforhold::class
         override val ref = "utdanning-elev:Elevforhold"
         override val path = "utdanning/elev/elevforhold"
+        override val name = "elevforhold"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("anmerkninger", Anmerkninger::class, list = true, optional = true),

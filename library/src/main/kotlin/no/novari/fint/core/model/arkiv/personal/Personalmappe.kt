@@ -64,6 +64,8 @@ data class Personalmappe(
         override val type = Personalmappe::class
         override val ref = "arkiv-personal:Personalmappe"
         override val path = "arkiv/personal/personalmappe"
+        override val name = "personalmappe"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId")
         override val attributes = listOf(
             FintAttribute("navn", Personnavn::class, list = false, optional = false),
@@ -89,7 +91,7 @@ data class Personalmappe(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
             ),
             FintRelation(

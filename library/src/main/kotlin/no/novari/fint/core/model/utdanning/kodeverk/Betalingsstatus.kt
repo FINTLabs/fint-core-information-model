@@ -34,6 +34,8 @@ data class Betalingsstatus(
         override val type = Betalingsstatus::class
         override val ref = "utdanning-kodeverk:Betalingsstatus"
         override val path = "utdanning/kodeverk/betalingsstatus"
+        override val name = "betalingsstatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

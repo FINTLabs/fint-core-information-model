@@ -34,6 +34,8 @@ data class Rolle(
         override val type = Rolle::class
         override val ref = "arkiv-kodeverk:Rolle"
         override val path = "arkiv/kodeverk/rolle"
+        override val name = "rolle"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

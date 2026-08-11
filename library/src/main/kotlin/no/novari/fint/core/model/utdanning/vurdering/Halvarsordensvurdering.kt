@@ -33,6 +33,8 @@ data class Halvarsordensvurdering(
         override val type = Halvarsordensvurdering::class
         override val ref = "utdanning-vurdering:Halvarsordensvurdering"
         override val path = "utdanning/vurdering/halvarsordensvurdering"
+        override val name = "halvarsordensvurdering"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kommentar", String::class, list = false, optional = false),

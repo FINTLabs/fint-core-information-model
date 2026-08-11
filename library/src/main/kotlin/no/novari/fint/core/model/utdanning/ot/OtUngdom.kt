@@ -34,6 +34,8 @@ data class OtUngdom(
         override val type = OtUngdom::class
         override val ref = "utdanning-ot:OtUngdom"
         override val path = "utdanning/ot/otungdom"
+        override val name = "otungdom"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
@@ -42,7 +44,7 @@ data class OtUngdom(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
                 bidirectional = Bidirectional(inverseName = "otungdom", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
             ),

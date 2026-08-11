@@ -33,6 +33,8 @@ data class Fakturautsteder(
         override val type = Fakturautsteder::class
         override val ref = "okonomi-faktura:Fakturautsteder"
         override val path = "okonomi/faktura/fakturautsteder"
+        override val name = "fakturautsteder"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = false),

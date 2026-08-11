@@ -34,6 +34,8 @@ data class Landkode(
         override val type = Landkode::class
         override val ref = "felles-kodeverk-iso:Landkode"
         override val path = "felles/kodeverk/iso/landkode"
+        override val name = "landkode"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

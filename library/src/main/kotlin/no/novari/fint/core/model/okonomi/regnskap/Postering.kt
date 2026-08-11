@@ -34,6 +34,8 @@ data class Postering(
         override val type = Postering::class
         override val ref = "okonomi-regnskap:Postering"
         override val path = "okonomi/regnskap/postering"
+        override val name = "postering"
+        override val isCommon = false
         override val idFields = listOf("posteringsId")
         override val attributes = listOf(
             FintAttribute("belop", Long::class, list = false, optional = false),

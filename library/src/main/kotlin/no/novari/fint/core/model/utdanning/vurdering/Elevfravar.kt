@@ -31,6 +31,8 @@ data class Elevfravar(
         override val type = Elevfravar::class
         override val ref = "utdanning-vurdering:Elevfravar"
         override val path = "utdanning/vurdering/elevfravar"
+        override val name = "elevfravar"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

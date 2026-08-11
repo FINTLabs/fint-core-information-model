@@ -34,6 +34,8 @@ class Kontostreng : FintResource {
         override val type = Kontostreng::class
         override val ref = "administrasjon-kompleksedatatyper:Kontostreng"
         override val path: String? = null
+        override val name = "kontostreng"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = emptyList<FintAttribute>()
         override val relations = listOf(

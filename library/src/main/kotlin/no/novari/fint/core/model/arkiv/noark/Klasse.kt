@@ -26,6 +26,8 @@ data class Klasse(
         override val type = Klasse::class
         override val ref = "arkiv-noark:Klasse"
         override val path: String? = null
+        override val name = "klasse"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("klasseId", String::class, list = false, optional = false),

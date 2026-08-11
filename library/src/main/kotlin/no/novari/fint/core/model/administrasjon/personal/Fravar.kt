@@ -40,6 +40,8 @@ data class Fravar(
         override val type = Fravar::class
         override val ref = "administrasjon-personal:Fravar"
         override val path = "administrasjon/personal/fravar"
+        override val name = "fravar"
+        override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("godkjent", LocalDateTime::class, list = false, optional = true),

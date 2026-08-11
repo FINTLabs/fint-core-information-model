@@ -34,7 +34,9 @@ data class Kontaktperson(
     companion object Metadata : FintResourceMetadata {
         override val type = Kontaktperson::class
         override val ref = "felles:Kontaktperson"
-        override val path = "felles/kontaktperson"
+        override val path: String? = null
+        override val name = "kontaktperson"
+        override val isCommon = true
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kontaktinformasjon", Kontaktinformasjon::class, list = false, optional = true),
@@ -46,7 +48,7 @@ data class Kontaktperson(
             FintRelation(
                 name = "kontaktperson",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
                 bidirectional = Bidirectional(inverseName = "parorende", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),

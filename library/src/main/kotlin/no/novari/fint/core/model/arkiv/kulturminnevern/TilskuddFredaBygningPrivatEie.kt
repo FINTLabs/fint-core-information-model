@@ -66,6 +66,8 @@ data class TilskuddFredaBygningPrivatEie(
         override val type = TilskuddFredaBygningPrivatEie::class
         override val ref = "arkiv-kulturminnevern:TilskuddFredaBygningPrivatEie"
         override val path = "arkiv/kulturminnevern/tilskuddfredabygningprivateie"
+        override val name = "tilskuddfredabygningprivateie"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId", "soknadsnummer")
         override val attributes = listOf(
             FintAttribute("bygningsnavn", String::class, list = false, optional = true),

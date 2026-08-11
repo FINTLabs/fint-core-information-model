@@ -34,6 +34,8 @@ data class Status(
         override val type = Status::class
         override val ref = "ressurs-kodeverk:Status"
         override val path = "ressurs/kodeverk/status"
+        override val name = "status"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

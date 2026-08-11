@@ -26,6 +26,8 @@ data class Fakturalinje(
         override val type = Fakturalinje::class
         override val ref = "okonomi-faktura:Fakturalinje"
         override val path: String? = null
+        override val name = "fakturalinje"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("antall", Float::class, list = false, optional = false),

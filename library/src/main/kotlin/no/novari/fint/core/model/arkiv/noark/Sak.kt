@@ -50,6 +50,8 @@ data class Sak(
         override val type = Sak::class
         override val ref = "arkiv-noark:Sak"
         override val path = "arkiv/noark/sak"
+        override val name = "sak"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId")
         override val attributes = listOf(
             FintAttribute("journalpost", Journalpost::class, list = true, optional = true),

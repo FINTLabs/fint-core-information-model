@@ -36,6 +36,8 @@ data class Kommune(
         override val type = Kommune::class
         override val ref = "felles-kodeverk:Kommune"
         override val path = "felles/kodeverk/kommune"
+        override val name = "kommune"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

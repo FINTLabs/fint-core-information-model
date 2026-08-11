@@ -36,6 +36,8 @@ data class Programomrade(
         override val type = Programomrade::class
         override val ref = "utdanning-utdanningsprogram:Programomrade"
         override val path = "utdanning/utdanningsprogram/programomrade"
+        override val name = "programomrade"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

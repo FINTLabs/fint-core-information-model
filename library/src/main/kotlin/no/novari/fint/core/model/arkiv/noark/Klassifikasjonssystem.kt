@@ -39,6 +39,8 @@ data class Klassifikasjonssystem(
         override val type = Klassifikasjonssystem::class
         override val ref = "arkiv-noark:Klassifikasjonssystem"
         override val path = "arkiv/noark/klassifikasjonssystem"
+        override val name = "klassifikasjonssystem"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("avsluttetAv", String::class, list = false, optional = true),

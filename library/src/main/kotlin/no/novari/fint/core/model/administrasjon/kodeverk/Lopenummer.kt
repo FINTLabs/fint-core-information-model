@@ -33,6 +33,8 @@ data class Lopenummer(
         override val type = Lopenummer::class
         override val ref = "administrasjon-kodeverk:Lopenummer"
         override val path = "administrasjon/kodeverk/lopenummer"
+        override val name = "lopenummer"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

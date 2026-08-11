@@ -26,6 +26,8 @@ data class Merknad(
         override val type = Merknad::class
         override val ref = "arkiv-noark:Merknad"
         override val path: String? = null
+        override val name = "merknad"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("merknadsdato", LocalDateTime::class, list = false, optional = false),

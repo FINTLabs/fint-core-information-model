@@ -33,6 +33,8 @@ data class Aktivitet(
         override val type = Aktivitet::class
         override val ref = "administrasjon-kodeverk:Aktivitet"
         override val path = "administrasjon/kodeverk/aktivitet"
+        override val name = "aktivitet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

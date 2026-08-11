@@ -34,6 +34,8 @@ data class Tilgangsrestriksjon(
         override val type = Tilgangsrestriksjon::class
         override val ref = "arkiv-kodeverk:Tilgangsrestriksjon"
         override val path = "arkiv/kodeverk/tilgangsrestriksjon"
+        override val name = "tilgangsrestriksjon"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

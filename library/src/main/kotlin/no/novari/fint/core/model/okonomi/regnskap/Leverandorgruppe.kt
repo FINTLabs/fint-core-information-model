@@ -30,6 +30,8 @@ data class Leverandorgruppe(
         override val type = Leverandorgruppe::class
         override val ref = "okonomi-regnskap:Leverandorgruppe"
         override val path = "okonomi/regnskap/leverandorgruppe"
+        override val name = "leverandorgruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = false),

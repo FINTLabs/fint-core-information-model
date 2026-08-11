@@ -37,6 +37,8 @@ data class Klasse(
         override val type = Klasse::class
         override val ref = "utdanning-elev:Klasse"
         override val path = "utdanning/elev/klasse"
+        override val name = "klasse"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

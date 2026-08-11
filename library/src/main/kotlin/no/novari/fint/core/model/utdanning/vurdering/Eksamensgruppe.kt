@@ -42,6 +42,8 @@ data class Eksamensgruppe(
         override val type = Eksamensgruppe::class
         override val ref = "utdanning-vurdering:Eksamensgruppe"
         override val path = "utdanning/vurdering/eksamensgruppe"
+        override val name = "eksamensgruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("eksamensdato", LocalDateTime::class, list = false, optional = true),

@@ -36,6 +36,8 @@ data class Lonnsart(
         override val type = Lonnsart::class
         override val ref = "administrasjon-kodeverk:Lonnsart"
         override val path = "administrasjon/kodeverk/lonnsart"
+        override val name = "lonnsart"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kategori", String::class, list = false, optional = true),

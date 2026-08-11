@@ -34,6 +34,8 @@ data class Uketimetall(
         override val type = Uketimetall::class
         override val ref = "administrasjon-kodeverk:Uketimetall"
         override val path = "administrasjon/kodeverk/uketimetall"
+        override val name = "uketimetall"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -40,7 +40,9 @@ data class Virksomhet(
     companion object Metadata : FintResourceMetadata {
         override val type = Virksomhet::class
         override val ref = "felles:Virksomhet"
-        override val path = "felles/virksomhet"
+        override val path: String? = null
+        override val name = "virksomhet"
+        override val isCommon = true
         override val idFields = listOf("organisasjonsnummer", "virksomhetsId")
         override val attributes = listOf(
             FintAttribute("virksomhetsId", Identifikator::class, list = false, optional = false),

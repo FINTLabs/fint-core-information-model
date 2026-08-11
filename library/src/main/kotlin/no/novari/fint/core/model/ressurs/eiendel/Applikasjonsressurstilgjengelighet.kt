@@ -34,6 +34,8 @@ data class Applikasjonsressurstilgjengelighet(
         override val type = Applikasjonsressurstilgjengelighet::class
         override val ref = "ressurs-eiendel:Applikasjonsressurstilgjengelighet"
         override val path = "ressurs/eiendel/applikasjonsressurstilgjengelighet"
+        override val name = "applikasjonsressurstilgjengelighet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = false),

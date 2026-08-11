@@ -32,6 +32,8 @@ data class Valuta(
         override val type = Valuta::class
         override val ref = "felles-kodeverk:Valuta"
         override val path = "felles/kodeverk/valuta"
+        override val name = "valuta"
+        override val isCommon = false
         override val idFields = listOf("bokstavkode", "nummerkode")
         override val attributes = listOf(
             FintAttribute("bokstavkode", Identifikator::class, list = false, optional = false),

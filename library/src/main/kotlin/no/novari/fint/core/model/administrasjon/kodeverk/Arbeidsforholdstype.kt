@@ -35,6 +35,8 @@ data class Arbeidsforholdstype(
         override val type = Arbeidsforholdstype::class
         override val ref = "administrasjon-kodeverk:Arbeidsforholdstype"
         override val path = "administrasjon/kodeverk/arbeidsforholdstype"
+        override val name = "arbeidsforholdstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

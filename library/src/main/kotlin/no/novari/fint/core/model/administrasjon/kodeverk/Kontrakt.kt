@@ -33,6 +33,8 @@ data class Kontrakt(
         override val type = Kontrakt::class
         override val ref = "administrasjon-kodeverk:Kontrakt"
         override val path = "administrasjon/kodeverk/kontrakt"
+        override val name = "kontrakt"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

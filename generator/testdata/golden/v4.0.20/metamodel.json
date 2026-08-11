@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1",
+  "schemaVersion": "1.2",
   "fintVersion": "v4.0.20",
   "generatedAt": "2026-07-08T11:02:35Z",
   "components": [
@@ -6124,7 +6124,8 @@
           "deprecated": false,
           "parent": null,
           "documentation": "Kontaktperson til en person.\n\n# Beskrivelse\n\nKontaktperson er personer som kan kontaktes dersom det er behov for det.\n\nKontaktperson kalles også pårørende.",
-          "path": "felles/kontaktperson",
+          "path": null,
+          "common": true,
           "idFields": [
             "systemId"
           ],
@@ -6189,7 +6190,8 @@
           "deprecated": false,
           "parent": "felles-basisklasser:Aktor",
           "documentation": "Fysiske private personer\n\n# Beskrivelse\n\nFysiske personer. Arver felter fra [Aktør](Class:Aktør).\n\n# Eksempler\n\n## Riktig\n\n* Karl August Haraldsen\n\n## Feil\n\n* Statsminister\n\n# Referanse\n\n* [Wiki side](https://no.wikipedia.org/wiki/Fysisk_person)\n",
-          "path": "felles/person",
+          "path": null,
+          "common": true,
           "idFields": [
             "fodselsnummer"
           ],
@@ -6409,7 +6411,8 @@
           "deprecated": false,
           "parent": "felles-basisklasser:Enhet",
           "documentation": "En juridisk organisasjon som produserer varer eller tjenester.",
-          "path": "felles/virksomhet",
+          "path": null,
+          "common": true,
           "idFields": [
             "organisasjonsnummer",
             "virksomhetsId"

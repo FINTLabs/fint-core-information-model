@@ -34,6 +34,8 @@ data class Handhevingstype(
         override val type = Handhevingstype::class
         override val ref = "ressurs-kodeverk:Handhevingstype"
         override val path = "ressurs/kodeverk/handhevingstype"
+        override val name = "handhevingstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

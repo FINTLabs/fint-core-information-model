@@ -28,6 +28,8 @@ data class Matrikkelnummer(
         override val type = Matrikkelnummer::class
         override val ref = "felles-kompleksedatatyper:Matrikkelnummer"
         override val path: String? = null
+        override val name = "matrikkelnummer"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("adresse", Adresse::class, list = false, optional = true),

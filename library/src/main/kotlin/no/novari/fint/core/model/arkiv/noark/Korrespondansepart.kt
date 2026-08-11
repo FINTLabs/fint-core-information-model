@@ -32,6 +32,8 @@ data class Korrespondansepart(
         override val type = Korrespondansepart::class
         override val ref = "arkiv-noark:Korrespondansepart"
         override val path: String? = null
+        override val name = "korrespondansepart"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("adresse", Adresse::class, list = false, optional = true),

@@ -34,6 +34,8 @@ data class Skoleeiertype(
         override val type = Skoleeiertype::class
         override val ref = "utdanning-kodeverk:Skoleeiertype"
         override val path = "utdanning/kodeverk/skoleeiertype"
+        override val name = "skoleeiertype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

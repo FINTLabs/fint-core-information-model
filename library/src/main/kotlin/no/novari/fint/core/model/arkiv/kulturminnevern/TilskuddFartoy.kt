@@ -65,6 +65,8 @@ data class TilskuddFartoy(
         override val type = TilskuddFartoy::class
         override val ref = "arkiv-kulturminnevern:TilskuddFartoy"
         override val path = "arkiv/kulturminnevern/tilskuddfartoy"
+        override val name = "tilskuddfartoy"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId", "soknadsnummer")
         override val attributes = listOf(
             FintAttribute("fartoyNavn", String::class, list = false, optional = false),

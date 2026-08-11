@@ -36,6 +36,8 @@ data class Persongruppe(
         override val type = Persongruppe::class
         override val ref = "utdanning-elev:Persongruppe"
         override val path = "utdanning/elev/persongruppe"
+        override val name = "persongruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

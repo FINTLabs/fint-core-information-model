@@ -41,6 +41,8 @@ data class Vare(
         override val type = Vare::class
         override val ref = "okonomi-kodeverk:Vare"
         override val path = "okonomi/kodeverk/vare"
+        override val name = "vare"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("enhet", String::class, list = false, optional = false),

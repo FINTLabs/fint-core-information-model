@@ -45,6 +45,8 @@ data class Elev(
         override val type = Elev::class
         override val ref = "utdanning-elev:Elev"
         override val path = "utdanning/elev/elev"
+        override val name = "elev"
+        override val isCommon = false
         override val idFields = listOf("brukernavn", "elevnummer", "feidenavn", "systemId")
         override val attributes = listOf(
             FintAttribute("brukernavn", Identifikator::class, list = false, optional = true),
@@ -59,7 +61,7 @@ data class Elev(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
                 bidirectional = Bidirectional(inverseName = "elev", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
             ),

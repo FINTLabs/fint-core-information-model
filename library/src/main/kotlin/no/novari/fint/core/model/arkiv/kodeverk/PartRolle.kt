@@ -34,6 +34,8 @@ data class PartRolle(
         override val type = PartRolle::class
         override val ref = "arkiv-kodeverk:PartRolle"
         override val path = "arkiv/kodeverk/partrolle"
+        override val name = "partrolle"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

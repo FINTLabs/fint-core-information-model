@@ -61,6 +61,8 @@ data class SoknadDrosjeloyve(
         override val type = SoknadDrosjeloyve::class
         override val ref = "arkiv-samferdsel:SoknadDrosjeloyve"
         override val path = "arkiv/samferdsel/soknaddrosjeloyve"
+        override val name = "soknaddrosjeloyve"
+        override val isCommon = false
         override val idFields = listOf("mappeId", "systemId")
         override val attributes = listOf(
             FintAttribute("organisasjonsnavn", String::class, list = false, optional = false),

@@ -35,6 +35,8 @@ data class Utdanningsprogram(
         override val type = Utdanningsprogram::class
         override val ref = "utdanning-utdanningsprogram:Utdanningsprogram"
         override val path = "utdanning/utdanningsprogram/utdanningsprogram"
+        override val name = "utdanningsprogram"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

@@ -45,6 +45,8 @@ data class Variabellonn(
         override val type = Variabellonn::class
         override val ref = "administrasjon-personal:Variabellonn"
         override val path = "administrasjon/personal/variabellonn"
+        override val name = "variabellonn"
+        override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("antall", Long::class, list = false, optional = false),

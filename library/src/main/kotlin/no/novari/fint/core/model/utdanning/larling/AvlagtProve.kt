@@ -36,6 +36,8 @@ data class AvlagtProve(
         override val type = AvlagtProve::class
         override val ref = "utdanning-larling:AvlagtProve"
         override val path = "utdanning/larling/avlagtprove"
+        override val name = "avlagtprove"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("provedato", LocalDate::class, list = false, optional = true),

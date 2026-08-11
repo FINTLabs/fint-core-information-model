@@ -34,6 +34,8 @@ data class Behandlingsgrunnlag(
         override val type = Behandlingsgrunnlag::class
         override val ref = "personvern-kodeverk:Behandlingsgrunnlag"
         override val path = "personvern/kodeverk/behandlingsgrunnlag"
+        override val name = "behandlingsgrunnlag"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

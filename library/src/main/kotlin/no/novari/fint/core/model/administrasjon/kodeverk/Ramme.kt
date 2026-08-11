@@ -33,6 +33,8 @@ data class Ramme(
         override val type = Ramme::class
         override val ref = "administrasjon-kodeverk:Ramme"
         override val path = "administrasjon/kodeverk/ramme"
+        override val name = "ramme"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -36,6 +36,8 @@ data class OtStatus(
         override val type = OtStatus::class
         override val ref = "utdanning-kodeverk:OtStatus"
         override val path = "utdanning/kodeverk/otstatus"
+        override val name = "otstatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),

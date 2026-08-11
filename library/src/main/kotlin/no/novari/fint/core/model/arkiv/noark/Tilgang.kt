@@ -32,6 +32,8 @@ data class Tilgang(
         override val type = Tilgang::class
         override val ref = "arkiv-noark:Tilgang"
         override val path = "arkiv/noark/tilgang"
+        override val name = "tilgang"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

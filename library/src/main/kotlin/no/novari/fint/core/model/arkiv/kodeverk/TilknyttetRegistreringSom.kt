@@ -34,6 +34,8 @@ data class TilknyttetRegistreringSom(
         override val type = TilknyttetRegistreringSom::class
         override val ref = "arkiv-kodeverk:TilknyttetRegistreringSom"
         override val path = "arkiv/kodeverk/tilknyttetregistreringsom"
+        override val name = "tilknyttetregistreringsom"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

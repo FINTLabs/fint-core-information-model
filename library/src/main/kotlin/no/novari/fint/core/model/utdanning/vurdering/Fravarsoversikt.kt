@@ -34,6 +34,8 @@ data class Fravarsoversikt(
         override val type = Fravarsoversikt::class
         override val ref = "utdanning-vurdering:Fravarsoversikt"
         override val path = "utdanning/vurdering/fravarsoversikt"
+        override val name = "fravarsoversikt"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("halvar", Fravarsprosent::class, list = false, optional = false),

@@ -34,6 +34,8 @@ data class Personopplysning(
         override val type = Personopplysning::class
         override val ref = "personvern-kodeverk:Personopplysning"
         override val path = "personvern/kodeverk/personopplysning"
+        override val name = "personopplysning"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

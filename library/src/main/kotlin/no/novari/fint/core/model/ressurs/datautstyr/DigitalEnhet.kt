@@ -44,6 +44,8 @@ data class DigitalEnhet(
         override val type = DigitalEnhet::class
         override val ref = "ressurs-datautstyr:DigitalEnhet"
         override val path = "ressurs/datautstyr/digitalenhet"
+        override val name = "digitalenhet"
+        override val isCommon = false
         override val idFields = listOf("dataobjektId", "systemId")
         override val attributes = listOf(
             FintAttribute("dataobjektId", Identifikator::class, list = false, optional = true),

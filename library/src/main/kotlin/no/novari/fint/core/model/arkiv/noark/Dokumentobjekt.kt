@@ -29,6 +29,8 @@ data class Dokumentobjekt(
         override val type = Dokumentobjekt::class
         override val ref = "arkiv-noark:Dokumentobjekt"
         override val path: String? = null
+        override val name = "dokumentobjekt"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("filstorrelse", String::class, list = false, optional = true),

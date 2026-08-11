@@ -34,6 +34,8 @@ data class Klassifikasjonstype(
         override val type = Klassifikasjonstype::class
         override val ref = "arkiv-kodeverk:Klassifikasjonstype"
         override val path = "arkiv/kodeverk/klassifikasjonstype"
+        override val name = "klassifikasjonstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -35,6 +35,8 @@ data class Merverdiavgift(
         override val type = Merverdiavgift::class
         override val ref = "okonomi-kodeverk:Merverdiavgift"
         override val path = "okonomi/kodeverk/merverdiavgift"
+        override val name = "merverdiavgift"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("sats", Long::class, list = false, optional = false),

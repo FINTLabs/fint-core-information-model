@@ -33,6 +33,8 @@ data class Tjeneste(
         override val type = Tjeneste::class
         override val ref = "personvern-samtykke:Tjeneste"
         override val path = "personvern/samtykke/tjeneste"
+        override val name = "tjeneste"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = false),

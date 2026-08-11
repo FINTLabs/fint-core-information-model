@@ -34,6 +34,8 @@ data class Enhetsgruppe(
         override val type = Enhetsgruppe::class
         override val ref = "ressurs-datautstyr:Enhetsgruppe"
         override val path = "ressurs/datautstyr/enhetsgruppe"
+        override val name = "enhetsgruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = false),

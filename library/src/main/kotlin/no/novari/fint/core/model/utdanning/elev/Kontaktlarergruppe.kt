@@ -36,6 +36,8 @@ data class Kontaktlarergruppe(
         override val type = Kontaktlarergruppe::class
         override val ref = "utdanning-elev:Kontaktlarergruppe"
         override val path = "utdanning/elev/kontaktlarergruppe"
+        override val name = "kontaktlarergruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

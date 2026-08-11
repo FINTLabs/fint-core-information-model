@@ -36,6 +36,8 @@ data class Applikasjon(
         override val type = Applikasjon::class
         override val ref = "ressurs-eiendel:Applikasjon"
         override val path = "ressurs/eiendel/applikasjon"
+        override val name = "applikasjon"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),

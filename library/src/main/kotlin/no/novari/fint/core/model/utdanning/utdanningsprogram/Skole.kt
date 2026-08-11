@@ -58,6 +58,8 @@ data class Skole(
         override val type = Skole::class
         override val ref = "utdanning-utdanningsprogram:Skole"
         override val path = "utdanning/utdanningsprogram/skole"
+        override val name = "skole"
+        override val isCommon = false
         override val idFields = listOf("organisasjonsnummer", "skolenummer", "systemId")
         override val attributes = listOf(
             FintAttribute("domenenavn", String::class, list = false, optional = true),

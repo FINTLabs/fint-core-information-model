@@ -33,6 +33,8 @@ data class Elevtilrettelegging(
         override val type = Elevtilrettelegging::class
         override val ref = "utdanning-elev:Elevtilrettelegging"
         override val path = "utdanning/elev/elevtilrettelegging"
+        override val name = "elevtilrettelegging"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

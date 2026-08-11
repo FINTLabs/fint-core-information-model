@@ -37,6 +37,8 @@ data class Eksamen(
         override val type = Eksamen::class
         override val ref = "utdanning-timeplan:Eksamen"
         override val path = "utdanning/timeplan/eksamen"
+        override val name = "eksamen"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),

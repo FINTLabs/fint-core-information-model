@@ -32,6 +32,8 @@ data class Elevvurdering(
         override val type = Elevvurdering::class
         override val ref = "utdanning-vurdering:Elevvurdering"
         override val path = "utdanning/vurdering/elevvurdering"
+        override val name = "elevvurdering"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

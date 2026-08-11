@@ -34,6 +34,8 @@ data class Produsent(
         override val type = Produsent::class
         override val ref = "ressurs-kodeverk:Produsent"
         override val path = "ressurs/kodeverk/produsent"
+        override val name = "produsent"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -44,6 +44,8 @@ data class Fastlonn(
         override val type = Fastlonn::class
         override val ref = "administrasjon-personal:Fastlonn"
         override val path = "administrasjon/personal/fastlonn"
+        override val name = "fastlonn"
+        override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("prosent", Long::class, list = false, optional = false),

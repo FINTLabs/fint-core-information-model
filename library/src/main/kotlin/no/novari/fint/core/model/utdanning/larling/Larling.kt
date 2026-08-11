@@ -36,6 +36,8 @@ data class Larling(
         override val type = Larling::class
         override val ref = "utdanning-larling:Larling"
         override val path = "utdanning/larling/larling"
+        override val name = "larling"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kontraktstype", String::class, list = false, optional = true),
@@ -46,14 +48,14 @@ data class Larling(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
                 bidirectional = Bidirectional(inverseName = "larling", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
             FintRelation(
                 name = "bedrift",
                 target = Virksomhet::class,
-                targetPath = "felles/virksomhet",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_ONE,
                 bidirectional = Bidirectional(inverseName = "larling", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),

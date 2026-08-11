@@ -103,6 +103,15 @@ func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
 			} else if !strings.Contains(content, "override val path: String? = null") {
 				t.Errorf("%s: missing null path", id)
 			}
+			if typ.Common && typ.Path != nil {
+				t.Errorf("%s: common resource must not name an endpoint of its own", id)
+			}
+			if !strings.Contains(content, fmt.Sprintf("override val name = %q", strings.ToLower(typ.Name))) {
+				t.Errorf("%s: missing or wrong name", id)
+			}
+			if !strings.Contains(content, fmt.Sprintf("override val isCommon = %t", typ.Common)) {
+				t.Errorf("%s: missing or wrong isCommon", id)
+			}
 
 			if len(typ.IdFields) > 0 {
 				for _, f := range typ.IdFields {
@@ -125,6 +134,45 @@ func TestFiles_MetadataMatchesMetamodel(t *testing.T) {
 				}
 			}
 		}
+	}
+}
+
+// A common resource is served under the domain and package of whoever links to
+// it, so no relation may bake a path for one — the owner resolves it.
+func TestFiles_RelationsToCommonResourcesCarryNoPath(t *testing.T) {
+	doc, files := golden(t)
+
+	common := map[string]string{}
+	for _, comp := range doc.Components {
+		for _, typ := range comp.Types {
+			if typ.Common {
+				common[comp.Name+":"+typ.Name] = typ.Name
+			}
+		}
+	}
+	if len(common) == 0 {
+		t.Fatalf("no common types in the golden document")
+	}
+
+	checked := 0
+	for _, comp := range doc.Components {
+		for _, typ := range comp.Types {
+			content := files[filePath(comp.Name, typ.Name)]
+			for _, rel := range typ.Relations {
+				name, ok := common[rel.Target]
+				if !ok {
+					continue
+				}
+				checked++
+				want := fmt.Sprintf("                target = %s::class,\n                targetPath = null,\n", name)
+				if !strings.Contains(content, want) {
+					t.Errorf("%s:%s: relation %q bakes a path for common target %s", comp.Name, typ.Name, rel.Name, rel.Target)
+				}
+			}
+		}
+	}
+	if checked == 0 {
+		t.Fatalf("no relations point at a common resource")
 	}
 }
 
@@ -199,6 +247,8 @@ data class Elev(
         override val type = Elev::class
         override val ref = "utdanning-elev:Elev"
         override val path = "utdanning/elev/elev"
+        override val name = "elev"
+        override val isCommon = false
         override val idFields = listOf("brukernavn", "elevnummer", "feidenavn", "systemId")
         override val attributes = listOf(
             FintAttribute("brukernavn", Identifikator::class, list = false, optional = true),
@@ -213,7 +263,7 @@ data class Elev(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
                 bidirectional = Bidirectional(inverseName = "elev", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
             ),

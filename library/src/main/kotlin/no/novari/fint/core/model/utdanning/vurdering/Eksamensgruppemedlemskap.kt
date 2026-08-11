@@ -40,6 +40,8 @@ data class Eksamensgruppemedlemskap(
         override val type = Eksamensgruppemedlemskap::class
         override val ref = "utdanning-vurdering:Eksamensgruppemedlemskap"
         override val path = "utdanning/vurdering/eksamensgruppemedlemskap"
+        override val name = "eksamensgruppemedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("delegert", Boolean::class, list = false, optional = true),

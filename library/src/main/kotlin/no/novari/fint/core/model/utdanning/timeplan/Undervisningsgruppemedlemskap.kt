@@ -34,6 +34,8 @@ data class Undervisningsgruppemedlemskap(
         override val type = Undervisningsgruppemedlemskap::class
         override val ref = "utdanning-timeplan:Undervisningsgruppemedlemskap"
         override val path = "utdanning/timeplan/undervisningsgruppemedlemskap"
+        override val name = "undervisningsgruppemedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -33,6 +33,8 @@ data class Karakterhistorie(
         override val type = Karakterhistorie::class
         override val ref = "utdanning-vurdering:Karakterhistorie"
         override val path = "utdanning/vurdering/karakterhistorie"
+        override val name = "karakterhistorie"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("endretDato", LocalDateTime::class, list = false, optional = false),

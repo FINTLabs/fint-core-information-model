@@ -36,6 +36,8 @@ data class Arstrinn(
         override val type = Arstrinn::class
         override val ref = "utdanning-utdanningsprogram:Arstrinn"
         override val path = "utdanning/utdanningsprogram/arstrinn"
+        override val name = "arstrinn"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

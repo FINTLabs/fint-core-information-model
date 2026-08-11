@@ -34,6 +34,8 @@ data class Applikasjonskategori(
         override val type = Applikasjonskategori::class
         override val ref = "ressurs-kodeverk:Applikasjonskategori"
         override val path = "ressurs/kodeverk/applikasjonskategori"
+        override val name = "applikasjonskategori"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

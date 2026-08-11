@@ -37,6 +37,8 @@ data class Rettighet(
         override val type = Rettighet::class
         override val ref = "ressurs-tilgang:Rettighet"
         override val path = "ressurs/tilgang/rettighet"
+        override val name = "rettighet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

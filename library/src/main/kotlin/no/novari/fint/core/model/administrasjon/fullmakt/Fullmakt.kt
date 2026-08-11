@@ -46,6 +46,8 @@ data class Fullmakt(
         override val type = Fullmakt::class
         override val ref = "administrasjon-fullmakt:Fullmakt"
         override val path = "administrasjon/fullmakt/fullmakt"
+        override val name = "fullmakt"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = false),

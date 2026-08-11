@@ -35,6 +35,8 @@ data class Leverandor(
         override val type = Leverandor::class
         override val ref = "okonomi-regnskap:Leverandor"
         override val path = "okonomi/regnskap/leverandor"
+        override val name = "leverandor"
+        override val isCommon = false
         override val idFields = listOf("leverandornummer", "systemId")
         override val attributes = listOf(
             FintAttribute("kontonummer", String::class, list = false, optional = true),
@@ -45,7 +47,7 @@ data class Leverandor(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_ONE,
             ),
             FintRelation(
@@ -57,7 +59,7 @@ data class Leverandor(
             FintRelation(
                 name = "virksomhet",
                 target = Virksomhet::class,
-                targetPath = "felles/virksomhet",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_ONE,
             ),
         )

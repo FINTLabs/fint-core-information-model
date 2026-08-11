@@ -33,6 +33,8 @@ data class Objekt(
         override val type = Objekt::class
         override val ref = "administrasjon-kodeverk:Objekt"
         override val path = "administrasjon/kodeverk/objekt"
+        override val name = "objekt"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

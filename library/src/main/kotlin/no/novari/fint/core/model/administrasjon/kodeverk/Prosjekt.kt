@@ -35,6 +35,8 @@ data class Prosjekt(
         override val type = Prosjekt::class
         override val ref = "administrasjon-kodeverk:Prosjekt"
         override val path = "administrasjon/kodeverk/prosjekt"
+        override val name = "prosjekt"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

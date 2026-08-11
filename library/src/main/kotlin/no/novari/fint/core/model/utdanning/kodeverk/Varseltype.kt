@@ -34,6 +34,8 @@ data class Varseltype(
         override val type = Varseltype::class
         override val ref = "utdanning-kodeverk:Varseltype"
         override val path = "utdanning/kodeverk/varseltype"
+        override val name = "varseltype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

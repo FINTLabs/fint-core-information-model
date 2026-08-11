@@ -32,6 +32,8 @@ data class Anmerkninger(
         override val type = Anmerkninger::class
         override val ref = "utdanning-vurdering:Anmerkninger"
         override val path = "utdanning/vurdering/anmerkninger"
+        override val name = "anmerkninger"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("atferd", Int::class, list = false, optional = false),

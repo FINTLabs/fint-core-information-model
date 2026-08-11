@@ -34,6 +34,8 @@ data class Organisasjonstype(
         override val type = Organisasjonstype::class
         override val ref = "administrasjon-kodeverk:Organisasjonstype"
         override val path = "administrasjon/kodeverk/organisasjonstype"
+        override val name = "organisasjonstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

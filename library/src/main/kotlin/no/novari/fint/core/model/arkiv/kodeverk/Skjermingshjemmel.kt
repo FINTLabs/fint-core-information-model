@@ -34,6 +34,8 @@ data class Skjermingshjemmel(
         override val type = Skjermingshjemmel::class
         override val ref = "arkiv-kodeverk:Skjermingshjemmel"
         override val path = "arkiv/kodeverk/skjermingshjemmel"
+        override val name = "skjermingshjemmel"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

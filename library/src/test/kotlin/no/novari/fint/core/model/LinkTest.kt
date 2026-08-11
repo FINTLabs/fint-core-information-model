@@ -22,6 +22,21 @@ class LinkTest {
     }
 
     @Test
+    fun `parse handles the bare id pair adapters send`() {
+        val link = Link.parse("fodselsnummer/12345678901")
+        assertEquals("fodselsnummer", link.idField)
+        assertEquals("12345678901", link.idValue)
+        assertNull(link.unresolved)
+    }
+
+    @Test
+    fun `parse keeps a lone segment unresolved`() {
+        val href = "12345678901"
+        assertEquals(href, Link.parse(href).unresolved)
+        assertNull(Link.parse(href).idField)
+    }
+
+    @Test
     fun `parse url-decodes the id value`() {
         val link = Link.parse("https://api.example.no/felles/person/fodselsnummer/12%2034")
         assertEquals("12 34", link.idValue)

@@ -52,6 +52,8 @@ data class Organisasjonselement(
         override val type = Organisasjonselement::class
         override val ref = "administrasjon-organisasjon:Organisasjonselement"
         override val path = "administrasjon/organisasjon/organisasjonselement"
+        override val name = "organisasjonselement"
+        override val isCommon = false
         override val idFields = listOf("organisasjonsnummer", "organisasjonsId", "organisasjonsKode")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

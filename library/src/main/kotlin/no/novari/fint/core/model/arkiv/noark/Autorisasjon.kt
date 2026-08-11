@@ -31,6 +31,8 @@ data class Autorisasjon(
         override val type = Autorisasjon::class
         override val ref = "arkiv-noark:Autorisasjon"
         override val path = "arkiv/noark/autorisasjon"
+        override val name = "autorisasjon"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

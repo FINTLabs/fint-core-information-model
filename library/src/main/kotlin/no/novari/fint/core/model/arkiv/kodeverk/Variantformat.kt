@@ -34,6 +34,8 @@ data class Variantformat(
         override val type = Variantformat::class
         override val ref = "arkiv-kodeverk:Variantformat"
         override val path = "arkiv/kodeverk/variantformat"
+        override val name = "variantformat"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

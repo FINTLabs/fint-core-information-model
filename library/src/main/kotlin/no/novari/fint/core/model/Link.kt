@@ -21,10 +21,17 @@ data class Link(
         unresolved ?: baseUrl.trimEnd('/') + "/" + path + "/" + idField + "/" + encode(idValue.orEmpty())
 
     companion object {
-        /** Parses [href] into an id field and value, using the last two path segments. */
+        /**
+         * Parses [href] into an id field and value, using the last two path
+         * segments. A relative href needs only the pair — adapters commonly
+         * send "fodselsnummer/12345678901" — while an absolute one also needs
+         * a host and a resource path in front of it. Anything shorter is kept
+         * verbatim as [unresolved].
+         */
         fun parse(href: String): Link {
+            val relative = !href.contains("://")
             val segments = href.substringAfter("://").split('/').filter { it.isNotEmpty() }
-            if (segments.size < 4) return Link(unresolved = href)
+            if (segments.size < if (relative) 2 else 4) return Link(unresolved = href)
             return Link(
                 idField = segments[segments.size - 2].lowercase(),
                 idValue = decode(segments.last()),

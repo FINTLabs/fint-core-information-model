@@ -31,6 +31,8 @@ data class Arkivdel(
         override val type = Arkivdel::class
         override val ref = "arkiv-noark:Arkivdel"
         override val path = "arkiv/noark/arkivdel"
+        override val name = "arkivdel"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

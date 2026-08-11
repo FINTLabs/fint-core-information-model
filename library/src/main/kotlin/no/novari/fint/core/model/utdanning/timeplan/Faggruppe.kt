@@ -35,6 +35,8 @@ data class Faggruppe(
         override val type = Faggruppe::class
         override val ref = "utdanning-timeplan:Faggruppe"
         override val path = "utdanning/timeplan/faggruppe"
+        override val name = "faggruppe"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

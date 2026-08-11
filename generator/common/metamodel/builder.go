@@ -115,8 +115,12 @@ func convertType(componentName string, c *types.Class, byQualified map[string]*t
 		Documentation: c.Documentation,
 	}
 	if c.Stereotype == StereotypeMain {
-		path := restPathFor(componentName, c.Name)
-		t.Path = &path
+		if isCommonComponent(componentName) {
+			t.Common = true
+		} else {
+			path := restPathFor(componentName, c.Name)
+			t.Path = &path
+		}
 	}
 	if ids := collectIdFields(c, byQualified); len(ids) > 0 {
 		t.IdFields = ids
@@ -221,6 +225,13 @@ func flatRelations(c *types.Class, byQualified map[string]*types.Class, prefix s
 
 func restPathFor(componentName, typeName string) string {
 	return strings.ReplaceAll(componentName, "-", "/") + "/" + strings.ToLower(typeName)
+}
+
+// A component name is domain-package, so one without a separator is a bare
+// domain: it has no package to serve endpoints under, and its types are the
+// common ones every domain reaches through its own package.
+func isCommonComponent(componentName string) bool {
+	return !strings.Contains(componentName, "-")
 }
 
 func collectIdFields(c *types.Class, byQualified map[string]*types.Class) []string {

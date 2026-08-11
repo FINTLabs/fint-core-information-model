@@ -59,17 +59,27 @@ The essentials:
   (`addLink`) is the only mutable surface. Cached entities are
   thread-safe. `equals`/`hashCode`/`copy()` deliberately ignore links.
 - **Metadata companions** on every concrete type (`ref`, `attributes`;
-  resources add `path`, `idFields`, `relations`), plus the generated
-  `FintModel` registry: `byPath(domainName, packageName, resourceName)`
-  answers REST routing; relations are walked via
-  `relation.targetMetadata`.
-- **Relations carry baked data**: `targetPath` for link building,
+  resources add `path`, `name`, `isCommon`, `idFields`, `relations`),
+  plus the generated `FintModel` registry:
+  `byPath(domainName, packageName, resourceName)` answers REST routing;
+  relations are walked via `relation.targetMetadata`.
+- **Common resources have no path.** `felles:Person` is served under
+  the domain and package of whoever links to it, so it reports
+  `path = null`, `isCommon = true` — never an endpoint that doesn't
+  exist. `Elev.Metadata.relationPath("person")` resolves it against the
+  owner: `utdanning/elev/person`. When the owner is itself common, pass
+  the path it was reached through:
+  `Person.Metadata.relationPath("parorende", "utdanning/elev/person")`.
+  `byPath` answers for common resources under every domain and package.
+- **Relations carry baked data**: `targetPath` for link building (`null`
+  when the target has no path of its own — use `relationPath`),
   `multiplicity` with `required`/`many` flags, and
   `bidirectional` (`null` means unidirectional) with the inverse
   relation's multiplicity.
 - **`Link` stores the parsed form** (`idField` + `idValue`, or
-  `unresolved` verbatim for external hrefs); `href(baseUrl, path)`
-  rebuilds the wire form.
+  `unresolved` verbatim for external hrefs); `parse` takes both the
+  absolute href and the bare `fodselsnummer/12345678901` pair adapters
+  send, and `href(baseUrl, path)` rebuilds the wire form.
 - **Zero runtime dependencies** beyond `kotlin-stdlib` and
   `java.time`. Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
@@ -79,7 +89,7 @@ The essentials:
 
 ## metamodel.json
 
-Canonical, language-neutral snapshot of the model (schema 1.1):
+Canonical, language-neutral snapshot of the model (schema 1.2):
 components → types → pre-flattened attributes and relations,
 `"component:Name"` cross-references, UML multiplicities shipped as
 both the source string and the derived kind (`EXACTLY_ONE`,

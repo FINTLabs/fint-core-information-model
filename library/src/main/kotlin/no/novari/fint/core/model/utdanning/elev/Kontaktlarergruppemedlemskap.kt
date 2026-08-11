@@ -33,6 +33,8 @@ data class Kontaktlarergruppemedlemskap(
         override val type = Kontaktlarergruppemedlemskap::class
         override val ref = "utdanning-elev:Kontaktlarergruppemedlemskap"
         override val path = "utdanning/elev/kontaktlarergruppemedlemskap"
+        override val name = "kontaktlarergruppemedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -7,7 +7,9 @@ import kotlin.reflect.KClass
  *
  * @property name the relation name, as used in links
  * @property target the class the relation points to
- * @property targetPath the REST path of the target, or null when the target is outside the model
+ * @property targetPath the REST path of the target, or null when the target has none of its own —
+ * a common resource, a resource served inside another one, or a type outside the model. Build the
+ * path for those with [FintResourceMetadata.relationPath].
  * @property multiplicity how many links the model expects on this side
  * @property bidirectional set when the relation goes both ways, null when it only goes one way
  */

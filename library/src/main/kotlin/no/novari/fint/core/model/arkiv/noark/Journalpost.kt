@@ -51,6 +51,8 @@ data class Journalpost(
         override val type = Journalpost::class
         override val ref = "arkiv-noark:Journalpost"
         override val path: String? = null
+        override val name = "journalpost"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("antallVedlegg", Long::class, list = false, optional = true),

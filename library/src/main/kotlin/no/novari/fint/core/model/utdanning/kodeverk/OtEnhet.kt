@@ -36,6 +36,8 @@ data class OtEnhet(
         override val type = OtEnhet::class
         override val ref = "utdanning-kodeverk:OtEnhet"
         override val path = "utdanning/kodeverk/otenhet"
+        override val name = "otenhet"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

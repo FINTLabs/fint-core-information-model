@@ -35,6 +35,8 @@ data class Stillingskode(
         override val type = Stillingskode::class
         override val ref = "administrasjon-kodeverk:Stillingskode"
         override val path = "administrasjon/kodeverk/stillingskode"
+        override val name = "stillingskode"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

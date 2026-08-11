@@ -31,6 +31,8 @@ data class Dokumentfil(
         override val type = Dokumentfil::class
         override val ref = "arkiv-noark:Dokumentfil"
         override val path = "arkiv/noark/dokumentfil"
+        override val name = "dokumentfil"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("data", String::class, list = false, optional = false),

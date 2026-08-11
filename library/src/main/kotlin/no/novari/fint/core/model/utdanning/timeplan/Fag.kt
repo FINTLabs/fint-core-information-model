@@ -39,6 +39,8 @@ data class Fag(
         override val type = Fag::class
         override val ref = "utdanning-timeplan:Fag"
         override val path = "utdanning/timeplan/fag"
+        override val name = "fag"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

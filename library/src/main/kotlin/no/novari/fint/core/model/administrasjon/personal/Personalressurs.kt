@@ -48,6 +48,8 @@ data class Personalressurs(
         override val type = Personalressurs::class
         override val ref = "administrasjon-personal:Personalressurs"
         override val path = "administrasjon/personal/personalressurs"
+        override val name = "personalressurs"
+        override val isCommon = false
         override val idFields = listOf("ansattnummer", "brukernavn", "systemId")
         override val attributes = listOf(
             FintAttribute("ansattnummer", Identifikator::class, list = false, optional = false),
@@ -75,7 +77,7 @@ data class Personalressurs(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
                 bidirectional = Bidirectional(inverseName = "personalressurs", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
             ),

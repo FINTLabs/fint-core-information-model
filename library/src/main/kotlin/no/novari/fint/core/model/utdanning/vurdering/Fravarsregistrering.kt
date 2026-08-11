@@ -38,6 +38,8 @@ data class Fravarsregistrering(
         override val type = Fravarsregistrering::class
         override val ref = "utdanning-vurdering:Fravarsregistrering"
         override val path = "utdanning/vurdering/fravarsregistrering"
+        override val name = "fravarsregistrering"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("foresPaVitnemal", Boolean::class, list = false, optional = false),

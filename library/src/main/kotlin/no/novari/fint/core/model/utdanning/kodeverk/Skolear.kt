@@ -34,6 +34,8 @@ data class Skolear(
         override val type = Skolear::class
         override val ref = "utdanning-kodeverk:Skolear"
         override val path = "utdanning/kodeverk/skolear"
+        override val name = "skolear"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

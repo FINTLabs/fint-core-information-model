@@ -34,6 +34,8 @@ data class Karakterstatus(
         override val type = Karakterstatus::class
         override val ref = "utdanning-kodeverk:Karakterstatus"
         override val path = "utdanning/kodeverk/karakterstatus"
+        override val name = "karakterstatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

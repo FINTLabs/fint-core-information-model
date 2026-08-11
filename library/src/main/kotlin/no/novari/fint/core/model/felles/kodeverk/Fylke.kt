@@ -36,6 +36,8 @@ data class Fylke(
         override val type = Fylke::class
         override val ref = "felles-kodeverk:Fylke"
         override val path = "felles/kodeverk/fylke"
+        override val name = "fylke"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

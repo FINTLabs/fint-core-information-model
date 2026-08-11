@@ -36,6 +36,8 @@ data class Dokumentbeskrivelse(
         override val type = Dokumentbeskrivelse::class
         override val ref = "arkiv-noark:Dokumentbeskrivelse"
         override val path: String? = null
+        override val name = "dokumentbeskrivelse"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),

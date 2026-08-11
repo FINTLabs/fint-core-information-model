@@ -58,6 +58,8 @@ data class Arbeidsforhold(
         override val type = Arbeidsforhold::class
         override val ref = "administrasjon-personal:Arbeidsforhold"
         override val path = "administrasjon/personal/arbeidsforhold"
+        override val name = "arbeidsforhold"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("ansettelsesprosent", Long::class, list = false, optional = false),

@@ -34,6 +34,8 @@ data class Brukertype(
         override val type = Brukertype::class
         override val ref = "ressurs-kodeverk:Brukertype"
         override val path = "ressurs/kodeverk/brukertype"
+        override val name = "brukertype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

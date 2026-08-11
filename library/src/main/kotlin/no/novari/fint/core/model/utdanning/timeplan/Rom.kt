@@ -31,6 +31,8 @@ data class Rom(
         override val type = Rom::class
         override val ref = "utdanning-timeplan:Rom"
         override val path = "utdanning/timeplan/rom"
+        override val name = "rom"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = true),

@@ -35,6 +35,8 @@ data class Funksjon(
         override val type = Funksjon::class
         override val ref = "administrasjon-kodeverk:Funksjon"
         override val path = "administrasjon/kodeverk/funksjon"
+        override val name = "funksjon"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

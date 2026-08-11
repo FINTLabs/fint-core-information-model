@@ -34,6 +34,8 @@ data class Fullfortkode(
         override val type = Fullfortkode::class
         override val ref = "utdanning-kodeverk:Fullfortkode"
         override val path = "utdanning/kodeverk/fullfortkode"
+        override val name = "fullfortkode"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

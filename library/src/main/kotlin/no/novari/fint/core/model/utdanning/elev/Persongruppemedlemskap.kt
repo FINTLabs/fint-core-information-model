@@ -33,6 +33,8 @@ data class Persongruppemedlemskap(
         override val type = Persongruppemedlemskap::class
         override val ref = "utdanning-elev:Persongruppemedlemskap"
         override val path = "utdanning/elev/persongruppemedlemskap"
+        override val name = "persongruppemedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

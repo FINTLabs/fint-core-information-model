@@ -34,6 +34,8 @@ data class Programomrademedlemskap(
         override val type = Programomrademedlemskap::class
         override val ref = "utdanning-utdanningsprogram:Programomrademedlemskap"
         override val path = "utdanning/utdanningsprogram/programomrademedlemskap"
+        override val name = "programomrademedlemskap"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

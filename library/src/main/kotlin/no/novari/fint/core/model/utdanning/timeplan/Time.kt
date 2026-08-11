@@ -35,6 +35,8 @@ data class Time(
         override val type = Time::class
         override val ref = "utdanning-timeplan:Time"
         override val path = "utdanning/timeplan/time"
+        override val name = "time"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),

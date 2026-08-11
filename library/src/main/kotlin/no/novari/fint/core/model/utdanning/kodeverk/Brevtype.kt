@@ -34,6 +34,8 @@ data class Brevtype(
         override val type = Brevtype::class
         override val ref = "utdanning-kodeverk:Brevtype"
         override val path = "utdanning/kodeverk/brevtype"
+        override val name = "brevtype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

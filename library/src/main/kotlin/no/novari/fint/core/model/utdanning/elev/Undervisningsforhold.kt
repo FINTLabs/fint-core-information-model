@@ -38,6 +38,8 @@ data class Undervisningsforhold(
         override val type = Undervisningsforhold::class
         override val ref = "utdanning-elev:Undervisningsforhold"
         override val path = "utdanning/elev/undervisningsforhold"
+        override val name = "undervisningsforhold"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("hovedskole", Boolean::class, list = false, optional = true),

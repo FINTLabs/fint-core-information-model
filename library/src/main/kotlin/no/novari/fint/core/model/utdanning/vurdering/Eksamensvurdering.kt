@@ -34,6 +34,8 @@ data class Eksamensvurdering(
         override val type = Eksamensvurdering::class
         override val ref = "utdanning-vurdering:Eksamensvurdering"
         override val path = "utdanning/vurdering/eksamensvurdering"
+        override val name = "eksamensvurdering"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("kommentar", String::class, list = false, optional = false),

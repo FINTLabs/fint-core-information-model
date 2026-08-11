@@ -34,6 +34,8 @@ data class Lisensmodell(
         override val type = Lisensmodell::class
         override val ref = "ressurs-kodeverk:Lisensmodell"
         override val path = "ressurs/kodeverk/lisensmodell"
+        override val name = "lisensmodell"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

@@ -34,6 +34,8 @@ data class Arkivressurs(
         override val type = Arkivressurs::class
         override val ref = "arkiv-noark:Arkivressurs"
         override val path = "arkiv/noark/arkivressurs"
+        override val name = "arkivressurs"
+        override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("kildesystemId", Identifikator::class, list = false, optional = true),

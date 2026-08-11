@@ -36,6 +36,8 @@ data class Fravarstype(
         override val type = Fravarstype::class
         override val ref = "administrasjon-kodeverk:Fravarstype"
         override val path = "administrasjon/kodeverk/fravarstype"
+        override val name = "fravarstype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("overfores", Boolean::class, list = false, optional = true),

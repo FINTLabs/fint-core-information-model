@@ -34,6 +34,8 @@ data class Saksstatus(
         override val type = Saksstatus::class
         override val ref = "arkiv-kodeverk:Saksstatus"
         override val path = "arkiv/kodeverk/saksstatus"
+        override val name = "saksstatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

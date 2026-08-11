@@ -31,6 +31,8 @@ data class Rolle(
         override val type = Rolle::class
         override val ref = "administrasjon-fullmakt:Rolle"
         override val path = "administrasjon/fullmakt/rolle"
+        override val name = "rolle"
+        override val isCommon = false
         override val idFields = listOf("navn")
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = false),

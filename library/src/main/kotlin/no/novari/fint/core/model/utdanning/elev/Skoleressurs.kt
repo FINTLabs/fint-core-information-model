@@ -37,6 +37,8 @@ data class Skoleressurs(
         override val type = Skoleressurs::class
         override val ref = "utdanning-elev:Skoleressurs"
         override val path = "utdanning/elev/skoleressurs"
+        override val name = "skoleressurs"
+        override val isCommon = false
         override val idFields = listOf("feidenavn", "systemId")
         override val attributes = listOf(
             FintAttribute("feidenavn", Identifikator::class, list = false, optional = true),
@@ -46,7 +48,7 @@ data class Skoleressurs(
             FintRelation(
                 name = "person",
                 target = Person::class,
-                targetPath = "felles/person",
+                targetPath = null,
                 multiplicity = FintMultiplicity.ZERO_OR_ONE,
             ),
             FintRelation(

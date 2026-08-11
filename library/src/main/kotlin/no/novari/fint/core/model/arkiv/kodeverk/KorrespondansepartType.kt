@@ -34,6 +34,8 @@ data class KorrespondansepartType(
         override val type = KorrespondansepartType::class
         override val ref = "arkiv-kodeverk:KorrespondansepartType"
         override val path = "arkiv/kodeverk/korrespondanseparttype"
+        override val name = "korrespondanseparttype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

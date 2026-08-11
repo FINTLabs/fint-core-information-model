@@ -34,6 +34,8 @@ data class Format(
         override val type = Format::class
         override val ref = "arkiv-kodeverk:Format"
         override val path = "arkiv/kodeverk/format"
+        override val name = "format"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

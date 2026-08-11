@@ -34,6 +34,8 @@ data class Kjonn(
         override val type = Kjonn::class
         override val ref = "felles-kodeverk-iso:Kjonn"
         override val path = "felles/kodeverk/iso/kjonn"
+        override val name = "kjonn"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

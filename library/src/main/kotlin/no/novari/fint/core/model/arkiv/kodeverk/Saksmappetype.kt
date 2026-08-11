@@ -34,6 +34,8 @@ data class Saksmappetype(
         override val type = Saksmappetype::class
         override val ref = "arkiv-kodeverk:Saksmappetype"
         override val path = "arkiv/kodeverk/saksmappetype"
+        override val name = "saksmappetype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

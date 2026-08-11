@@ -34,6 +34,8 @@ data class Provestatus(
         override val type = Provestatus::class
         override val ref = "utdanning-kodeverk:Provestatus"
         override val path = "utdanning/kodeverk/provestatus"
+        override val name = "provestatus"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),

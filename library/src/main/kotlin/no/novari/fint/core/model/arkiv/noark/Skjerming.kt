@@ -23,6 +23,8 @@ class Skjerming : FintResource {
         override val type = Skjerming::class
         override val ref = "arkiv-noark:Skjerming"
         override val path: String? = null
+        override val name = "skjerming"
+        override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = emptyList<FintAttribute>()
         override val relations = listOf(

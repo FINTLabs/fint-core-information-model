@@ -34,6 +34,8 @@ data class Bevistype(
         override val type = Bevistype::class
         override val ref = "utdanning-kodeverk:Bevistype"
         override val path = "utdanning/kodeverk/bevistype"
+        override val name = "bevistype"
+        override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
