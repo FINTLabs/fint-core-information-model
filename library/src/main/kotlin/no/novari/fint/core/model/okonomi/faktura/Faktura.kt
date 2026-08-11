@@ -7,6 +7,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Adresse
@@ -35,6 +36,10 @@ data class Faktura(
     override fun identifikatorverdi(field: String): String? = when {
         field.equals("fakturanummer", ignoreCase = true) -> fakturanummer?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        adresse?.let { visitor.visit("adresse", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

@@ -21,6 +21,18 @@ interface FintResource : FintObject {
     /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
 
+    /**
+     * Calls [visitor] once for every resource held in a field of this one —
+     * Personalmappe.journalpost, .part, .skjerming and so on — skipping the
+     * fields that are not set. Lists are visited element by element under the
+     * field's own name.
+     *
+     * One level deep: the resources handed to [visitor] are not themselves
+     * walked, so call [visitNested] again on each to reach the whole tree.
+     * Resources with no such fields never call [visitor].
+     */
+    fun visitNested(visitor: FintResourceVisitor) {}
+
     /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 

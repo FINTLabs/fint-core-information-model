@@ -7,6 +7,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
@@ -31,6 +32,11 @@ data class Fakturagrunnlag(
     override fun identifikatorverdi(field: String): String? = when {
         field.equals("ordrenummer", ignoreCase = true) -> ordrenummer?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        fakturalinjer?.forEach { visitor.visit("fakturalinjer", it) }
+        mottaker?.let { visitor.visit("mottaker", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

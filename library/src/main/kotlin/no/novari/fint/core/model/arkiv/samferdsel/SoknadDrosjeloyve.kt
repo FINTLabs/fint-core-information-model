@@ -5,6 +5,7 @@ import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Saksmappetype
@@ -55,6 +56,14 @@ data class SoknadDrosjeloyve(
         field.equals("mappeId", ignoreCase = true) -> mappeId?.identifikatorverdi
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        journalpost?.forEach { visitor.visit("journalpost", it) }
+        klasse?.forEach { visitor.visit("klasse", it) }
+        merknad?.forEach { visitor.visit("merknad", it) }
+        part?.forEach { visitor.visit("part", it) }
+        skjerming?.let { visitor.visit("skjerming", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

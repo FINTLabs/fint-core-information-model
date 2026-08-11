@@ -6,6 +6,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.administrasjon.personal.Arbeidsforhold
@@ -36,6 +37,11 @@ data class Arbeidslokasjon(
         field.equals("organisasjonsnummer", ignoreCase = true) -> organisasjonsnummer?.identifikatorverdi
         field.equals("lokasjonskode", ignoreCase = true) -> lokasjonskode?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        forretningsadresse?.let { visitor.visit("forretningsadresse", it) }
+        postadresse?.let { visitor.visit("postadresse", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

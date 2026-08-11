@@ -6,6 +6,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.Person
@@ -39,6 +40,10 @@ data class Elev(
         field.equals("feidenavn", ignoreCase = true) -> feidenavn?.identifikatorverdi
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        hybeladresse?.let { visitor.visit("hybeladresse", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

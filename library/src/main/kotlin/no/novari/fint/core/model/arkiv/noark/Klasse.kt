@@ -5,6 +5,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 
@@ -21,6 +22,10 @@ data class Klasse(
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
     override fun identifikatorverdi(field: String): String? = null
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        skjerming?.let { visitor.visit("skjerming", it) }
+    }
 
     companion object Metadata : FintResourceMetadata {
         override val type = Klasse::class

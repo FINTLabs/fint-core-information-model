@@ -7,6 +7,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
@@ -45,6 +46,10 @@ data class Elevforhold(
     override fun identifikatorverdi(field: String): String? = when {
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        anmerkninger?.forEach { visitor.visit("anmerkninger", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

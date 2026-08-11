@@ -6,6 +6,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.administrasjon.kompleksedatatyper.Kontostreng
@@ -35,6 +36,10 @@ data class Vare(
     override fun identifikatorverdi(field: String): String? = when {
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        kontering?.let { visitor.visit("kontering", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

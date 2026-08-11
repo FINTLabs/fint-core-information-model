@@ -50,6 +50,8 @@ val elev: FintResource = deserialize(payload)
 elev.visitIdentifikators { field, value -> index.put(field, value) }
 elev.identifikatorverdi("systemid")
 
+mappe.visitNested { field, nested -> mapLinks(nested) }
+
 Elev.relations.first { it.name == "elevforhold" }.targetPath
 ```
 
@@ -76,6 +78,12 @@ The essentials:
   `multiplicity` with `required`/`many` flags, and
   `bidirectional` (`null` means unidirectional) with the inverse
   relation's multiplicity.
+- **Nested resources are reachable without reflection.** A resource
+  held in a field carries links of its own —
+  `Personalmappe.journalpost`, `.part`, `.skjerming`. `visitNested`
+  hands each one to a visitor with its field name, lists element by
+  element, unset fields skipped. It goes one level, so recurse through
+  it to walk a whole tree.
 - **`Link` stores the parsed form** (`idField` + `idValue`, or
   `unresolved` verbatim for external hrefs); `parse` takes both the
   absolute href and the bare `fodselsnummer/12345678901` pair adapters

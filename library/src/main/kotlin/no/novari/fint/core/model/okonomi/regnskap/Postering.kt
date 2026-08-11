@@ -6,6 +6,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.administrasjon.kompleksedatatyper.Kontostreng
@@ -28,6 +29,10 @@ data class Postering(
     override fun identifikatorverdi(field: String): String? = when {
         field.equals("posteringsId", ignoreCase = true) -> posteringsId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        kontering?.let { visitor.visit("kontering", it) }
     }
 
     companion object Metadata : FintResourceMetadata {

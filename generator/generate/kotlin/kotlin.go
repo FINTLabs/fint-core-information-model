@@ -74,7 +74,7 @@ func (s importSet) sorted() []string {
 	return keys
 }
 
-func Files(doc *metamodel.Document) (map[string]string, error) {
+func buildIndex(doc *metamodel.Document) (map[string]typeEntry, error) {
 	index := make(map[string]typeEntry)
 	for ci := range doc.Components {
 		comp := &doc.Components[ci]
@@ -86,6 +86,14 @@ func Files(doc *metamodel.Document) (map[string]string, error) {
 			}
 			index[ref] = typeEntry{component: comp.Name, t: t}
 		}
+	}
+	return index, nil
+}
+
+func Files(doc *metamodel.Document) (map[string]string, error) {
+	index, err := buildIndex(doc)
+	if err != nil {
+		return nil, err
 	}
 
 	files := runtimeFiles()
@@ -241,6 +249,14 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 		return "", err
 	}
 
+	var nested []metamodel.Attribute
+	if resource {
+		nested = nestedResourceAttributes(t, index)
+		if len(nested) > 0 {
+			imports.add(config.KOTLIN_PACKAGE_BASE + ".FintResourceVisitor")
+		}
+	}
+
 	var b strings.Builder
 	writeHeader(&b, pkg, imports)
 
@@ -282,6 +298,19 @@ func renderClass(component string, t *metamodel.Type, index map[string]typeEntry
 		} else {
 			b.WriteString("    override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}\n\n")
 			b.WriteString("    override fun identifikatorverdi(field: String): String? = null\n")
+		}
+
+		if len(nested) > 0 {
+			b.WriteString("\n    override fun visitNested(visitor: FintResourceVisitor) {\n")
+			for _, a := range nested {
+				quoted := strconv.Quote(a.Name)
+				if a.List {
+					b.WriteString("        " + a.Name + "?.forEach { visitor.visit(" + quoted + ", it) }\n")
+				} else {
+					b.WriteString("        " + a.Name + "?.let { visitor.visit(" + quoted + ", it) }\n")
+				}
+			}
+			b.WriteString("    }\n")
 		}
 	}
 
@@ -384,6 +413,23 @@ func relationList(component string, t *metamodel.Type, index map[string]typeEntr
 		lines = append(lines, b.String())
 	}
 	return lines, nil
+}
+
+// The attributes holding a resource rather than a plain value, in declaration
+// order. A resource nested in a field carries links of its own, so consumers
+// mapping links have to reach it — and only the generator knows the fields,
+// which is the point of emitting the walk instead of leaving them to reflect.
+func nestedResourceAttributes(t *metamodel.Type, index map[string]typeEntry) []metamodel.Attribute {
+	var out []metamodel.Attribute
+	for i := range t.Attributes {
+		a := &t.Attributes[i]
+		target, ok := index[a.Type]
+		if !ok || !isResource(target.t) {
+			continue
+		}
+		out = append(out, *a)
+	}
+	return out
 }
 
 func findRelation(t *metamodel.Type, name string) *metamodel.Relation {
@@ -698,6 +744,17 @@ fun interface IdentifikatorVisitor {
     fun visit(field: String, value: String)
 }
 `,
+		dir + "/FintResourceVisitor.kt": "package " + pkg + `
+
+/**
+ * Receives nested resources from [FintResource.visitNested], one at a time.
+ */
+fun interface FintResourceVisitor {
+
+    /** Called with the field name and the resource held in it. */
+    fun visit(field: String, resource: FintResource)
+}
+`,
 		dir + "/FintResource.kt": "package " + pkg + `
 
 /**
@@ -720,6 +777,18 @@ interface FintResource : FintObject {
 
     /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
+
+    /**
+     * Calls [visitor] once for every resource held in a field of this one —
+     * Personalmappe.journalpost, .part, .skjerming and so on — skipping the
+     * fields that are not set. Lists are visited element by element under the
+     * field's own name.
+     *
+     * One level deep: the resources handed to [visitor] are not themselves
+     * walked, so call [visitNested] again on each to reach the whole tree.
+     * Resources with no such fields never call [visitor].
+     */
+    fun visitNested(visitor: FintResourceVisitor) {}
 
     /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()

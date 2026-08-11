@@ -5,6 +5,7 @@ import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.JournalStatus
@@ -46,6 +47,15 @@ data class Journalpost(
     override fun visitIdentifikators(visitor: IdentifikatorVisitor) {}
 
     override fun identifikatorverdi(field: String): String? = null
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        dokumentbeskrivelse?.forEach { visitor.visit("dokumentbeskrivelse", it) }
+        klasse?.let { visitor.visit("klasse", it) }
+        korrespondansepart?.forEach { visitor.visit("korrespondansepart", it) }
+        merknad?.forEach { visitor.visit("merknad", it) }
+        part?.forEach { visitor.visit("part", it) }
+        skjerming?.let { visitor.visit("skjerming", it) }
+    }
 
     companion object Metadata : FintResourceMetadata {
         override val type = Journalpost::class

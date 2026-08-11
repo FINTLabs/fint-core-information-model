@@ -39,8 +39,8 @@ func TestFiles_CountAndDeterminism(t *testing.T) {
 	for _, comp := range doc.Components {
 		typeCount += len(comp.Types)
 	}
-	if want := typeCount + 11; len(files) != want {
-		t.Fatalf("expected %d files (types + 10 runtime + registry), got %d", want, len(files))
+	if want := typeCount + 12; len(files) != want {
+		t.Fatalf("expected %d files (types + 11 runtime + registry), got %d", want, len(files))
 	}
 
 	second, err := Files(doc)
@@ -176,6 +176,75 @@ func TestFiles_RelationsToCommonResourcesCarryNoPath(t *testing.T) {
 	}
 }
 
+// A resource held in a field carries links of its own, so every such field has
+// to be reachable without reflection — and only those: a resource with nothing
+// nested must not carry the override at all.
+func TestFiles_NestedResourceWalkCoversEveryResourceTypedField(t *testing.T) {
+	doc, files := golden(t)
+
+	index, err := buildIndex(doc)
+	if err != nil {
+		t.Fatalf("build index: %v", err)
+	}
+	owners, fields := 0, 0
+	for _, comp := range doc.Components {
+		for _, typ := range comp.Types {
+			content := files[filePath(comp.Name, typ.Name)]
+			id := comp.Name + ":" + typ.Name
+
+			// abstrakt types are interfaces with no bodies; their attributes
+			// arrive flattened on every concrete type below them.
+			if typ.Stereotype == metamodel.StereotypeAbstract {
+				if strings.Contains(content, "visitNested") {
+					t.Errorf("%s: abstrakt type should not carry the walk", id)
+				}
+				continue
+			}
+
+			var nested []metamodel.Attribute
+			if isResource(&typ) {
+				nested = nestedResourceAttributes(&typ, index)
+			}
+			if len(nested) == 0 {
+				if strings.Contains(content, "override fun visitNested") {
+					t.Errorf("%s: has no resource-typed field but overrides visitNested", id)
+				}
+				continue
+			}
+			owners++
+			for _, a := range nested {
+				fields++
+				want := fmt.Sprintf("        %s?.let { visitor.visit(%q, it) }\n", a.Name, a.Name)
+				if a.List {
+					want = fmt.Sprintf("        %s?.forEach { visitor.visit(%q, it) }\n", a.Name, a.Name)
+				}
+				if !strings.Contains(content, want) {
+					t.Errorf("%s: visitNested does not reach %s (list=%t)", id, a.Name, a.List)
+				}
+			}
+		}
+	}
+	if owners == 0 || fields == 0 {
+		t.Fatalf("no nested resources found in the golden document")
+	}
+	t.Logf("%d resource-typed fields across %d types", fields, owners)
+}
+
+func TestFiles_NestedWalkOnPersonalmappe(t *testing.T) {
+	_, files := golden(t)
+	want := `    override fun visitNested(visitor: FintResourceVisitor) {
+        journalpost?.forEach { visitor.visit("journalpost", it) }
+        klasse?.forEach { visitor.visit("klasse", it) }
+        merknad?.forEach { visitor.visit("merknad", it) }
+        part?.forEach { visitor.visit("part", it) }
+        skjerming?.let { visitor.visit("skjerming", it) }
+    }
+`
+	if got := files["no/novari/fint/core/model/arkiv/personal/Personalmappe.kt"]; !strings.Contains(got, want) {
+		t.Fatalf("Personalmappe.kt missing the nested walk:\n%s", want)
+	}
+}
+
 func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	doc, files := golden(t)
 	registry, ok := files["no/novari/fint/core/model/FintModel.kt"]
@@ -208,6 +277,7 @@ import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResource
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.Person
@@ -241,6 +311,10 @@ data class Elev(
         field.equals("feidenavn", ignoreCase = true) -> feidenavn?.identifikatorverdi
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        hybeladresse?.let { visitor.visit("hybeladresse", it) }
     }
 
     companion object Metadata : FintResourceMetadata {
@@ -388,6 +462,18 @@ interface FintResource : FintObject {
 
     /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
+
+    /**
+     * Calls [visitor] once for every resource held in a field of this one —
+     * Personalmappe.journalpost, .part, .skjerming and so on — skipping the
+     * fields that are not set. Lists are visited element by element under the
+     * field's own name.
+     *
+     * One level deep: the resources handed to [visitor] are not themselves
+     * walked, so call [visitNested] again on each to reach the whole tree.
+     * Resources with no such fields never call [visitor].
+     */
+    fun visitNested(visitor: FintResourceVisitor) {}
 
     /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()

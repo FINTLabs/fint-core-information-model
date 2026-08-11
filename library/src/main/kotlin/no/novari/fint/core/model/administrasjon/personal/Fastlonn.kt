@@ -6,6 +6,7 @@ import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
 import no.novari.fint.core.model.FintResourceMetadata
+import no.novari.fint.core.model.FintResourceVisitor
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.administrasjon.kodeverk.Lonnsart
@@ -38,6 +39,10 @@ data class Fastlonn(
         field.equals("kildesystemId", ignoreCase = true) -> kildesystemId?.identifikatorverdi
         field.equals("systemId", ignoreCase = true) -> systemId?.identifikatorverdi
         else -> null
+    }
+
+    override fun visitNested(visitor: FintResourceVisitor) {
+        kontostreng?.let { visitor.visit("kontostreng", it) }
     }
 
     companion object Metadata : FintResourceMetadata {
