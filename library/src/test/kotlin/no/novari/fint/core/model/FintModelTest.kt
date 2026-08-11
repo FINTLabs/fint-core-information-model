@@ -1,5 +1,6 @@
 package no.novari.fint.core.model
 
+import no.novari.fint.core.model.administrasjon.organisasjon.Organisasjonselement
 import no.novari.fint.core.model.utdanning.elev.Elev
 import kotlin.reflect.KClass
 import kotlin.test.Test
@@ -48,6 +49,40 @@ class FintModelTest {
         assertNotNull(meta)
         val type: KClass<out FintResource> = meta.type
         assertEquals(Elev::class, type)
+    }
+
+    @Test
+    fun `every bidirectional relation is answered from the other side`() {
+        var pairs = 0
+        FintModel.resources.forEach { meta ->
+            meta.relations.forEach { relation ->
+                val bidirectional = relation.bidirectional ?: return@forEach
+                val target = relation.targetMetadata as? FintResourceMetadata
+                assertNotNull(target, "${meta.ref}.${relation.name} points at a type that carries no relations")
+                val inverse = target.relation(bidirectional.inverseName)
+                assertNotNull(inverse, "${meta.ref}.${relation.name}: ${target.ref} has no ${bidirectional.inverseName}")
+                assertEquals(
+                    relation.name,
+                    inverse.bidirectional?.inverseName,
+                    "${meta.ref}.${relation.name}: ${target.ref}.${inverse.name} does not point back",
+                )
+                assertEquals(
+                    inverse.multiplicity,
+                    bidirectional.inverseMultiplicity,
+                    "${meta.ref}.${relation.name}: baked inverseMultiplicity disagrees with ${target.ref}.${inverse.name}",
+                )
+                pairs++
+            }
+        }
+        assertTrue(pairs > 0)
+    }
+
+    @Test
+    fun `a relation to the resource's own type still goes both ways`() {
+        val overordnet = Organisasjonselement.relations.first { it.name == "overordnet" }
+        assertEquals("underordnet", overordnet.bidirectional?.inverseName)
+        assertEquals(FintMultiplicity.ZERO_OR_MORE, overordnet.bidirectional?.inverseMultiplicity)
+        assertEquals(Organisasjonselement::class, overordnet.target)
     }
 
     @Test

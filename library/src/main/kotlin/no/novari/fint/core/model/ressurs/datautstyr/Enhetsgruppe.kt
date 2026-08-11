@@ -10,10 +10,12 @@ import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.administrasjon.organisasjon.Organisasjonselement
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.ressurs.kodeverk.Enhetstype
 import no.novari.fint.core.model.ressurs.kodeverk.Plattform
 
 data class Enhetsgruppe(
+    val gyldighetsperiode: Periode? = null,
     val navn: String? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
@@ -38,6 +40,7 @@ data class Enhetsgruppe(
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
+            FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
             FintAttribute("navn", String::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )

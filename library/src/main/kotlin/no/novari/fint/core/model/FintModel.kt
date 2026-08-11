@@ -143,6 +143,7 @@ object FintModel {
         no.novari.fint.core.model.utdanning.utdanningsprogram.Programomrademedlemskap.Metadata,
         no.novari.fint.core.model.utdanning.utdanningsprogram.Skole.Metadata,
         no.novari.fint.core.model.utdanning.utdanningsprogram.Utdanningsprogram.Metadata,
+        no.novari.fint.core.model.utdanning.vurdering.Aktivitetsfravar.Metadata,
         no.novari.fint.core.model.utdanning.vurdering.Anmerkninger.Metadata,
         no.novari.fint.core.model.utdanning.vurdering.Eksamensgruppe.Metadata,
         no.novari.fint.core.model.utdanning.vurdering.Eksamensgruppemedlemskap.Metadata,

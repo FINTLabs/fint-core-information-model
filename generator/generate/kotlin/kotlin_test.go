@@ -20,7 +20,7 @@ var (
 func golden(t *testing.T) (*metamodel.Document, map[string]string) {
 	t.Helper()
 	goldenOnce.Do(func() {
-		goldenDoc, goldenErr = metamodel.Load("../../testdata/golden/v4.0.20/metamodel.json")
+		goldenDoc, goldenErr = metamodel.Load("../../testdata/golden/v4.1.0-rc-2/metamodel.json")
 		if goldenErr != nil {
 			return
 		}

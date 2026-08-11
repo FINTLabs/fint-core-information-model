@@ -28,9 +28,9 @@ compile and pass its tests.
 ```bash
 cd generator
 
-go run . -t v4.0.20 metamodel -o metamodel.json
+go run . -t v4.1.0-rc-2 metamodel -o metamodel.json
 
-go run . generate --from-json testdata/golden/v4.0.20/metamodel.json \
+go run . generate --from-json testdata/golden/v4.1.0-rc-2/metamodel.json \
   --out ../library/src/main/kotlin
 
 gradle -p ../library build
@@ -95,7 +95,7 @@ components → types → pre-flattened attributes and relations,
 both the source string and the derived kind (`EXACTLY_ONE`,
 `ZERO_OR_ONE`, `ONE_OR_MORE`, `ZERO_OR_MORE`). Dangling references
 fail the build — a model that doesn't make sense never generates.
-See `generator/testdata/golden/v4.0.20/metamodel.json` for the real
+See `generator/testdata/golden/v4.1.0-rc-2/metamodel.json` for the real
 thing and `generator/common/metamodel/schema.go` for the schema.
 
 ## Releases

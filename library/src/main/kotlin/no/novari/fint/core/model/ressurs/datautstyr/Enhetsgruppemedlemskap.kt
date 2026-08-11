@@ -9,8 +9,10 @@ import no.novari.fint.core.model.FintResourceMetadata
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
+import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Enhetsgruppemedlemskap(
+    val gyldighetsperiode: Periode? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -34,6 +36,7 @@ data class Enhetsgruppemedlemskap(
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
+            FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )
         override val relations = listOf(

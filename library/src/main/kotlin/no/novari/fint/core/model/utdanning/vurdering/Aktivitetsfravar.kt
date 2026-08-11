@@ -1,5 +1,6 @@
 package no.novari.fint.core.model.utdanning.vurdering
 
+import java.time.LocalDate
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -9,17 +10,15 @@ import no.novari.fint.core.model.FintResourceMetadata
 import no.novari.fint.core.model.IdentifikatorVisitor
 import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
-import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 import no.novari.fint.core.model.utdanning.kodeverk.Fravarstype
 import no.novari.fint.core.model.utdanning.timeplan.Fag
-import no.novari.fint.core.model.utdanning.timeplan.Faggruppe
 import no.novari.fint.core.model.utdanning.timeplan.Undervisningsgruppe
 
-data class Fravarsregistrering(
-    val foresPaVitnemal: Boolean? = null,
+data class Aktivitetsfravar(
+    val dato: LocalDate? = null,
     val kommentar: String? = null,
-    val periode: Periode? = null,
+    val minutter: Int? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -36,16 +35,16 @@ data class Fravarsregistrering(
     }
 
     companion object Metadata : FintResourceMetadata {
-        override val type = Fravarsregistrering::class
-        override val ref = "utdanning-vurdering:Fravarsregistrering"
-        override val path = "utdanning/vurdering/fravarsregistrering"
-        override val name = "fravarsregistrering"
+        override val type = Aktivitetsfravar::class
+        override val ref = "utdanning-vurdering:Aktivitetsfravar"
+        override val path = "utdanning/vurdering/aktivitetsfravar"
+        override val name = "aktivitetsfravar"
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
-            FintAttribute("foresPaVitnemal", Boolean::class, list = false, optional = false),
+            FintAttribute("dato", LocalDate::class, list = false, optional = false),
             FintAttribute("kommentar", String::class, list = false, optional = true),
-            FintAttribute("periode", Periode::class, list = false, optional = false),
+            FintAttribute("minutter", Int::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )
         override val relations = listOf(
@@ -59,13 +58,7 @@ data class Fravarsregistrering(
                 name = "fag",
                 target = Fag::class,
                 targetPath = "utdanning/timeplan/fag",
-                multiplicity = FintMultiplicity.ZERO_OR_ONE,
-            ),
-            FintRelation(
-                name = "faggruppe",
-                target = Faggruppe::class,
-                targetPath = "utdanning/timeplan/faggruppe",
-                multiplicity = FintMultiplicity.ZERO_OR_ONE,
+                multiplicity = FintMultiplicity.EXACTLY_ONE,
             ),
             FintRelation(
                 name = "undervisningsgruppe",
@@ -84,7 +77,7 @@ data class Fravarsregistrering(
                 target = Elevfravar::class,
                 targetPath = "utdanning/vurdering/elevfravar",
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
-                bidirectional = Bidirectional(inverseName = "fravarsregistrering", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
+                bidirectional = Bidirectional(inverseName = "aktivitetsfravar", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
         )
     }

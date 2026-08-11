@@ -93,12 +93,14 @@ data class Organisasjonselement(
                 target = Organisasjonselement::class,
                 targetPath = "administrasjon/organisasjon/organisasjonselement",
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
+                bidirectional = Bidirectional(inverseName = "underordnet", isSource = true, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
             FintRelation(
                 name = "underordnet",
                 target = Organisasjonselement::class,
                 targetPath = "administrasjon/organisasjon/organisasjonselement",
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "overordnet", isSource = true, inverseMultiplicity = FintMultiplicity.EXACTLY_ONE),
             ),
             FintRelation(
                 name = "skole",

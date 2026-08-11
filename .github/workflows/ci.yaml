@@ -33,7 +33,7 @@ jobs:
 
       - name: Regenerate library sources
         working-directory: generator
-        run: go run . generate --from-json testdata/golden/v4.0.20/metamodel.json --out ../library/src/main/kotlin
+        run: go run . generate --from-json testdata/golden/v4.1.0-rc-2/metamodel.json --out ../library/src/main/kotlin
 
       - name: Committed sources must match the generator
         run: git diff --exit-code -- library/src/main/kotlin

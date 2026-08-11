@@ -62,6 +62,7 @@ data class Faggruppemedlemskap(
                 target = Elevforhold::class,
                 targetPath = "utdanning/elev/elevforhold",
                 multiplicity = FintMultiplicity.EXACTLY_ONE,
+                bidirectional = Bidirectional(inverseName = "faggruppemedlemskap", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_MORE),
             ),
             FintRelation(
                 name = "varsel",

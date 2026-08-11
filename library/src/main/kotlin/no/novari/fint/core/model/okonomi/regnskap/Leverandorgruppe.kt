@@ -1,5 +1,6 @@
 package no.novari.fint.core.model.okonomi.regnskap
 
+import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -43,6 +44,7 @@ data class Leverandorgruppe(
                 target = Leverandor::class,
                 targetPath = "okonomi/regnskap/leverandor",
                 multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "leverandorgruppe", isSource = false, inverseMultiplicity = FintMultiplicity.ZERO_OR_ONE),
             ),
         )
     }

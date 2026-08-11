@@ -39,6 +39,13 @@ data class Elevfravar(
         )
         override val relations = listOf(
             FintRelation(
+                name = "aktivitetsfravar",
+                target = Aktivitetsfravar::class,
+                targetPath = "utdanning/vurdering/aktivitetsfravar",
+                multiplicity = FintMultiplicity.ZERO_OR_MORE,
+                bidirectional = Bidirectional(inverseName = "elevfravar", isSource = true, inverseMultiplicity = FintMultiplicity.EXACTLY_ONE),
+            ),
+            FintRelation(
                 name = "fravarsregistrering",
                 target = Fravarsregistrering::class,
                 targetPath = "utdanning/vurdering/fravarsregistrering",

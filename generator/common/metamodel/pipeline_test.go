@@ -16,16 +16,16 @@ import (
 // normalisation, package walking, association handling, or the builder's
 // flattening and derivation shows up as a diff against the golden document.
 func TestPipeline_XMIFixtureProducesGoldenDocument(t *testing.T) {
-	classes := parser.ClassesFromDocument(document.Open("../../testdata/xmi/v4.0.20.xml"))
+	classes := parser.ClassesFromDocument(document.Open("../../testdata/xmi/v4.1.0-rc-2.xml"))
 	if len(classes) == 0 {
 		t.Fatalf("no classes parsed from XMI fixture")
 	}
 
-	golden, err := os.ReadFile("../../testdata/golden/v4.0.20/metamodel.json")
+	golden, err := os.ReadFile("../../testdata/golden/v4.1.0-rc-2/metamodel.json")
 	if err != nil {
 		t.Fatalf("read golden: %v", err)
 	}
-	goldenDoc, err := Load("../../testdata/golden/v4.0.20/metamodel.json")
+	goldenDoc, err := Load("../../testdata/golden/v4.1.0-rc-2/metamodel.json")
 	if err != nil {
 		t.Fatalf("load golden: %v", err)
 	}
