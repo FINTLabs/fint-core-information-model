@@ -52,7 +52,9 @@ elev.identifikatorverdi("systemid")
 
 mappe.visitNested { field, nested -> mapLinks(nested) }
 
-Elev.relations.first { it.name == "elevforhold" }.targetPath
+val relation = Elev.relations.first { it.name == "person" }
+relation.resolveLink("person/fodselsnummer/ABC/DEF")
+// Link(idField = "fodselsnummer", idValue = "ABC/DEF")
 ```
 
 The essentials:
@@ -85,9 +87,17 @@ The essentials:
   element, unset fields skipped. It goes one level, so recurse through
   it to walk a whole tree.
 - **`Link` stores the parsed form** (`idField` + `idValue`, or
-  `unresolved` verbatim for external hrefs); `parse` takes both the
-  absolute href and the bare `fodselsnummer/12345678901` pair adapters
-  send, and `href(baseUrl, path)` rebuilds the wire form.
+  `unresolved` verbatim). Read hrefs with
+  `relation.resolveLink(href)`, which splits on the target's declared id
+  fields rather than by position — so an id value containing `/`
+  survives, and an href naming no id field, like a Grep reference, stays
+  unresolved instead of having one invented. There is no href-only
+  parser: nothing but the target's metadata can say where the id begins.
+- **Encoding is asymmetric on purpose.** `resolveLink` decodes nothing:
+  inbound we hold the model, so we know where the id begins and can
+  split a raw href safely. `href(baseUrl, path)` percent-encodes the id
+  value, because the county client reading it has no model and needs the
+  id to stay one segment.
 - **Zero runtime dependencies** beyond `kotlin-stdlib` and
   `java.time`. Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin

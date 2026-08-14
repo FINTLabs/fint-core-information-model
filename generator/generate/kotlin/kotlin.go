@@ -538,6 +538,9 @@ object FintModel {
     fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
         pathIndex["$domainName/$packageName/$resourceName".lowercase()]
             ?: commonIndex[resourceName.lowercase()]
+
+    /** Metadata for [type], or null when it is not a type from the model. */
+    fun byType(type: KClass<*>): FintTypeMetadata? = typeIndex[type]
 }
 
 /** Metadata for the type this relation points to, or null for targets outside the model. */
@@ -699,6 +702,39 @@ data class FintRelation(
     /** True when the relation goes both ways. */
     val isBidirectional: Boolean get() = bidirectional != null
 }
+
+/**
+ * Reads [href] into a [Link] using the id fields of this relation's target.
+ *
+ * The id field is found by name, not by position, so an id value that itself
+ * contains slashes survives whole: ".../person/fodselsnummer/ABC/DEF" keeps
+ * "ABC/DEF". An href that names none of the target's id fields is kept verbatim
+ * in [Link.unresolved] rather than having an id invented for it, which is what
+ * happens to a reference like "https://data.udir.no/kl06/v201906/fagkoder/FSP01-01" —
+ * Grepreferanse and Vigoreferanse have no id fields at all. Absolute and
+ * relative hrefs are read the same way.
+ *
+ * [href] is taken exactly as it arrives: nothing is decoded. That asymmetry
+ * with [Link.href], which encodes, is deliberate. Inbound we hold the model, so
+ * we know where the id begins and can split a raw href safely. Outbound the
+ * county client reading the href has no model to split on, so the id value is
+ * percent-encoded to keep it one segment. Adapters send raw hrefs; an adapter
+ * that percent-encodes instead will have its escapes stored literally and
+ * encoded again on the way out.
+ */
+fun FintRelation.resolveLink(href: String): Link {
+    val idFields = (targetMetadata as? FintResourceMetadata)?.idFields.orEmpty()
+    if (idFields.isEmpty()) return Link(unresolved = href)
+
+    val parts = href.substringAfter("://").split('/')
+    val index = parts.indexOfFirst { part -> idFields.any { it.equals(part, ignoreCase = true) } }
+    if (index < 0) return Link(unresolved = href)
+
+    val idValue = parts.subList(index + 1, parts.size).joinToString("/")
+    if (idValue.isEmpty()) return Link(unresolved = href)
+
+    return Link(idField = parts[index].lowercase(), idValue = idValue)
+}
 `,
 		dir + "/Bidirectional.kt": "package " + pkg + `
 
@@ -790,6 +826,13 @@ interface FintResource : FintObject {
      */
     fun visitNested(visitor: FintResourceVisitor) {}
 
+    /**
+     * The resources held in the fields of this one, in field order. Builds a
+     * new list per call — use [visitNested] to walk them without one.
+     */
+    val nestedResources: List<FintResource>
+        get() = buildList { visitNested { _, resource -> add(resource) } }
+
     /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 
@@ -801,50 +844,38 @@ interface FintResource : FintObject {
 `,
 		dir + "/Link.kt": "package " + pkg + `
 
-import java.net.URLDecoder
 import java.net.URLEncoder
 
 /**
  * A link to a resource, stored as the id that points it out instead of the
  * full href.
  *
+ * Read an href with [FintRelation.resolveLink]. It takes the relation because
+ * only the target's declared id fields say where the id begins — there is no
+ * way to tell from an href alone, and guessing by position truncates id values
+ * containing "/" and invents id fields for hrefs that carry none.
+ *
  * @property idField the id field name from the href, e.g. "systemid"
- * @property idValue the id value from the href
- * @property unresolved the original href, kept as-is when it does not follow the FINT id pattern
+ * @property idValue the id value from the href, exactly as it arrived
+ * @property unresolved the original href, kept as-is when it names no id field of the target
  */
 data class Link(
     val idField: String? = null,
     val idValue: String? = null,
     val unresolved: String? = null,
 ) {
-    /** Builds the full href from [baseUrl], the target's [path] and the stored id. */
+    /**
+     * Builds the full href from [baseUrl], the target's [path] and the stored
+     * id, percent-encoding the id value so that it stays a single segment for
+     * a reader who has no model to split on. Unresolved links are emitted
+     * verbatim.
+     */
     fun href(baseUrl: String, path: String): String =
         unresolved ?: baseUrl.trimEnd('/') + "/" + path + "/" + idField + "/" + encode(idValue.orEmpty())
-
-    companion object {
-        /**
-         * Parses [href] into an id field and value, using the last two path
-         * segments. A relative href needs only the pair — adapters commonly
-         * send "fodselsnummer/12345678901" — while an absolute one also needs
-         * a host and a resource path in front of it. Anything shorter is kept
-         * verbatim as [unresolved].
-         */
-        fun parse(href: String): Link {
-            val relative = !href.contains("://")
-            val segments = href.substringAfter("://").split('/').filter { it.isNotEmpty() }
-            if (segments.size < if (relative) 2 else 4) return Link(unresolved = href)
-            return Link(
-                idField = segments[segments.size - 2].lowercase(),
-                idValue = decode(segments.last()),
-            )
-        }
-
-        private fun decode(value: String): String = URLDecoder.decode(value, Charsets.UTF_8)
-
-        private fun encode(value: String): String =
-            URLEncoder.encode(value, Charsets.UTF_8).replace("+", "%20")
-    }
 }
+
+private fun encode(value: String): String =
+    URLEncoder.encode(value, Charsets.UTF_8).replace("+", "%20")
 `,
 	}
 }

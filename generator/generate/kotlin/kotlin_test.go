@@ -475,6 +475,13 @@ interface FintResource : FintObject {
      */
     fun visitNested(visitor: FintResourceVisitor) {}
 
+    /**
+     * The resources held in the fields of this one, in field order. Builds a
+     * new list per call — use [visitNested] to walk them without one.
+     */
+    val nestedResources: List<FintResource>
+        get() = buildList { visitNested { _, resource -> add(resource) } }
+
     /** Returns the links stored under [name], or an empty list. */
     fun relationLinks(name: String): List<Link> = links[name].orEmpty()
 

@@ -225,6 +225,9 @@ object FintModel {
     fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
         pathIndex["$domainName/$packageName/$resourceName".lowercase()]
             ?: commonIndex[resourceName.lowercase()]
+
+    /** Metadata for [type], or null when it is not a type from the model. */
+    fun byType(type: KClass<*>): FintTypeMetadata? = typeIndex[type]
 }
 
 /** Metadata for the type this relation points to, or null for targets outside the model. */

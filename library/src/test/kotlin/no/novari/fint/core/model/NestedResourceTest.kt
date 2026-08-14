@@ -71,6 +71,16 @@ class NestedResourceTest {
     }
 
     @Test
+    fun `nestedResources collects what the walk visits`() {
+        val journalpost = Journalpost(tittel = "Vedtak")
+        val skjerming = Skjerming()
+        val mappe = Personalmappe(journalpost = listOf(journalpost), skjerming = skjerming)
+
+        assertEquals(listOf(journalpost, skjerming), mappe.nestedResources)
+        assertTrue(Journalpost().nestedResources.isEmpty())
+    }
+
+    @Test
     fun `a resource-typed field on a non-arkiv resource is reached too`() {
         val elev = Elev(hybeladresse = Adresse(postnummer = "0150"))
         assertEquals(listOf("hybeladresse"), visit(elev).map { it.first })

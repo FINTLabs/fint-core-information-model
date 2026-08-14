@@ -86,6 +86,16 @@ class FintModelTest {
     }
 
     @Test
+    fun `byType finds metadata for any model type`() {
+        assertSame(Elev.Metadata, FintModel.byType(Elev::class))
+        assertSame(
+            no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator.Metadata,
+            FintModel.byType(no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator::class),
+        )
+        assertNull(FintModel.byType(String::class))
+    }
+
+    @Test
     fun `every relation with a targetPath resolves to metadata`() {
         FintModel.resources.flatMap { it.relations }.forEach { relation ->
             if (relation.targetPath != null) {
