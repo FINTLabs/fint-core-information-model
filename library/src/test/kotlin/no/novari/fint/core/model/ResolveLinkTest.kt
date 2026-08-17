@@ -74,6 +74,15 @@ class ResolveLinkTest {
     }
 
     @Test
+    fun `the adapter direction round-trips unchanged`() {
+        for (raw in listOf("ABC/DEF", "S 123", "plain", "12%2034")) {
+            val link = person.resolveLink("person/fodselsnummer/$raw")
+            assertEquals(raw, link.idValue)
+            assertEquals(link, person.resolveLink(link.idHref!!))
+        }
+    }
+
+    @Test
     fun `href encodes on the way out because the reader has no model`() {
         val link = person.resolveLink("fodselsnummer/ABC/DEF")
         assertEquals(

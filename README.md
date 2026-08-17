@@ -93,11 +93,13 @@ The essentials:
   survives, and an href naming no id field, like a Grep reference, stays
   unresolved instead of having one invented. There is no href-only
   parser: nothing but the target's metadata can say where the id begins.
-- **Encoding is asymmetric on purpose.** `resolveLink` decodes nothing:
-  inbound we hold the model, so we know where the id begins and can
-  split a raw href safely. `href(baseUrl, path)` percent-encodes the id
-  value, because the county client reading it has no model and needs the
-  id to stay one segment.
+- **Two outbound forms, because the two readers differ.** `idHref` is
+  the adapter-facing `"idfield/idvalue"`, raw — an adapter knows the id
+  fields of its own resources, so it can find where the id begins just
+  as `resolveLink` does, which makes that direction lossless.
+  `href(baseUrl, path)` is the county-facing absolute href, with the id
+  percent-encoded into a single segment because a county client has no
+  model to split on. Nothing is decoded inbound in either direction.
 - **Zero runtime dependencies** beyond `kotlin-stdlib` and
   `java.time`. Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
