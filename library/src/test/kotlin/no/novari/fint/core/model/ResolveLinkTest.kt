@@ -83,6 +83,32 @@ class ResolveLinkTest {
     }
 
     @Test
+    fun `the whole flow, from what an adapter sends to what each reader gets`() {
+        val fromAdapter = "person/fodselsnummer/ABC/DEF"
+
+        val stored = person.resolveLink(fromAdapter)
+        assertEquals("fodselsnummer", stored.idField)
+        assertEquals("ABC/DEF", stored.idValue)
+
+        assertEquals("fodselsnummer/ABC/DEF", stored.idHref)
+
+        assertEquals(
+            "https://api.felleskomponent.no/utdanning/elev/person/fodselsnummer/ABC%2FDEF",
+            stored.href("https://api.felleskomponent.no", "utdanning/elev/person"),
+        )
+    }
+
+    @Test
+    fun `a non-ascii id is escaped as its utf-8 bytes`() {
+        val link = person.resolveLink("fodselsnummer/Bjørn Æ")
+        assertEquals("Bjørn Æ", link.idValue)
+        assertEquals(
+            "https://x.no/utdanning/elev/person/fodselsnummer/Bj%C3%B8rn%20%C3%86",
+            link.href("https://x.no", "utdanning/elev/person"),
+        )
+    }
+
+    @Test
     fun `href encodes on the way out because the reader has no model`() {
         val link = person.resolveLink("fodselsnummer/ABC/DEF")
         assertEquals(
