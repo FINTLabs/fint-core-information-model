@@ -24,35 +24,50 @@ data class FintRelation(
     val isBidirectional: Boolean get() = bidirectional != null
 }
 
+/** The declared id fields of this relation's target, empty when it has none. */
+val FintRelation.targetIdFields: List<String>
+    get() = (targetMetadata as? FintResourceMetadata)?.idFields.orEmpty()
+
 /**
- * Reads [href] into a [Link] using the id fields of this relation's target.
+ * Reads [href] into a [Link]: the id value is the last segment, the id field
+ * the one before it, validated against [targetIdFields].
  *
- * The id field is found by name, not by position, so an id value that itself
- * contains slashes survives whole: ".../person/fodselsnummer/ABC/DEF" keeps
- * "ABC/DEF". An href that names none of the target's id fields is kept verbatim
- * in [Link.unresolved] rather than having an id invented for it, which is what
- * happens to a reference like "https://data.udir.no/kl06/v201906/fagkoder/FSP01-01" —
- * Grepreferanse and Vigoreferanse have no id fields at all. Absolute and
- * relative hrefs are read the same way.
+ * Hrefs arrive percent-encoded, so an id value is exactly one segment and the
+ * id is positional, as in any other URL. The model is not what finds the id —
+ * it is what confirms it. An href whose second-to-last segment names none of
+ * the target's id fields is kept verbatim in [Link.unresolved] rather than
+ * having an id invented for it, and so is one whose target declares no id
+ * fields at all, like "https://data.udir.no/kl06/v201906/fagkoder/FSP01-01" —
+ * Grepreferanse and Vigoreferanse have none. Absolute and relative hrefs are
+ * read the same way.
  *
- * [href] is taken exactly as it arrives: nothing is decoded. That asymmetry
- * with [Link.href], which encodes, is deliberate. Inbound we hold the model, so
- * we know where the id begins and can split a raw href safely. Outbound the
- * county client reading the href has no model to split on, so the id value is
- * percent-encoded to keep it one segment. Adapters send raw hrefs; an adapter
- * that percent-encodes instead will have its escapes stored literally and
- * encoded again on the way out.
+ * That makes an unencoded href visible rather than repaired. A sender that
+ * still writes ".../fodselsnummer/ABC/DEF" resolves to nothing instead of
+ * silently yielding "DEF", so the fault surfaces at the sender. To tell a
+ * malformed href from one that was never resolvable, check whether the target
+ * declares id fields at all:
+ *
+ *     if (link.unresolved != null && relation.targetIdFields.isNotEmpty()) …
+ *
+ * [href] is taken exactly as it arrives and [Link.idValue] is returned still
+ * encoded: this splits, it never decodes. The split has to happen while the
+ * value is encoded, or a "%2F" inside it would already have become a
+ * structural "/". Decoding the value segment afterwards is the caller's, since
+ * only the caller knows the wire contract — which codec, whether an ingress
+ * already decoded, whether a gateway double-encoded. [Link.href] is the
+ * mirror: the caller encodes, this never does.
  */
 fun FintRelation.resolveLink(href: String): Link {
-    val idFields = (targetMetadata as? FintResourceMetadata)?.idFields.orEmpty()
+    val idFields = targetIdFields
     if (idFields.isEmpty()) return Link(unresolved = href)
 
     val parts = href.substringAfter("://").split('/')
-    val index = parts.indexOfFirst { part -> idFields.any { it.equals(part, ignoreCase = true) } }
-    if (index < 0) return Link(unresolved = href)
+    if (parts.size < 2) return Link(unresolved = href)
 
-    val idValue = parts.subList(index + 1, parts.size).joinToString("/")
+    val idField = parts[parts.size - 2]
+    val idValue = parts.last()
     if (idValue.isEmpty()) return Link(unresolved = href)
+    if (idFields.none { it.equals(idField, ignoreCase = true) }) return Link(unresolved = href)
 
-    return Link(idField = parts[index].lowercase(), idValue = idValue)
+    return Link(idField = idField.lowercase(), idValue = idValue)
 }

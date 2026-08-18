@@ -53,8 +53,8 @@ elev.identifikatorverdi("systemid")
 mappe.visitNested { field, nested -> mapLinks(nested) }
 
 val relation = Elev.relations.first { it.name == "person" }
-relation.resolveLink("person/fodselsnummer/ABC/DEF")
-// Link(idField = "fodselsnummer", idValue = "ABC/DEF")
+relation.resolveLink("person/fodselsnummer/ABC%2FDEF")
+// Link(idField = "fodselsnummer", idValue = "ABC%2FDEF")
 ```
 
 The essentials:
@@ -87,19 +87,27 @@ The essentials:
   element, unset fields skipped. It goes one level, so recurse through
   it to walk a whole tree.
 - **`Link` stores the parsed form** (`idField` + `idValue`, or
-  `unresolved` verbatim). Read hrefs with
-  `relation.resolveLink(href)`, which splits on the target's declared id
-  fields rather than by position — so an id value containing `/`
-  survives, and an href naming no id field, like a Grep reference, stays
-  unresolved instead of having one invented. There is no href-only
-  parser: nothing but the target's metadata can say where the id begins.
-- **Two outbound forms, because the two readers differ.** `idHref` is
-  the adapter-facing `"idfield/idvalue"`, raw — an adapter knows the id
-  fields of its own resources, so it can find where the id begins just
-  as `resolveLink` does, which makes that direction lossless.
-  `href(baseUrl, path)` is the county-facing absolute href, with the id
-  percent-encoded into a single segment because a county client has no
-  model to split on. Nothing is decoded inbound in either direction.
+  `unresolved` verbatim). Read hrefs with `relation.resolveLink(href)`:
+  the id value is the last segment, the id field the one before it,
+  validated against the target's declared id fields. Hrefs cross the
+  wire percent-encoded, so an id value is exactly one segment and the id
+  is positional, as in any other URL — the model doesn't find the id, it
+  confirms it. An href naming no declared id field, like a Grep
+  reference, stays unresolved instead of having one invented. There is
+  no href-only parser: an id field is only an id field if the target
+  declares it.
+- **A malformed href is refused, not repaired.** A sender still writing
+  `.../fodselsnummer/ABC/DEF` unencoded resolves to nothing rather than
+  silently yielding `DEF`, so the fault surfaces at the sender. To tell
+  that apart from an href that was never resolvable, check
+  `link.unresolved != null && relation.targetIdFields.isNotEmpty()`.
+- **The library holds no codec.** `resolveLink` never decodes and
+  `href(baseUrl, path, encodedIdValue)` never encodes — which codec
+  produced an href, and whether an ingress or gateway already decoded
+  it, is knowledge the caller has and this library does not. The split
+  has to happen while the value is still encoded anyway, or a `%2F`
+  inside it would already have become a structural `/`. Pass `baseUrl`
+  empty for a root-relative href.
 - **Zero runtime dependencies** beyond `kotlin-stdlib` and
   `java.time`. Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
