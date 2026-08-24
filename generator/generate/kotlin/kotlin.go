@@ -855,6 +855,30 @@ interface FintResource : FintObject {
     fun addLink(relation: String, link: Link) {
         links.getOrPut(relation) { mutableListOf() }.add(link)
     }
+
+    /**
+     * Removes the self links from this resource and from every resource held
+     * below it, however deep. Nothing else in [links] is touched.
+     *
+     * A self link says what [metadata] and the id fields already say, so
+     * storing one duplicates what is stored anyway — once per id field, and
+     * again for every node of a nested tree. Strip them on the way into
+     * storage and build them again on the way out.
+     */
+    fun removeSelfLinks() {
+        links.remove(SELF)
+        visitNested { _, nested -> nested.removeSelfLinks() }
+    }
+
+    companion object {
+
+        /**
+         * The relation name a resource's own href travels under. Not a model
+         * relation — the wire's word for it, and no model type declares a
+         * relation by this name.
+         */
+        const val SELF: String = "self"
+    }
 }
 `,
 		dir + "/Link.kt": "package " + pkg + `

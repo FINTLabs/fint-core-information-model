@@ -51,6 +51,7 @@ elev.visitIdentifikators { field, value -> index.put(field, value) }
 elev.identifikatorverdi("systemid")
 
 mappe.visitNested { field, nested -> mapLinks(nested) }
+mappe.removeSelfLinks()
 
 val relation = Elev.relations.first { it.name == "person" }
 relation.resolveLink("person/fodselsnummer/ABC%2FDEF")
@@ -108,6 +109,14 @@ The essentials:
   has to happen while the value is still encoded anyway, or a `%2F`
   inside it would already have become a structural `/`. Pass `baseUrl`
   empty for a root-relative href.
+- **Self links are rebuilt, not stored.** A self link says what
+  `metadata.path` and the id fields already say, so storing one
+  duplicates what is stored anyway — once per id field, and again for
+  every node of a nested tree. `removeSelfLinks()` strips them on the
+  way into storage, from the resource and everything held below it,
+  however deep; build them again on the way out from `path` and
+  `visitIdentifikators`. The relation name is `FintResource.SELF`, and
+  no model type declares a relation by it.
 - **Zero runtime dependencies** beyond `kotlin-stdlib` and
   `java.time`. Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
