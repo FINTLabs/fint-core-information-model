@@ -464,6 +464,27 @@ interface FintResource : FintObject {
     fun identifikatorverdi(field: String): String?
 
     /**
+     * The id field and value of this resource whose value is [value], or null
+     * when no id field of it holds that value.
+     *
+     * Values are matched exactly. An id value is opaque here, so S-1 and s-1
+     * are different ids, unlike the field names everywhere else in this
+     * interface. When more than one id field holds [value] the first in
+     * declared order wins, and only this resource is looked at, never the
+     * resources nested below it.
+     *
+     * The field comes back spelled as the model declares it, the same spelling
+     * [visitIdentifikators] hands out. Hrefs carry it lowercased, so lowercase
+     * it on the way to the wire as [FintRelation.resolveLink] does on the way
+     * in.
+     */
+    fun idFor(value: String): Pair<String, String>? {
+        var found: Pair<String, String>? = null
+        visitIdentifikators { field, held -> if (found == null && held == value) found = field to held }
+        return found
+    }
+
+    /**
      * Calls [visitor] once for every resource held in a field of this one —
      * Personalmappe.journalpost, .part, .skjerming and so on — skipping the
      * fields that are not set. Lists are visited element by element under the

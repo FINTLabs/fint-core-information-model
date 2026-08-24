@@ -49,11 +49,14 @@ meta.isIdField("systemid")
 val elev: FintResource = deserialize(payload)
 elev.visitIdentifikators { field, value -> index.put(field, value) }
 elev.identifikatorverdi("systemid")
+elev.idFor("S-1")
+// ("systemId", "S-1")
 
 mappe.visitNested { field, nested -> mapLinks(nested) }
 mappe.removeSelfLinks()
 
 val relation = Elev.relations.first { it.name == "person" }
+relation.targetName
 relation.resolveLink("person/fodselsnummer/ABC%2FDEF")
 // Link(idField = "fodselsnummer", idValue = "ABC%2FDEF")
 ```
@@ -78,9 +81,23 @@ The essentials:
   `byPath` answers for common resources under every domain and package.
 - **Relations carry baked data**: `targetPath` for link building (`null`
   when the target has no path of its own — use `relationPath`),
+  `targetName` for which resource is on the other end,
   `multiplicity` with `required`/`many` flags, and
   `bidirectional` (`null` means unidirectional) with the inverse
   relation's multiplicity.
+- **A relation is named for its role, not its target.** 125 of the
+  registry's 500 relations disagree with the resource they point at:
+  `elev` targets `elevforhold`, and `gruppemedlemskap` targets four
+  different resources depending on who declares it. `name` reads links
+  off a payload, `targetName` says what is on the other end. It is
+  `null` for the two targets that are no resource of their own,
+  Grepreferanse and Vigoreferanse, which are exactly the two whose
+  `targetIdFields` is empty.
+- **Identity reads both ways.** `identifikatorverdi(field)` gives the
+  value held by a field; `idFor(value)` gives back the field and the
+  value for a value you already hold, matched exactly, first id field
+  in declared order when two hold the same one. Neither looks at
+  nested resources.
 - **Nested resources are reachable without reflection.** A resource
   held in a field carries links of its own —
   `Personalmappe.journalpost`, `.part`, `.skjerming`. `visitNested`

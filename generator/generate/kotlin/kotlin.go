@@ -685,7 +685,11 @@ import kotlin.reflect.KClass
  * A relation from one model type to another.
  *
  * @property name the relation name, as used in links
- * @property target the class the relation points to
+ * @property target the resource on the other end of the relation, held as a class. A relation
+ * points at a resource, never at another relation, so [name] is what the relation itself is
+ * called and [targetName] is what the resource it points at is called. Those two names differ
+ * for a quarter of the model's relations. [targetPath], [targetIdFields] and [targetMetadata]
+ * all describe this same target.
  * @property targetPath the REST path of the target, or null when the target has none of its own —
  * a common resource, a resource served inside another one, or a type outside the model. Build the
  * path for those with [FintResourceMetadata.relationPath].
@@ -706,6 +710,20 @@ data class FintRelation(
 /** The declared id fields of this relation's target, empty when it has none. */
 val FintRelation.targetIdFields: List<String>
     get() = (targetMetadata as? FintResourceMetadata)?.idFields.orEmpty()
+
+/**
+ * The name of this relation's target resource, or null when the target is not a
+ * resource of its own -- Grepreferanse and Vigoreferanse, the same two whose
+ * [targetIdFields] is empty.
+ *
+ * Not the same as [name]. A relation is named for the role it plays and the
+ * target for what it is, so the two part company often: a relation named "elev"
+ * has Elevforhold for its target, and "gruppemedlemskap" has four different
+ * targets depending on which resource declares it. Read links off a payload
+ * with [name]; say which resource is on the other end with this.
+ */
+val FintRelation.targetName: String?
+    get() = (targetMetadata as? FintResourceMetadata)?.name
 
 /**
  * Reads [href] into a [Link]: the id value is the last segment, the id field
@@ -828,6 +846,27 @@ interface FintResource : FintObject {
 
     /** Returns the id value for [field], or null when it is not set. Case does not matter. */
     fun identifikatorverdi(field: String): String?
+
+    /**
+     * The id field and value of this resource whose value is [value], or null
+     * when no id field of it holds that value.
+     *
+     * Values are matched exactly. An id value is opaque here, so S-1 and s-1
+     * are different ids, unlike the field names everywhere else in this
+     * interface. When more than one id field holds [value] the first in
+     * declared order wins, and only this resource is looked at, never the
+     * resources nested below it.
+     *
+     * The field comes back spelled as the model declares it, the same spelling
+     * [visitIdentifikators] hands out. Hrefs carry it lowercased, so lowercase
+     * it on the way to the wire as [FintRelation.resolveLink] does on the way
+     * in.
+     */
+    fun idFor(value: String): Pair<String, String>? {
+        var found: Pair<String, String>? = null
+        visitIdentifikators { field, held -> if (found == null && held == value) found = field to held }
+        return found
+    }
 
     /**
      * Calls [visitor] once for every resource held in a field of this one —
