@@ -39,8 +39,8 @@ func TestFiles_CountAndDeterminism(t *testing.T) {
 	for _, comp := range doc.Components {
 		typeCount += len(comp.Types)
 	}
-	if want := typeCount + 12; len(files) != want {
-		t.Fatalf("expected %d files (types + 11 runtime + registry), got %d", want, len(files))
+	if want := typeCount + 13; len(files) != want {
+		t.Fatalf("expected %d files (types + 12 runtime + registry), got %d", want, len(files))
 	}
 
 	second, err := Files(doc)

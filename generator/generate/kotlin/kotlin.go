@@ -635,6 +635,24 @@ interface FintResourceMetadata : FintTypeMetadata {
         if (isCommon) domainAndPackageOf(contextPath)?.let { "$it/$name" } else path
 
     /**
+     * Where this resource is served when it is reached through [context], or
+     * null when it has no location of its own to report.
+     *
+     * The typed form of [pathIn]. A common resource takes the domain and
+     * package from [context] and contributes its own [name]; every other
+     * resource ignores [context] and answers its own [path] split into three.
+     * A resource served inside another one is neither: it has no path and is
+     * not common, so it answers null, which is correct because nothing links
+     * to it (it arrives nested inside its owner).
+     */
+    fun refIn(context: FintResourceRef): FintResourceRef? =
+        if (isCommon) {
+            context.copy(resourceName = name)
+        } else {
+            path?.split('/')?.takeIf { it.size == 3 }?.let { FintResourceRef(it[0], it[1], it[2]) }
+        }
+
+    /**
      * The REST path of the resource [relationName] points to, or null when
      * there is no such relation or its target has no path. Common targets are
      * resolved against this resource's own [path]: Elev.Metadata.relationPath("person")
@@ -657,6 +675,30 @@ private fun domainAndPackageOf(path: String): String? {
     val segments = path.split('/').filter { it.isNotEmpty() }
     return if (segments.size < 2) null else segments[0] + "/" + segments[1]
 }
+`,
+		dir + "/FintResourceRef.kt": "package " + pkg + `
+
+/**
+ * Where a resource is served, as the three segments of a REST path: the
+ * "utdanning", "elev" and "elev" of "utdanning/elev/elev".
+ *
+ * Not the same thing as [FintTypeMetadata.ref], which is the model reference
+ * string ("utdanning-elev:Elev") naming a type inside the model. The two share
+ * a word and nothing else: this one says where a resource is reached, that one
+ * says which type it is.
+ *
+ * Build one for a relation's target with [FintRelation.targetIn], or for a
+ * resource reached through a known context with [FintResourceMetadata.refIn].
+ *
+ * @property domainName the first segment, "utdanning" in "utdanning/elev/elev"
+ * @property packageName the second segment, "elev"
+ * @property resourceName the third segment, "elev"
+ */
+data class FintResourceRef(
+    val domainName: String,
+    val packageName: String,
+    val resourceName: String,
+)
 `,
 		dir + "/FintAttribute.kt": "package " + pkg + `
 
@@ -724,6 +766,22 @@ val FintRelation.targetIdFields: List<String>
  */
 val FintRelation.targetName: String?
     get() = (targetMetadata as? FintResourceMetadata)?.name
+
+/**
+ * Where this relation's target is served, given that the resource declaring the
+ * relation is served at [context]. Null when the target is no resource of its
+ * own (Grepreferanse and Vigoreferanse, the same two [targetName] is null for),
+ * and null when the target has no serving location of its own because it is
+ * served inside another resource.
+ *
+ * [context] is what a common target is resolved against. felles:Person has no
+ * path: it is served under the domain and package of whoever links to it, so
+ * Elev's "person" relation answers "utdanning/elev/person", while the same
+ * target reached from an administrasjon resource answers under that domain
+ * instead. The typed counterpart of [FintResourceMetadata.relationPath].
+ */
+fun FintRelation.targetIn(context: FintResourceRef): FintResourceRef? =
+    (targetMetadata as? FintResourceMetadata)?.refIn(context)
 
 /**
  * Reads [href] into a [Link]: the id value is the last segment, the id field

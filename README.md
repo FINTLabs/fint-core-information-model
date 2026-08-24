@@ -57,6 +57,8 @@ mappe.removeSelfLinks()
 
 val relation = Elev.relations.first { it.name == "person" }
 relation.targetName
+relation.targetIn(FintResourceRef("utdanning", "elev", "elev"))
+// FintResourceRef("utdanning", "elev", "person")
 relation.resolveLink("person/fodselsnummer/ABC%2FDEF")
 // Link(idField = "fodselsnummer", idValue = "ABC%2FDEF")
 ```
@@ -93,6 +95,17 @@ The essentials:
   `null` for the two targets that are no resource of their own,
   Grepreferanse and Vigoreferanse, which are exactly the two whose
   `targetIdFields` is empty.
+- **`FintResourceRef` is the typed serving location**: the three
+  segments of `utdanning/elev/elev`, not to be confused with
+  `FintTypeMetadata.ref` (`"utdanning-elev:Elev"`), which names a type
+  rather than a location. `metadata.refIn(context)` and
+  `relation.targetIn(context)` are the typed forms of `pathIn` and
+  `relationPath`, so callers stop splitting path strings. `context` is
+  where the resource declaring the relation is served, which is what a
+  common target resolves against. Both answer `null` when no ref can be
+  formed: a target outside the model, a resource served inside another
+  one, or a path that is not three segments (`felles/kodeverk/iso/*`,
+  which `byPath` cannot address either).
 - **Identity reads both ways.** `identifikatorverdi(field)` gives the
   value held by a field; `idFor(value)` gives back the field and the
   value for a value you already hold, matched exactly, first id field

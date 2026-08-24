@@ -47,6 +47,22 @@ val FintRelation.targetName: String?
     get() = (targetMetadata as? FintResourceMetadata)?.name
 
 /**
+ * Where this relation's target is served, given that the resource declaring the
+ * relation is served at [context]. Null when the target is no resource of its
+ * own (Grepreferanse and Vigoreferanse, the same two [targetName] is null for),
+ * and null when the target has no serving location of its own because it is
+ * served inside another resource.
+ *
+ * [context] is what a common target is resolved against. felles:Person has no
+ * path: it is served under the domain and package of whoever links to it, so
+ * Elev's "person" relation answers "utdanning/elev/person", while the same
+ * target reached from an administrasjon resource answers under that domain
+ * instead. The typed counterpart of [FintResourceMetadata.relationPath].
+ */
+fun FintRelation.targetIn(context: FintResourceRef): FintResourceRef? =
+    (targetMetadata as? FintResourceMetadata)?.refIn(context)
+
+/**
  * Reads [href] into a [Link]: the id value is the last segment, the id field
  * the one before it, validated against [targetIdFields].
  *

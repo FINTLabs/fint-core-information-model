@@ -48,6 +48,24 @@ interface FintResourceMetadata : FintTypeMetadata {
         if (isCommon) domainAndPackageOf(contextPath)?.let { "$it/$name" } else path
 
     /**
+     * Where this resource is served when it is reached through [context], or
+     * null when it has no location of its own to report.
+     *
+     * The typed form of [pathIn]. A common resource takes the domain and
+     * package from [context] and contributes its own [name]; every other
+     * resource ignores [context] and answers its own [path] split into three.
+     * A resource served inside another one is neither: it has no path and is
+     * not common, so it answers null, which is correct because nothing links
+     * to it (it arrives nested inside its owner).
+     */
+    fun refIn(context: FintResourceRef): FintResourceRef? =
+        if (isCommon) {
+            context.copy(resourceName = name)
+        } else {
+            path?.split('/')?.takeIf { it.size == 3 }?.let { FintResourceRef(it[0], it[1], it[2]) }
+        }
+
+    /**
      * The REST path of the resource [relationName] points to, or null when
      * there is no such relation or its target has no path. Common targets are
      * resolved against this resource's own [path]: Elev.Metadata.relationPath("person")
