@@ -51,7 +51,9 @@ val FintRelation.targetName: String?
  * relation is served at [context]. Null when the target is no resource of its
  * own (Grepreferanse and Vigoreferanse, the same two [targetName] is null for),
  * and null when the target has no serving location of its own because it is
- * served inside another resource.
+ * served inside another resource. A felles/kodeverk/iso target answers its
+ * identity, ("felles", "kodeverk", "landkode"), while [targetPath] keeps the
+ * full path for links.
  *
  * [context] is what a common target is resolved against. felles:Person has no
  * path: it is served under the domain and package of whoever links to it, so

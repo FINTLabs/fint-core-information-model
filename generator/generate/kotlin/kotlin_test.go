@@ -254,6 +254,12 @@ func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	if !strings.Contains(registry, "object FintModel {") || !strings.Contains(registry, "fun byPath(domainName: String, packageName: String, resourceName: String)") {
 		t.Fatalf("registry missing FintModel object")
 	}
+	if !strings.Contains(registry, "val paths: Set<String> by lazy") {
+		t.Fatalf("registry missing the paths set")
+	}
+	if !strings.Contains(registry, "val refs: Set<FintResourceRef> by lazy") {
+		t.Fatalf("registry missing the refs set")
+	}
 	for _, comp := range doc.Components {
 		for _, typ := range comp.Types {
 			entry := packageFor(comp.Name) + "." + typ.Name + ".Metadata,"

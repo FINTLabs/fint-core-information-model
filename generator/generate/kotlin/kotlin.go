@@ -496,8 +496,9 @@ func renderRegistry(doc *metamodel.Document) string {
 	b.WriteString(`/**
  * Registry over every type in the FINT model.
  *
- * Use [byPath] to find a resource from the three parts of a REST path, or
- * follow a relation with [FintRelation.targetMetadata].
+ * Use [byPath] to find a resource from the three parts of a REST path,
+ * follow a relation with [FintRelation.targetMetadata], or list everything
+ * the model serves with [paths] and [refs].
  */
 object FintModel {
 
@@ -521,8 +522,10 @@ object FintModel {
 
     internal val typeIndex: Map<KClass<*>, FintTypeMetadata> = types.associateBy { it.type }
 
-    private val pathIndex: Map<String, FintResourceMetadata> =
-        resources.mapNotNull { meta -> meta.path?.let { it.lowercase() to meta } }.toMap()
+    private val refIndex: Map<String, FintResourceMetadata> =
+        resources.mapNotNull { meta ->
+            meta.path?.lowercase()?.split('/')?.let { "${it.first()}/${it[1]}/${it.last()}" to meta }
+        }.toMap()
 
     private val commonIndex: Map<String, FintResourceMetadata> =
         resources.filter { it.isCommon }.associateBy { it.name.lowercase() }
@@ -534,13 +537,78 @@ object FintModel {
      * A common resource answers under the domain and package it is served
      * through, so byPath("utdanning", "elev", "person") and
      * byPath("administrasjon", "personal", "person") both find felles:Person.
+     * A felles/kodeverk/iso resource answers at its identity, so
+     * byPath("felles", "kodeverk", "landkode") finds Landkode even though its
+     * path keeps the extra segment.
      */
     fun byPath(domainName: String, packageName: String, resourceName: String): FintResourceMetadata? =
-        pathIndex["$domainName/$packageName/$resourceName".lowercase()]
+        refIndex["$domainName/$packageName/$resourceName".lowercase()]
             ?: commonIndex[resourceName.lowercase()]
 
     /** Metadata for [type], or null when it is not a type from the model. */
     fun byType(type: KClass<*>): FintTypeMetadata? = typeIndex[type]
+
+    /**
+     * Every REST path the model serves.
+     *
+     * Holds every resource's own [FintResourceMetadata.path], and adds each
+     * common resource under every domain and package it can be reached from:
+     * Elev links to Person, so "utdanning/elev/person" is included. The walk
+     * also follows relations between common resources until nothing new
+     * appears: Person links to Kontaktperson, so "utdanning/elev/kontaktperson"
+     * is included even though no elev resource links to Kontaktperson directly.
+     *
+     * These are the paths as URLs show them, so the felles/kodeverk/iso
+     * entries keep their extra segment. [refs] holds the same set as
+     * identities.
+     */
+    val paths: Set<String> by lazy {
+        val result = resources
+            .flatMap { meta -> listOfNotNull(meta.path) + meta.relations.mapNotNull { meta.relationPath(it.name) } }
+            .toMutableSet()
+        var grew = true
+        while (grew) {
+            grew = false
+            for (path in result.toList()) {
+                val (domainName, packageName, resourceName) = path.split('/').takeIf { it.size == 3 } ?: continue
+                val meta = byPath(domainName, packageName, resourceName)?.takeIf { it.isCommon } ?: continue
+                for (relation in meta.relations) {
+                    meta.relationPath(relation.name, path)?.let { if (result.add(it)) grew = true }
+                }
+            }
+        }
+        result
+    }
+
+    /**
+     * Every place the model serves, as identities: one [FintResourceRef] for
+     * each entry in [paths].
+     *
+     * Identity and path name the same three parts for every resource except
+     * the felles/kodeverk/iso three, whose extra path segment the identity
+     * drops: "felles/kodeverk/iso/landkode" appears here as
+     * ("felles", "kodeverk", "landkode"). Every entry resolves through
+     * [byPath].
+     */
+    val refs: Set<FintResourceRef> by lazy { refByPath.values.toSet() }
+
+    /**
+     * The identity of the resource served at [path], or null when the model
+     * serves nothing at that path. Case does not matter, and a leading or
+     * trailing "/" is ignored.
+     *
+     * [path] is matched against [paths], so a felles/kodeverk/iso path answers
+     * with its extra segment dropped, refOf("felles/kodeverk/iso/landkode") is
+     * ("felles", "kodeverk", "landkode"), while the already collapsed
+     * "felles/kodeverk/landkode" is not a served path and answers null.
+     */
+    fun refOf(path: String): FintResourceRef? = refByPath[path.trim('/').lowercase()]
+
+    private val refByPath: Map<String, FintResourceRef> by lazy {
+        paths.associateWith { path ->
+            path.split('/').let { FintResourceRef(it.first(), it[1], it.last()) }
+        }
+    }
 }
 
 /** Metadata for the type this relation points to, or null for targets outside the model. */
@@ -638,18 +706,22 @@ interface FintResourceMetadata : FintTypeMetadata {
      * Where this resource is served when it is reached through [context], or
      * null when it has no location of its own to report.
      *
-     * The typed form of [pathIn]. A common resource takes the domain and
-     * package from [context] and contributes its own [name]; every other
-     * resource ignores [context] and answers its own [path] split into three.
-     * A resource served inside another one is neither: it has no path and is
-     * not common, so it answers null, which is correct because nothing links
-     * to it (it arrives nested inside its owner).
+     * The identity counterpart of [pathIn]. A common resource takes the domain
+     * and package from [context] and contributes its own [name]; every other
+     * resource ignores [context] and answers the domain, package and resource
+     * name from its own [path]. The felles/kodeverk/iso resources have one
+     * more path segment than that, and the extra segment is not part of the
+     * identity: Landkode is served at "felles/kodeverk/iso/landkode" and
+     * identified as ("felles", "kodeverk", "landkode"). A resource served
+     * inside another one answers null: it has no path and is not common, which
+     * is correct because nothing links to it (it arrives nested inside its
+     * owner).
      */
     fun refIn(context: FintResourceRef): FintResourceRef? =
         if (isCommon) {
             context.copy(resourceName = name)
         } else {
-            path?.split('/')?.takeIf { it.size == 3 }?.let { FintResourceRef(it[0], it[1], it[2]) }
+            path?.split('/')?.takeIf { it.size >= 3 }?.let { FintResourceRef(it.first(), it[1], it.last()) }
         }
 
     /**
@@ -679,20 +751,28 @@ private fun domainAndPackageOf(path: String): String? {
 		dir + "/FintResourceRef.kt": "package " + pkg + `
 
 /**
- * Where a resource is served, as the three segments of a REST path: the
- * "utdanning", "elev" and "elev" of "utdanning/elev/elev".
+ * Where a resource is served: the domain, package and resource name the
+ * platform routes and stores by, the "utdanning", "elev" and "elev" of
+ * "utdanning/elev/elev".
+ *
+ * Usually these are exactly the three segments of the REST path. The
+ * felles/kodeverk/iso resources are the exception: their path has a fourth
+ * segment, and the identity keeps the first two segments and the last, so
+ * Landkode is served at "felles/kodeverk/iso/landkode" and identified as
+ * ("felles", "kodeverk", "landkode").
  *
  * Not the same thing as [FintTypeMetadata.ref], which is the model reference
  * string ("utdanning-elev:Elev") naming a type inside the model. The two share
  * a word and nothing else: this one says where a resource is reached, that one
  * says which type it is.
  *
- * Build one for a relation's target with [FintRelation.targetIn], or for a
- * resource reached through a known context with [FintResourceMetadata.refIn].
+ * Build one for a relation's target with [FintRelation.targetIn], for a
+ * resource reached through a known context with [FintResourceMetadata.refIn],
+ * or from a served path with [FintModel.refOf].
  *
  * @property domainName the first segment, "utdanning" in "utdanning/elev/elev"
  * @property packageName the second segment, "elev"
- * @property resourceName the third segment, "elev"
+ * @property resourceName the last segment, "elev"
  */
 data class FintResourceRef(
     val domainName: String,
@@ -772,7 +852,9 @@ val FintRelation.targetName: String?
  * relation is served at [context]. Null when the target is no resource of its
  * own (Grepreferanse and Vigoreferanse, the same two [targetName] is null for),
  * and null when the target has no serving location of its own because it is
- * served inside another resource.
+ * served inside another resource. A felles/kodeverk/iso target answers its
+ * identity, ("felles", "kodeverk", "landkode"), while [targetPath] keeps the
+ * full path for links.
  *
  * [context] is what a common target is resolved against. felles:Person has no
  * path: it is served under the domain and package of whoever links to it, so

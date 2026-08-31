@@ -2,6 +2,7 @@ package no.novari.fint.core.model
 
 import no.novari.fint.core.model.arkiv.noark.Journalpost
 import no.novari.fint.core.model.felles.Person
+import no.novari.fint.core.model.felles.kodeverk.iso.Landkode
 import no.novari.fint.core.model.utdanning.elev.Elev
 import no.novari.fint.core.model.utdanning.elev.Elevforhold
 import no.novari.fint.core.model.utdanning.timeplan.Fag
@@ -9,6 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ResourceRefTest {
@@ -82,22 +84,22 @@ class ResourceRefTest {
     }
 
     @Test
-    fun `a resource whose path is not three segments has no ref`() {
+    fun `a target with more path segments than identity answers collapsed`() {
         val statsborgerskap = Person.relations.first { it.name == "statsborgerskap" }
 
         assertEquals("felles/kodeverk/iso/landkode", statsborgerskap.targetPath)
-        assertEquals(4, statsborgerskap.targetPath!!.split('/').size)
-        assertNull(statsborgerskap.targetIn(elevContext))
+        assertEquals(FintResourceRef("felles", "kodeverk", "landkode"), statsborgerskap.targetIn(elevContext))
+        assertEquals(FintResourceRef("felles", "kodeverk", "landkode"), Landkode.Metadata.refIn(elevContext))
 
+        assertSame(Landkode.Metadata, FintModel.byPath("felles", "kodeverk", "landkode"))
         assertNull(FintModel.byPath("kodeverk", "iso", "landkode"))
-        assertNull(FintModel.byPath("felles", "kodeverk", "landkode"))
     }
 
     @Test
-    fun `the typed answer agrees with the string one, and is null wherever a ref cannot hold the path`() {
+    fun `the typed answer names the same identity as the string one`() {
         val contextPath = "utdanning/elev/elev"
         var agreed = 0
-        var unrepresentable = 0
+        var collapsed = 0
 
         FintModel.types.filterIsInstance<FintResourceMetadata>().forEach { metadata ->
             metadata.relations
@@ -106,19 +108,22 @@ class ResourceRefTest {
                     val where = "${metadata.ref}.${relation.name}"
                     val asString = metadata.relationPath(relation.name, contextPath)
                     val asRef = relation.targetIn(elevContext)
-                        ?.let { "${it.domainName}/${it.packageName}/${it.resourceName}" }
 
-                    if (asString != null && asString.split('/').size != 3) {
+                    if (asString == null) {
                         assertNull(asRef, where)
-                        unrepresentable++
                     } else {
-                        assertEquals(asString, asRef, where)
-                        agreed++
+                        val segments = asString.split('/')
+                        assertEquals(
+                            FintResourceRef(segments.first(), segments[1], segments.last()),
+                            asRef,
+                            where,
+                        )
+                        if (segments.size == 3) agreed++ else collapsed++
                     }
                 }
         }
 
         assertTrue(agreed > 400)
-        assertTrue(unrepresentable > 0)
+        assertTrue(collapsed > 0)
     }
 }
