@@ -7,6 +7,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 class RefsTest {
 
@@ -52,5 +53,29 @@ class RefsTest {
         assertNull(FintModel.refOf("utdanning/elev/finnesikke"))
         assertNull(FintModel.refOf("felles/kodeverk/landkode"))
         assertNull(FintModel.refOf(""))
+    }
+
+    @Test
+    fun `refsIn narrows to one domain and package`() {
+        val elev = FintModel.refsIn("utdanning", "elev")
+
+        assertContains(elev, FintResourceRef("utdanning", "elev", "elev"))
+        assertContains(elev, FintResourceRef("utdanning", "elev", "person"))
+        assertContains(elev, FintResourceRef("utdanning", "elev", "kontaktperson"))
+        assertTrue(elev.all { it.domainName == "utdanning" && it.packageName == "elev" })
+        assertEquals(elev, FintModel.refsIn("Utdanning", "ELEV"))
+    }
+
+    @Test
+    fun `refsIn on felles kodeverk includes the collapsed iso resources`() {
+        assertEquals(
+            setOf("fylke", "kommune", "valuta", "kjonn", "landkode", "sprak"),
+            FintModel.refsIn("felles", "kodeverk").map { it.resourceName }.toSet(),
+        )
+    }
+
+    @Test
+    fun `refsIn answers empty off the served set`() {
+        assertEquals(emptySet(), FintModel.refsIn("utdanning", "finnesikke"))
     }
 }

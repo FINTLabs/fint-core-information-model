@@ -275,9 +275,24 @@ object FintModel {
      * the felles/kodeverk/iso three, whose extra path segment the identity
      * drops: "felles/kodeverk/iso/landkode" appears here as
      * ("felles", "kodeverk", "landkode"). Every entry resolves through
-     * [byPath].
+     * [byPath], and [refsIn] narrows to one domain and package.
      */
     val refs: Set<FintResourceRef> by lazy { refByPath.values.toSet() }
+
+    /**
+     * The identities served under /[domainName]/[packageName], empty when the
+     * model serves nothing there. Case does not matter.
+     *
+     * Common resources show up under every domain and package that can reach
+     * them, so refsIn("utdanning", "elev") includes person and kontaktperson,
+     * and the felles/kodeverk/iso resources show up collapsed, so
+     * refsIn("felles", "kodeverk") includes landkode.
+     */
+    fun refsIn(domainName: String, packageName: String): Set<FintResourceRef> =
+        refs.filter {
+            it.domainName.equals(domainName, ignoreCase = true) &&
+                it.packageName.equals(packageName, ignoreCase = true)
+        }.toSet()
 
     /**
      * The identity of the resource served at [path], or null when the model

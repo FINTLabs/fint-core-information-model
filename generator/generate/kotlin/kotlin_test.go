@@ -260,6 +260,9 @@ func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	if !strings.Contains(registry, "val refs: Set<FintResourceRef> by lazy") {
 		t.Fatalf("registry missing the refs set")
 	}
+	if !strings.Contains(registry, "fun refsIn(domainName: String, packageName: String)") {
+		t.Fatalf("registry missing refsIn")
+	}
 	for _, comp := range doc.Components {
 		for _, typ := range comp.Types {
 			entry := packageFor(comp.Name) + "." + typ.Name + ".Metadata,"
