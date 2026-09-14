@@ -498,7 +498,7 @@ func renderRegistry(doc *metamodel.Document) string {
  *
  * Use [byPath] to find a resource from the three parts of a REST path,
  * follow a relation with [FintRelation.targetMetadata], or list everything
- * the model serves with [paths] and [refs].
+ * the model serves with [paths], [refs] and [served].
  */
 object FintModel {
 
@@ -606,6 +606,38 @@ object FintModel {
             it.domainName.equals(domainName, ignoreCase = true) &&
                 it.packageName.equals(packageName, ignoreCase = true)
         }.toSet()
+
+    /**
+     * Every place the model serves a resource: one [FintServedResource] for each
+     * entry in [paths], in the same order. The counterpart of [paths] and [refs]
+     * with the metadata already looked up.
+     */
+    val served: List<FintServedResource> by lazy {
+        refByPath.map { (path, ref) ->
+            FintServedResource(
+                path = path,
+                ref = ref,
+                metadata = checkNotNull(byPath(ref.domainName, ref.packageName, ref.resourceName)) {
+                    "Served path $path has no resource in the model"
+                },
+            )
+        }
+    }
+
+    /**
+     * The resources served under /[domainName]/[packageName], in the order they
+     * appear in [served], empty when the model serves nothing there. Case does not
+     * matter.
+     *
+     * The same set as [refsIn], with path and metadata attached: resourcesIn("utdanning", "elev")
+     * includes felles:Person at "utdanning/elev/person", and resourcesIn("felles", "kodeverk")
+     * includes Landkode at "felles/kodeverk/iso/landkode".
+     */
+    fun resourcesIn(domainName: String, packageName: String): List<FintServedResource> =
+        served.filter {
+            it.ref.domainName.equals(domainName, ignoreCase = true) &&
+                it.ref.packageName.equals(packageName, ignoreCase = true)
+        }
 
     /**
      * The identity of the resource served at [path], or null when the model
@@ -793,6 +825,30 @@ data class FintResourceRef(
     val domainName: String,
     val packageName: String,
     val resourceName: String,
+)
+`,
+		dir + "/FintServedResource.kt": "package " + pkg + `
+
+/**
+ * A resource at one of the places the model serves it.
+ *
+ * [path] is what a URL shows, [ref] is the identity the platform routes and
+ * stores by, and [metadata] describes the type served there. The three agree:
+ * [FintModel.refOf] of the path is the ref, [FintModel.byPath] of the ref is
+ * the metadata, and [FintResourceMetadata.name] is the last segment of the path.
+ *
+ * A common resource appears once per place it is reached from, so felles:Person
+ * appears with path "utdanning/elev/person" and again with
+ * "administrasjon/personal/person". The felles/kodeverk/iso resources keep
+ * their extra segment in [path] while [ref] drops it, so Landkode appears with
+ * path "felles/kodeverk/iso/landkode" and ref ("felles", "kodeverk", "landkode").
+ *
+ * Get them with [FintModel.served] or [FintModel.resourcesIn].
+ */
+data class FintServedResource(
+    val path: String,
+    val ref: FintResourceRef,
+    val metadata: FintResourceMetadata,
 )
 `,
 		dir + "/FintAttribute.kt": "package " + pkg + `

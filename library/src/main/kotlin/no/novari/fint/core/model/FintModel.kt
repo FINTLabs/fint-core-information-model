@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  *
  * Use [byPath] to find a resource from the three parts of a REST path,
  * follow a relation with [FintRelation.targetMetadata], or list everything
- * the model serves with [paths] and [refs].
+ * the model serves with [paths], [refs] and [served].
  */
 object FintModel {
 
@@ -293,6 +293,38 @@ object FintModel {
             it.domainName.equals(domainName, ignoreCase = true) &&
                 it.packageName.equals(packageName, ignoreCase = true)
         }.toSet()
+
+    /**
+     * Every place the model serves a resource: one [FintServedResource] for each
+     * entry in [paths], in the same order. The counterpart of [paths] and [refs]
+     * with the metadata already looked up.
+     */
+    val served: List<FintServedResource> by lazy {
+        refByPath.map { (path, ref) ->
+            FintServedResource(
+                path = path,
+                ref = ref,
+                metadata = checkNotNull(byPath(ref.domainName, ref.packageName, ref.resourceName)) {
+                    "Served path $path has no resource in the model"
+                },
+            )
+        }
+    }
+
+    /**
+     * The resources served under /[domainName]/[packageName], in the order they
+     * appear in [served], empty when the model serves nothing there. Case does not
+     * matter.
+     *
+     * The same set as [refsIn], with path and metadata attached: resourcesIn("utdanning", "elev")
+     * includes felles:Person at "utdanning/elev/person", and resourcesIn("felles", "kodeverk")
+     * includes Landkode at "felles/kodeverk/iso/landkode".
+     */
+    fun resourcesIn(domainName: String, packageName: String): List<FintServedResource> =
+        served.filter {
+            it.ref.domainName.equals(domainName, ignoreCase = true) &&
+                it.ref.packageName.equals(packageName, ignoreCase = true)
+        }
 
     /**
      * The identity of the resource served at [path], or null when the model

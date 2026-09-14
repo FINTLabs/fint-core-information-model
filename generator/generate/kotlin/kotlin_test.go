@@ -39,8 +39,8 @@ func TestFiles_CountAndDeterminism(t *testing.T) {
 	for _, comp := range doc.Components {
 		typeCount += len(comp.Types)
 	}
-	if want := typeCount + 13; len(files) != want {
-		t.Fatalf("expected %d files (types + 12 runtime + registry), got %d", want, len(files))
+	if want := typeCount + 14; len(files) != want {
+		t.Fatalf("expected %d files (types + 13 runtime + registry), got %d", want, len(files))
 	}
 
 	second, err := Files(doc)
@@ -262,6 +262,12 @@ func TestFiles_RegistryListsEveryConcreteType(t *testing.T) {
 	}
 	if !strings.Contains(registry, "fun refsIn(domainName: String, packageName: String)") {
 		t.Fatalf("registry missing refsIn")
+	}
+	if !strings.Contains(registry, "val served: List<FintServedResource> by lazy") {
+		t.Fatalf("registry missing the served list")
+	}
+	if !strings.Contains(registry, "fun resourcesIn(domainName: String, packageName: String)") {
+		t.Fatalf("registry missing resourcesIn")
 	}
 	for _, comp := range doc.Components {
 		for _, typ := range comp.Types {
