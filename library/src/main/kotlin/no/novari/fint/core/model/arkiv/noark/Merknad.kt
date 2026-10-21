@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -11,7 +11,7 @@ import no.novari.fint.core.model.Link
 import no.novari.fint.core.model.arkiv.kodeverk.Merknadstype
 
 data class Merknad(
-    val merknadsdato: LocalDateTime? = null,
+    val merknadsdato: Date? = null,
     val merknadstekst: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -30,7 +30,7 @@ data class Merknad(
         override val isCommon = false
         override val idFields = emptyList<String>()
         override val attributes = listOf(
-            FintAttribute("merknadsdato", LocalDateTime::class, list = false, optional = false),
+            FintAttribute("merknadsdato", Date::class, list = false, optional = false),
             FintAttribute("merknadstekst", String::class, list = false, optional = false),
         )
         override val relations = listOf(

@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.felles
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -27,7 +27,7 @@ import no.novari.fint.core.model.utdanning.ot.OtUngdom
 data class Person(
     val bilde: String? = null,
     val bostedsadresse: Adresse? = null,
-    val fodselsdato: LocalDate? = null,
+    val fodselsdato: Date? = null,
     val fodselsnummer: Identifikator? = null,
     val navn: Personnavn? = null,
     override val kontaktinformasjon: Kontaktinformasjon? = null,
@@ -61,7 +61,7 @@ data class Person(
         override val attributes = listOf(
             FintAttribute("bilde", String::class, list = false, optional = true),
             FintAttribute("bostedsadresse", Adresse::class, list = false, optional = true),
-            FintAttribute("fodselsdato", LocalDate::class, list = false, optional = true),
+            FintAttribute("fodselsdato", Date::class, list = false, optional = true),
             FintAttribute("fodselsnummer", Identifikator::class, list = false, optional = false),
             FintAttribute("navn", Personnavn::class, list = false, optional = false),
             FintAttribute("kontaktinformasjon", Kontaktinformasjon::class, list = false, optional = true),

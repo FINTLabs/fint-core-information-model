@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.vurdering
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -16,7 +16,7 @@ import no.novari.fint.core.model.utdanning.timeplan.Fag
 import no.novari.fint.core.model.utdanning.timeplan.Undervisningsgruppe
 
 data class Aktivitetsfravar(
-    val dato: LocalDate? = null,
+    val dato: Date? = null,
     val kommentar: String? = null,
     val minutter: Int? = null,
     val systemId: Identifikator? = null,
@@ -42,7 +42,7 @@ data class Aktivitetsfravar(
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
-            FintAttribute("dato", LocalDate::class, list = false, optional = false),
+            FintAttribute("dato", Date::class, list = false, optional = false),
             FintAttribute("kommentar", String::class, list = false, optional = true),
             FintAttribute("minutter", Int::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),

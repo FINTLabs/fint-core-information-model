@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -15,16 +15,16 @@ import no.novari.fint.core.model.arkiv.kodeverk.Tilgangsgruppe
 data class Journalpost(
     val antallVedlegg: Long? = null,
     val avskrivning: Avskrivning? = null,
-    val dokumentetsDato: LocalDateTime? = null,
-    val forfallsDato: LocalDateTime? = null,
+    val dokumentetsDato: Date? = null,
+    val forfallsDato: Date? = null,
     val journalAr: String? = null,
-    val journalDato: LocalDateTime? = null,
+    val journalDato: Date? = null,
     val journalPostnummer: Long? = null,
     val journalSekvensnummer: Long? = null,
-    val mottattDato: LocalDateTime? = null,
-    val offentlighetsvurdertDato: LocalDateTime? = null,
-    val sendtDato: LocalDateTime? = null,
-    override val arkivertDato: LocalDateTime? = null,
+    val mottattDato: Date? = null,
+    val offentlighetsvurdertDato: Date? = null,
+    val sendtDato: Date? = null,
+    override val arkivertDato: Date? = null,
     override val beskrivelse: String? = null,
     override val dokumentbeskrivelse: List<Dokumentbeskrivelse>? = null,
     override val forfatter: List<String>? = null,
@@ -33,7 +33,7 @@ data class Journalpost(
     override val merknad: List<Merknad>? = null,
     override val nokkelord: List<String>? = null,
     override val offentligTittel: String? = null,
-    override val opprettetDato: LocalDateTime? = null,
+    override val opprettetDato: Date? = null,
     override val part: List<Part>? = null,
     override val referanseArkivDel: List<String>? = null,
     override val registreringsId: String? = null,
@@ -67,16 +67,16 @@ data class Journalpost(
         override val attributes = listOf(
             FintAttribute("antallVedlegg", Long::class, list = false, optional = true),
             FintAttribute("avskrivning", Avskrivning::class, list = false, optional = true),
-            FintAttribute("dokumentetsDato", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("forfallsDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("dokumentetsDato", Date::class, list = false, optional = true),
+            FintAttribute("forfallsDato", Date::class, list = false, optional = true),
             FintAttribute("journalAr", String::class, list = false, optional = true),
-            FintAttribute("journalDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("journalDato", Date::class, list = false, optional = true),
             FintAttribute("journalPostnummer", Long::class, list = false, optional = true),
             FintAttribute("journalSekvensnummer", Long::class, list = false, optional = true),
-            FintAttribute("mottattDato", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("offentlighetsvurdertDato", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("sendtDato", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("arkivertDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("mottattDato", Date::class, list = false, optional = true),
+            FintAttribute("offentlighetsvurdertDato", Date::class, list = false, optional = true),
+            FintAttribute("sendtDato", Date::class, list = false, optional = true),
+            FintAttribute("arkivertDato", Date::class, list = false, optional = true),
             FintAttribute("beskrivelse", String::class, list = false, optional = true),
             FintAttribute("dokumentbeskrivelse", Dokumentbeskrivelse::class, list = true, optional = true),
             FintAttribute("forfatter", String::class, list = true, optional = true),
@@ -85,7 +85,7 @@ data class Journalpost(
             FintAttribute("merknad", Merknad::class, list = true, optional = true),
             FintAttribute("nokkelord", String::class, list = true, optional = true),
             FintAttribute("offentligTittel", String::class, list = false, optional = true),
-            FintAttribute("opprettetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("opprettetDato", Date::class, list = false, optional = true),
             FintAttribute("part", Part::class, list = true, optional = true),
             FintAttribute("referanseArkivDel", String::class, list = true, optional = true),
             FintAttribute("registreringsId", String::class, list = false, optional = true),

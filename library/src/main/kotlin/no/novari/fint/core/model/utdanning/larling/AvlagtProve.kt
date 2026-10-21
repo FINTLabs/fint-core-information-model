@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.larling
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -16,7 +16,7 @@ import no.novari.fint.core.model.utdanning.kodeverk.Fullfortkode
 import no.novari.fint.core.model.utdanning.kodeverk.Provestatus
 
 data class AvlagtProve(
-    val provedato: LocalDate? = null,
+    val provedato: Date? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -40,7 +40,7 @@ data class AvlagtProve(
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
-            FintAttribute("provedato", LocalDate::class, list = false, optional = true),
+            FintAttribute("provedato", Date::class, list = false, optional = true),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )
         override val relations = listOf(

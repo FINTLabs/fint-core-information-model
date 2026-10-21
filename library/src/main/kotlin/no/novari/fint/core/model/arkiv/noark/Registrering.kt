@@ -1,10 +1,10 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintResource
 
 interface Registrering : FintResource {
-    val arkivertDato: LocalDateTime?
+    val arkivertDato: Date?
     val beskrivelse: String?
     val dokumentbeskrivelse: List<Dokumentbeskrivelse>?
     val forfatter: List<String>?
@@ -13,7 +13,7 @@ interface Registrering : FintResource {
     val merknad: List<Merknad>?
     val nokkelord: List<String>?
     val offentligTittel: String?
-    val opprettetDato: LocalDateTime?
+    val opprettetDato: Date?
     val part: List<Part>?
     val referanseArkivDel: List<String>?
     val registreringsId: String?

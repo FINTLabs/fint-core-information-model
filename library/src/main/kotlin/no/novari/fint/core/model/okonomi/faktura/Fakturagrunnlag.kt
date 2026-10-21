@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.okonomi.faktura
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -15,7 +15,7 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 data class Fakturagrunnlag(
     val avgiftsbelop: Long? = null,
     val fakturalinjer: List<Fakturalinje>? = null,
-    val leveringsdato: LocalDate? = null,
+    val leveringsdato: Date? = null,
     val mottaker: Fakturamottaker? = null,
     val nettobelop: Long? = null,
     val ordrenummer: Identifikator? = null,
@@ -49,7 +49,7 @@ data class Fakturagrunnlag(
         override val attributes = listOf(
             FintAttribute("avgiftsbelop", Long::class, list = false, optional = true),
             FintAttribute("fakturalinjer", Fakturalinje::class, list = true, optional = false),
-            FintAttribute("leveringsdato", LocalDate::class, list = false, optional = true),
+            FintAttribute("leveringsdato", Date::class, list = false, optional = true),
             FintAttribute("mottaker", Fakturamottaker::class, list = false, optional = false),
             FintAttribute("nettobelop", Long::class, list = false, optional = true),
             FintAttribute("ordrenummer", Identifikator::class, list = false, optional = false),

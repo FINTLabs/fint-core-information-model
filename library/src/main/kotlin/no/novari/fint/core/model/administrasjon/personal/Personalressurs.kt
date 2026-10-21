@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.administrasjon.personal
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -21,7 +21,7 @@ import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 data class Personalressurs(
     val ansattnummer: Identifikator? = null,
     val ansettelsesperiode: Periode? = null,
-    val ansiennitet: LocalDate? = null,
+    val ansiennitet: Date? = null,
     val brukernavn: Identifikator? = null,
     val jobbtittel: String? = null,
     val kontaktinformasjon: Kontaktinformasjon? = null,
@@ -54,7 +54,7 @@ data class Personalressurs(
         override val attributes = listOf(
             FintAttribute("ansattnummer", Identifikator::class, list = false, optional = false),
             FintAttribute("ansettelsesperiode", Periode::class, list = false, optional = false),
-            FintAttribute("ansiennitet", LocalDate::class, list = false, optional = true),
+            FintAttribute("ansiennitet", Date::class, list = false, optional = true),
             FintAttribute("brukernavn", Identifikator::class, list = false, optional = true),
             FintAttribute("jobbtittel", String::class, list = false, optional = true),
             FintAttribute("kontaktinformasjon", Kontaktinformasjon::class, list = false, optional = true),

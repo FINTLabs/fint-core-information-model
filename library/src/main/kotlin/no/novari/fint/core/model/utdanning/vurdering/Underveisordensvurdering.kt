@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.vurdering
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -14,7 +14,7 @@ import no.novari.fint.core.model.utdanning.kodeverk.Skolear
 data class Underveisordensvurdering(
     override val kommentar: String? = null,
     override val systemId: Identifikator? = null,
-    override val vurderingsdato: LocalDateTime? = null,
+    override val vurderingsdato: Date? = null,
 ) : Ordensvurdering {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 
@@ -39,7 +39,7 @@ data class Underveisordensvurdering(
         override val attributes = listOf(
             FintAttribute("kommentar", String::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
-            FintAttribute("vurderingsdato", LocalDateTime::class, list = false, optional = false),
+            FintAttribute("vurderingsdato", Date::class, list = false, optional = false),
         )
         override val relations = listOf(
             FintRelation(

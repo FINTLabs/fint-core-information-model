@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -15,11 +15,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Klassifikasjonssystem(
     val avsluttetAv: String? = null,
-    val avsluttetDato: LocalDateTime? = null,
+    val avsluttetDato: Date? = null,
     val beskrivelse: String? = null,
     val klasse: List<Klasse>? = null,
     val opprettetAv: String? = null,
-    val opprettetDato: LocalDateTime? = null,
+    val opprettetDato: Date? = null,
     val systemId: Identifikator? = null,
     val tittel: String? = null,
 ) : FintResource {
@@ -49,11 +49,11 @@ data class Klassifikasjonssystem(
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("avsluttetAv", String::class, list = false, optional = true),
-            FintAttribute("avsluttetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("avsluttetDato", Date::class, list = false, optional = true),
             FintAttribute("beskrivelse", String::class, list = false, optional = true),
             FintAttribute("klasse", Klasse::class, list = true, optional = false),
             FintAttribute("opprettetAv", String::class, list = false, optional = false),
-            FintAttribute("opprettetDato", LocalDateTime::class, list = false, optional = false),
+            FintAttribute("opprettetDato", Date::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
             FintAttribute("tittel", String::class, list = false, optional = false),
         )

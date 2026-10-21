@@ -1,7 +1,6 @@
 package no.novari.fint.core.model.okonomi.regnskap
 
-import java.time.LocalDate
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -18,10 +17,10 @@ data class Transaksjon(
     val belop: Long? = null,
     val beskrivelse: String? = null,
     val bilag: List<Bilag>? = null,
-    val forfallsdato: LocalDate? = null,
-    val oppdateringstidspunkt: LocalDateTime? = null,
+    val forfallsdato: Date? = null,
+    val oppdateringstidspunkt: Date? = null,
     val transaksjonsId: Identifikator? = null,
-    val transaksjonstidspunkt: LocalDateTime? = null,
+    val transaksjonstidspunkt: Date? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
 
@@ -47,10 +46,10 @@ data class Transaksjon(
             FintAttribute("belop", Long::class, list = false, optional = false),
             FintAttribute("beskrivelse", String::class, list = false, optional = true),
             FintAttribute("bilag", Bilag::class, list = true, optional = true),
-            FintAttribute("forfallsdato", LocalDate::class, list = false, optional = false),
-            FintAttribute("oppdateringstidspunkt", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("forfallsdato", Date::class, list = false, optional = false),
+            FintAttribute("oppdateringstidspunkt", Date::class, list = false, optional = true),
             FintAttribute("transaksjonsId", Identifikator::class, list = false, optional = false),
-            FintAttribute("transaksjonstidspunkt", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("transaksjonstidspunkt", Date::class, list = false, optional = true),
         )
         override val relations = listOf(
             FintRelation(

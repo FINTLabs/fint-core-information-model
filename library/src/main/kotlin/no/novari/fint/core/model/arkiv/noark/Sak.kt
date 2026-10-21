@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -16,17 +16,17 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 data class Sak(
     override val journalpost: List<Journalpost>? = null,
     override val saksaar: String? = null,
-    override val saksdato: LocalDateTime? = null,
+    override val saksdato: Date? = null,
     override val sakssekvensnummer: String? = null,
-    override val utlaantDato: LocalDateTime? = null,
-    override val avsluttetDato: LocalDateTime? = null,
+    override val utlaantDato: Date? = null,
+    override val avsluttetDato: Date? = null,
     override val beskrivelse: String? = null,
     override val klasse: List<Klasse>? = null,
     override val mappeId: Identifikator? = null,
     override val merknad: List<Merknad>? = null,
     override val noekkelord: List<String>? = null,
     override val offentligTittel: String? = null,
-    override val opprettetDato: LocalDateTime? = null,
+    override val opprettetDato: Date? = null,
     override val part: List<Part>? = null,
     override val skjerming: Skjerming? = null,
     override val systemId: Identifikator? = null,
@@ -65,17 +65,17 @@ data class Sak(
         override val attributes = listOf(
             FintAttribute("journalpost", Journalpost::class, list = true, optional = true),
             FintAttribute("saksaar", String::class, list = false, optional = true),
-            FintAttribute("saksdato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("saksdato", Date::class, list = false, optional = true),
             FintAttribute("sakssekvensnummer", String::class, list = false, optional = true),
-            FintAttribute("utlaantDato", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("avsluttetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("utlaantDato", Date::class, list = false, optional = true),
+            FintAttribute("avsluttetDato", Date::class, list = false, optional = true),
             FintAttribute("beskrivelse", String::class, list = false, optional = true),
             FintAttribute("klasse", Klasse::class, list = true, optional = true),
             FintAttribute("mappeId", Identifikator::class, list = false, optional = true),
             FintAttribute("merknad", Merknad::class, list = true, optional = true),
             FintAttribute("noekkelord", String::class, list = true, optional = true),
             FintAttribute("offentligTittel", String::class, list = false, optional = true),
-            FintAttribute("opprettetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("opprettetDato", Date::class, list = false, optional = true),
             FintAttribute("part", Part::class, list = true, optional = true),
             FintAttribute("skjerming", Skjerming::class, list = false, optional = true),
             FintAttribute("systemId", Identifikator::class, list = false, optional = true),

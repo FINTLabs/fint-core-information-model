@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.personvern.samtykke
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -13,7 +13,7 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 
 data class Tjeneste(
     val navn: String? = null,
-    val slettet: LocalDateTime? = null,
+    val slettet: Date? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -38,7 +38,7 @@ data class Tjeneste(
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("navn", String::class, list = false, optional = false),
-            FintAttribute("slettet", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("slettet", Date::class, list = false, optional = true),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )
         override val relations = listOf(
