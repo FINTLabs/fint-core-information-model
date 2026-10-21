@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -18,11 +18,11 @@ data class Dokumentbeskrivelse(
     val dokumentnummer: Long? = null,
     val dokumentobjekt: List<Dokumentobjekt>? = null,
     val forfatter: List<String>? = null,
-    val opprettetDato: LocalDateTime? = null,
+    val opprettetDato: Date? = null,
     val part: List<Part>? = null,
     val referanseArkivdel: List<String>? = null,
     val skjerming: Skjerming? = null,
-    val tilknyttetDato: LocalDateTime? = null,
+    val tilknyttetDato: Date? = null,
     val tittel: String? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -51,11 +51,11 @@ data class Dokumentbeskrivelse(
             FintAttribute("dokumentnummer", Long::class, list = false, optional = true),
             FintAttribute("dokumentobjekt", Dokumentobjekt::class, list = true, optional = true),
             FintAttribute("forfatter", String::class, list = true, optional = true),
-            FintAttribute("opprettetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("opprettetDato", Date::class, list = false, optional = true),
             FintAttribute("part", Part::class, list = true, optional = true),
             FintAttribute("referanseArkivdel", String::class, list = true, optional = true),
             FintAttribute("skjerming", Skjerming::class, list = false, optional = true),
-            FintAttribute("tilknyttetDato", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("tilknyttetDato", Date::class, list = false, optional = true),
             FintAttribute("tittel", String::class, list = false, optional = false),
         )
         override val relations = listOf(

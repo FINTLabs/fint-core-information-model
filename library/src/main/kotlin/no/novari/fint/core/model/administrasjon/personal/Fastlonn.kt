@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.administrasjon.personal
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -16,11 +16,11 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Fastlonn(
     val prosent: Long? = null,
-    override val anvist: LocalDateTime? = null,
-    override val attestert: LocalDateTime? = null,
+    override val anvist: Date? = null,
+    override val attestert: Date? = null,
     override val beskrivelse: String? = null,
     override val kildesystemId: Identifikator? = null,
-    override val kontert: LocalDateTime? = null,
+    override val kontert: Date? = null,
     override val kontostreng: Kontostreng? = null,
     override val opptjent: Periode? = null,
     override val periode: Periode? = null,
@@ -54,11 +54,11 @@ data class Fastlonn(
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
             FintAttribute("prosent", Long::class, list = false, optional = false),
-            FintAttribute("anvist", LocalDateTime::class, list = false, optional = true),
-            FintAttribute("attestert", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("anvist", Date::class, list = false, optional = true),
+            FintAttribute("attestert", Date::class, list = false, optional = true),
             FintAttribute("beskrivelse", String::class, list = false, optional = false),
             FintAttribute("kildesystemId", Identifikator::class, list = false, optional = true),
-            FintAttribute("kontert", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("kontert", Date::class, list = false, optional = true),
             FintAttribute("kontostreng", Kontostreng::class, list = false, optional = false),
             FintAttribute("opptjent", Periode::class, list = false, optional = true),
             FintAttribute("periode", Periode::class, list = false, optional = false),

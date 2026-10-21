@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.elev
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -15,7 +15,7 @@ import no.novari.fint.core.model.utdanning.timeplan.Faggruppemedlemskap
 
 data class Varsel(
     val fravarsprosent: Long? = null,
-    val sendt: LocalDate? = null,
+    val sendt: Date? = null,
     val systemId: Identifikator? = null,
     val tekst: String? = null,
 ) : FintResource {
@@ -41,7 +41,7 @@ data class Varsel(
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("fravarsprosent", Long::class, list = false, optional = false),
-            FintAttribute("sendt", LocalDate::class, list = false, optional = false),
+            FintAttribute("sendt", Date::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
             FintAttribute("tekst", String::class, list = false, optional = false),
         )

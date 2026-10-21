@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.administrasjon.personal
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -15,7 +15,7 @@ import no.novari.fint.core.model.felles.kompleksedatatyper.Identifikator
 import no.novari.fint.core.model.felles.kompleksedatatyper.Periode
 
 data class Fravar(
-    val godkjent: LocalDateTime? = null,
+    val godkjent: Date? = null,
     val kildesystemId: Identifikator? = null,
     val periode: Periode? = null,
     val prosent: Long? = null,
@@ -44,7 +44,7 @@ data class Fravar(
         override val isCommon = false
         override val idFields = listOf("kildesystemId", "systemId")
         override val attributes = listOf(
-            FintAttribute("godkjent", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("godkjent", Date::class, list = false, optional = true),
             FintAttribute("kildesystemId", Identifikator::class, list = false, optional = true),
             FintAttribute("periode", Periode::class, list = false, optional = false),
             FintAttribute("prosent", Long::class, list = false, optional = false),

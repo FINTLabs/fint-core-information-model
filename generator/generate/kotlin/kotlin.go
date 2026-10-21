@@ -36,13 +36,13 @@ var primitiveTypes = map[string]string{
 	"long":     "Long",
 	"float":    "Float",
 	"double":   "Double",
-	"date":     "LocalDate",
-	"datetime": "LocalDateTime",
+	"date":     "Date",
+	"datetime": "Date",
 }
 
 var primitiveImports = map[string]string{
-	"date":     "java.time.LocalDate",
-	"datetime": "java.time.LocalDateTime",
+	"date":     "java.util.Date",
+	"datetime": "java.util.Date",
 }
 
 var multiplicityKinds = map[string]struct{}{

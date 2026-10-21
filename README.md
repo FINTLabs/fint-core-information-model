@@ -147,8 +147,12 @@ The essentials:
   however deep; build them again on the way out from `path` and
   `visitIdentifikators`. The relation name is `FintResource.SELF`, and
   no model type declares a relation by it.
-- **Zero runtime dependencies** beyond `kotlin-stdlib` and
-  `java.time`. Deserialization is constructor-based, so consumers
+- **Dates are `java.util.Date`**, for both `date` and `datetime`: the
+  instant named by the documented wire format, ISO 8601
+  `YYYY-MM-DDThh:mm:ssZ`. Jackson's default date handling reads any
+  ISO 8601 form or epoch millis into it.
+- **Zero runtime dependencies** beyond `kotlin-stdlib`.
+  Deserialization is constructor-based, so consumers
   need `jackson-module-kotlin` (auto-registered in Spring Boot Kotlin
   apps).
 - `abstrakt` model types are interfaces; everything else is a data

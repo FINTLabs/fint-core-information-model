@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.timeplan
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -16,7 +16,7 @@ import no.novari.fint.core.model.utdanning.vurdering.Eksamensgruppe
 data class Eksamen(
     val beskrivelse: String? = null,
     val navn: String? = null,
-    val oppmotetidspunkt: LocalDateTime? = null,
+    val oppmotetidspunkt: Date? = null,
     val systemId: Identifikator? = null,
     val tidsrom: Periode? = null,
 ) : FintResource {
@@ -43,7 +43,7 @@ data class Eksamen(
         override val attributes = listOf(
             FintAttribute("beskrivelse", String::class, list = false, optional = true),
             FintAttribute("navn", String::class, list = false, optional = false),
-            FintAttribute("oppmotetidspunkt", LocalDateTime::class, list = false, optional = true),
+            FintAttribute("oppmotetidspunkt", Date::class, list = false, optional = true),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
             FintAttribute("tidsrom", Periode::class, list = false, optional = false),
         )

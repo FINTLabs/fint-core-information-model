@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.okonomi.faktura
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -17,10 +17,10 @@ data class Faktura(
     val adresse: Adresse? = null,
     val belop: Long? = null,
     val betalt: Boolean? = null,
-    val dato: LocalDate? = null,
+    val dato: Date? = null,
     val fakturanummer: Identifikator? = null,
     val fakturert: Boolean? = null,
-    val forfallsdato: LocalDate? = null,
+    val forfallsdato: Date? = null,
     val kreditert: Boolean? = null,
     val mottaker: String? = null,
     val restbelop: Long? = null,
@@ -53,10 +53,10 @@ data class Faktura(
             FintAttribute("adresse", Adresse::class, list = false, optional = true),
             FintAttribute("belop", Long::class, list = false, optional = false),
             FintAttribute("betalt", Boolean::class, list = false, optional = true),
-            FintAttribute("dato", LocalDate::class, list = false, optional = false),
+            FintAttribute("dato", Date::class, list = false, optional = false),
             FintAttribute("fakturanummer", Identifikator::class, list = false, optional = false),
             FintAttribute("fakturert", Boolean::class, list = false, optional = true),
-            FintAttribute("forfallsdato", LocalDate::class, list = false, optional = false),
+            FintAttribute("forfallsdato", Date::class, list = false, optional = false),
             FintAttribute("kreditert", Boolean::class, list = false, optional = true),
             FintAttribute("mottaker", String::class, list = false, optional = false),
             FintAttribute("restbelop", Long::class, list = false, optional = true),

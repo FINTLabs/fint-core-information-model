@@ -1,11 +1,11 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 
 interface Saksmappe : Mappe {
     val journalpost: List<Journalpost>?
     val saksaar: String?
-    val saksdato: LocalDateTime?
+    val saksdato: Date?
     val sakssekvensnummer: String?
-    val utlaantDato: LocalDateTime?
+    val utlaantDato: Date?
 }

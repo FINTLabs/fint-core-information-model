@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.vurdering
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
 import no.novari.fint.core.model.FintRelation
@@ -13,7 +13,7 @@ import no.novari.fint.core.model.utdanning.elev.Skoleressurs
 import no.novari.fint.core.model.utdanning.kodeverk.Karakterstatus
 
 data class Karakterhistorie(
-    val endretDato: LocalDateTime? = null,
+    val endretDato: Date? = null,
     val systemId: Identifikator? = null,
 ) : FintResource {
     override val links: MutableMap<String, MutableList<Link>> = mutableMapOf()
@@ -37,7 +37,7 @@ data class Karakterhistorie(
         override val isCommon = false
         override val idFields = listOf("systemId")
         override val attributes = listOf(
-            FintAttribute("endretDato", LocalDateTime::class, list = false, optional = false),
+            FintAttribute("endretDato", Date::class, list = false, optional = false),
             FintAttribute("systemId", Identifikator::class, list = false, optional = false),
         )
         override val relations = listOf(

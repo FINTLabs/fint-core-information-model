@@ -1,13 +1,13 @@
 package no.novari.fint.core.model.arkiv.noark
 
-import java.time.LocalDateTime
+import java.util.Date
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintObject
 import no.novari.fint.core.model.FintTypeMetadata
 
 data class Avskrivning(
     val avskrevetAv: String? = null,
-    val avskrivningsdato: LocalDateTime? = null,
+    val avskrivningsdato: Date? = null,
     val avskrivningsmate: String? = null,
 ) : FintObject {
     override val metadata: FintTypeMetadata get() = Metadata
@@ -17,7 +17,7 @@ data class Avskrivning(
         override val ref = "arkiv-noark:Avskrivning"
         override val attributes = listOf(
             FintAttribute("avskrevetAv", String::class, list = false, optional = false),
-            FintAttribute("avskrivningsdato", LocalDateTime::class, list = false, optional = false),
+            FintAttribute("avskrivningsdato", Date::class, list = false, optional = false),
             FintAttribute("avskrivningsmate", String::class, list = false, optional = false),
         )
     }

@@ -1,6 +1,6 @@
 package no.novari.fint.core.model.utdanning.elev
 
-import java.time.LocalDate
+import java.util.Date
 import no.novari.fint.core.model.Bidirectional
 import no.novari.fint.core.model.FintAttribute
 import no.novari.fint.core.model.FintMultiplicity
@@ -28,7 +28,7 @@ import no.novari.fint.core.model.utdanning.vurdering.Fravarsoversikt
 
 data class Elevforhold(
     val anmerkninger: List<Anmerkninger>? = null,
-    val avbruddsdato: LocalDate? = null,
+    val avbruddsdato: Date? = null,
     val gyldighetsperiode: Periode? = null,
     val hovedskole: Boolean? = null,
     val tosprakligFagopplaring: Boolean? = null,
@@ -61,7 +61,7 @@ data class Elevforhold(
         override val idFields = listOf("systemId")
         override val attributes = listOf(
             FintAttribute("anmerkninger", Anmerkninger::class, list = true, optional = true),
-            FintAttribute("avbruddsdato", LocalDate::class, list = false, optional = true),
+            FintAttribute("avbruddsdato", Date::class, list = false, optional = true),
             FintAttribute("gyldighetsperiode", Periode::class, list = false, optional = true),
             FintAttribute("hovedskole", Boolean::class, list = false, optional = true),
             FintAttribute("tosprakligFagopplaring", Boolean::class, list = false, optional = true),
