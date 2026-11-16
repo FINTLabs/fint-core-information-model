@@ -9,7 +9,7 @@ import (
 // side: the target has to carry the named inverse, and that inverse has to
 // point back at it.
 func TestGolden_BidirectionalRelationsAnswerFromBothSides(t *testing.T) {
-	doc, err := Load("../../testdata/golden/v4.1.0-rc-2/metamodel.json")
+	doc, err := Load("../../testdata/golden/v4.1.0/metamodel.json")
 	if err != nil {
 		t.Fatalf("load golden: %v", err)
 	}
@@ -58,7 +58,7 @@ func TestGolden_BidirectionalRelationsAnswerFromBothSides(t *testing.T) {
 // them one-way and consumers walking inverses skipped them. The model fixed all
 // three in v4.0.30; this pins that we are on a model where they go both ways.
 func TestGolden_PairsRepairedInModelV4_0_30(t *testing.T) {
-	doc, err := Load("../../testdata/golden/v4.1.0-rc-2/metamodel.json")
+	doc, err := Load("../../testdata/golden/v4.1.0/metamodel.json")
 	if err != nil {
 		t.Fatalf("load golden: %v", err)
 	}
